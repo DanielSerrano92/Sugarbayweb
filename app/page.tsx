@@ -14,7 +14,7 @@ export default function Home() {
         </p>
 
         <div className="mt-6 rounded-lg bg-black px-4 py-3 text-white">
-          Caja de prueba con Tailwind
+          Caja de prueba con Tailwind s
         </div>
       </main>
     </div>
