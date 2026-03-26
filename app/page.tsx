@@ -1,22 +1,19 @@
-import Image from "next/image";
+import { prisma } from "@/lib/db";
 
-export default function Home() {
+export default async function Home() {
+  const posts = await prisma.post.findMany();
   return (
-    <div className="flex min-h-screen items-center justify-center bg-red-500">
-      <main className="rounded-2xl bg-white p-10 shadow-xl">
-        <h1 className="text-4xl font-extrabold underline text-blue-600">
-          Tailwind funciona
-        </h1>
+    <main style={{ padding: 20 }}>
+      <h1>Posts</h1>
 
-        <p className="mt-4 text-lg text-gray-700">
-          Si ves fondo rojo, tarjeta blanca, texto azul grande y subrayado,
-          Tailwind está funcionando.
-        </p>
-
-        <div className="mt-6 rounded-lg bg-black px-4 py-3 text-white">
-          Caja de prueba con Tailwind s
-        </div>
-      </main>
-    </div>
+      <ul>
+        {posts.map((p) => (
+          <li key={p.id}>
+            <strong>{p.title}</strong>
+            <p>{p.content}</p>
+          </li>
+        ))}
+      </ul>
+    </main>
   );
 }
