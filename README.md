@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sugarbayweb
 
-## Getting Started
+Aplicacion web full-stack para la banda **Sugarbay** con:
 
-First, run the development server:
+- Next.js 16 (App Router)
+- TypeScript estricto
+- Tailwind CSS v4
+- Prisma + Neon PostgreSQL
+- Stripe Checkout
+- ImageKit
+
+## Estructura principal
+
+- `app/` rutas App Router (landing, banda, musica, media, tienda, auth, cuenta, carrito, checkout)
+- `components/` UI reusable por dominio (`layout`, `shop`, `cart`, `auth`, `ui`)
+- `lib/auth` sesion persistente (cookie JWT), DAL y acciones de auth
+- `lib/repositories` capa de acceso a datos modular (contenido, tienda, carrito)
+- `lib/services` integracion Stripe/ImageKit y navegacion
+- `prisma/schema.prisma` modelo de dominio completo
+- `app/api/*` route handlers para checkout Stripe, webhook y auth de ImageKit
+- `proxy.ts` proteccion optimista de rutas privadas
+
+## Variables de entorno
+
+Usa `.env.example` como base y crea `.env`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Variables clave:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `DATABASE_URL`
+- `DIRECT_URL`
+- `SESSION_SECRET` (minimo 32 caracteres)
+- `NEXT_PUBLIC_APP_URL`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT`
+- `IMAGEKIT_PUBLIC_KEY`
+- `IMAGEKIT_PRIVATE_KEY`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Desarrollo
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Prisma
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Regenerar cliente:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx prisma generate
+```
 
-## Deploy on Vercel
+Sincronizar esquema con Neon (cuando proceda):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npx prisma db push
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Rutas funcionales
+
+- `/` landing
+- `/conciertos`
+- `/banda`
+- `/musica`
+- `/media`
+- `/fanclub`
+- `/tienda`
+- `/tienda/[slug]`
+- `/login`, `/registro`
+- `/cuenta` (privada)
+- `/carrito` (privada)
+- `/checkout` (privada)
+
+## Seguridad y arquitectura
+
+- Server Components por defecto
+- Validacion de formularios en cliente y servidor (Zod)
+- Sesion persistente con cookie `httpOnly`
+- Proteccion de rutas con `proxy.ts` y comprobacion en servidor
+- Secretos solo por variables de entorno
+- Estados `loading`, `empty` y `error`

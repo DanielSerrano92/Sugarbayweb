@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
@@ -12,17 +7,562 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        Int   @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now())
+enum UserRole {
+  USER
+  ADMIN
+  MANAGER
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  createdAt DateTime @default(now())
+enum AddressType {
+  SHIPPING
+  BILLING
+}
+
+enum ProductType {
+  APPAREL
+  ACCESSORY
+  MEDIA
+}
+
+enum VariantSize {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+  OS
+}
+
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+}
+
+enum ConcertStatus {
+  SCHEDULED
+  SOLD_OUT
+  COMPLETED
+  CANCELLED
+  POSTPONED
+}
+
+enum NewsStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum BandMemberType {
+  CORE
+  COLLABORATOR
+}
+
+enum BiographySectionType {
+  STORY
+  MILESTONE
+  FORMATION
+}
+
+enum MusicReleaseType {
+  SINGLE
+  EP
+  ALBUM
+  LIVE
+}
+
+enum TrackType {
+  ORIGINAL
+  LIVE
+  ACOUSTIC
+  REMIX
+}
+
+enum ContributorRole {
+  VOCALS
+  GUITAR
+  BASS
+  DRUMS
+  KEYS
+  PRODUCER
+  COMPOSER
+  LYRICS
+  MIX
+  MASTERING
+  FEATURED
+  OTHER
+}
+
+enum VideoPlatform {
+  YOUTUBE
+  VIMEO
+  INSTAGRAM
+  TIKTOK
+  NATIVE
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  username        String    @unique
+  passwordHash    String
+  firstName       String
+  lastName        String
+  birthDate       DateTime
+  country         String    @default("ES")
+  termsAcceptedAt DateTime?
+  role            UserRole  @default(USER)
+  phone           String?
+  isActive        Boolean   @default(true)
+  addresses       Address[]
+  cart            Cart?
+  orders          Order[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([email])
+}
+
+model Address {
+  id            String      @id @default(cuid())
+  userId        String
+  type          AddressType @default(SHIPPING)
+  label         String?
+  recipientName String
+  line1         String
+  line2         String?
+  city          String
+  region        String?
+  postalCode    String
+  country       String      @default("ES")
+  phone         String?
+  isDefault     Boolean     @default(false)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([userId, type])
+  @@index([country, postalCode])
+}
+
+model ProductCategory {
+  id          String            @id @default(cuid())
+  name        String
+  slug        String            @unique
+  description String?
+  parentId    String?
+  sortOrder   Int               @default(0)
+  isActive    Boolean           @default(true)
+  parent      ProductCategory?  @relation("ProductCategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children    ProductCategory[] @relation("ProductCategoryTree")
+  products    Product[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([parentId, sortOrder])
+}
+
+model Product {
+  id             String           @id @default(cuid())
+  categoryId     String
+  name           String
+  slug           String           @unique
+  description    String?
+  productType    ProductType
+  basePrice      Decimal          @db.Decimal(10, 2)
+  compareAtPrice Decimal?         @db.Decimal(10, 2)
+  currency       String           @default("EUR")
+  isPublished    Boolean          @default(true)
+  isFeatured     Boolean          @default(false)
+  tags           String[]         @default([])
+  metadata       Json?
+  category       ProductCategory  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images         ProductImage[]
+  variants       ProductVariant[]
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([categoryId, isPublished])
+  @@index([productType, isPublished])
+}
+
+model ProductImage {
+  id             String   @id @default(cuid())
+  productId      String
+  imageUrl       String
+  imageKitFileId String?  @unique
+  altText        String?
+  isPrimary      Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([productId, sortOrder])
+}
+
+model ProductVariant {
+  id            String      @id @default(cuid())
+  productId     String
+  sku           String      @unique
+  title         String?
+  size          VariantSize @default(OS)
+  color         String?
+  stock         Int         @default(0)
+  priceOverride Decimal?    @db.Decimal(10, 2)
+  barcode       String?
+  isActive      Boolean     @default(true)
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([productId, isActive])
+  @@index([size])
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  currency  String     @default("EUR")
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  order     Order?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id                String         @id @default(cuid())
+  cartId            String
+  productId         String
+  productVariantId  String
+  quantity          Int            @default(1)
+  unitPriceSnapshot Decimal        @db.Decimal(10, 2)
+  cart              Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product           Product        @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productVariant    ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([cartId, productVariantId])
+  @@index([productId])
+  @@index([productVariantId])
+}
+
+model Order {
+  id                    String        @id @default(cuid())
+  orderNumber           Int           @unique @default(autoincrement())
+  userId                String
+  cartId                String?       @unique
+  status                OrderStatus   @default(PLACED)
+  paymentStatus         PaymentStatus @default(PENDING)
+  paymentProvider       String        @default("STRIPE")
+  paymentIntentId       String?
+  checkoutSessionId     String?
+  currency              String        @default("EUR")
+  subtotal              Decimal       @db.Decimal(10, 2)
+  shippingAmount        Decimal       @default(0) @db.Decimal(10, 2)
+  taxAmount             Decimal       @default(0) @db.Decimal(10, 2)
+  discountAmount        Decimal       @default(0) @db.Decimal(10, 2)
+  totalAmount           Decimal       @db.Decimal(10, 2)
+  shippingRecipientName String
+  shippingLine1         String
+  shippingLine2         String?
+  shippingCity          String
+  shippingRegion        String?
+  shippingPostalCode    String
+  shippingCountry       String
+  shippingPhone         String?
+  billingRecipientName  String?
+  billingLine1          String?
+  billingLine2          String?
+  billingCity           String?
+  billingRegion         String?
+  billingPostalCode     String?
+  billingCountry        String?
+  billingPhone          String?
+  placedAt              DateTime      @default(now())
+  paidAt                DateTime?
+  cancelledAt           DateTime?
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  cart                  Cart?         @relation(fields: [cartId], references: [id], onDelete: SetNull)
+  items                 OrderItem[]
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([status, paymentStatus])
+}
+
+model OrderItem {
+  id                  String          @id @default(cuid())
+  orderId             String
+  productId           String?
+  productVariantId    String?
+  productNameSnapshot String
+  variantNameSnapshot String?
+  skuSnapshot         String?
+  unitPrice           Decimal         @db.Decimal(10, 2)
+  quantity            Int
+  lineTotal           Decimal         @db.Decimal(10, 2)
+  imageUrlSnapshot    String?
+  order               Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product             Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productVariant      ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@index([orderId])
+}
+
+model Concert {
+  id               String        @id @default(cuid())
+  title            String
+  slug             String        @unique
+  status           ConcertStatus @default(SCHEDULED)
+  startsAt         DateTime
+  endsAt           DateTime?
+  venueName        String
+  venueAddress     String?
+  city             String
+  region           String?
+  country          String        @default("ES")
+  ticketUrl        String?
+  externalEventUrl String?
+  description      String?
+  isFeatured       Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([startsAt, status])
+  @@index([city, startsAt])
+}
+
+model News {
+  id            String     @id @default(cuid())
+  title         String
+  slug          String     @unique
+  summary       String?
+  content       String
+  status        NewsStatus @default(DRAFT)
+  publishedAt   DateTime?
+  coverImageUrl String?
+  tags          String[]   @default([])
+  authorName    String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+}
+
+model BandMember {
+  id                 String            @id @default(cuid())
+  name               String
+  slug               String            @unique
+  memberType         BandMemberType    @default(CORE)
+  roleTitle          String
+  bio                String?
+  avatarUrl          String?
+  socialLinks        Json?
+  sortOrder          Int               @default(0)
+  isActive           Boolean           @default(true)
+  joinedAt           DateTime?
+  leftAt             DateTime?
+  contributorProfile MusicContributor?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@index([memberType, sortOrder])
+}
+
+model BiographySection {
+  id          String               @id @default(cuid())
+  title       String
+  slug        String               @unique
+  sectionType BiographySectionType @default(STORY)
+  content     String
+  sortOrder   Int                  @default(0)
+  isPublished Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([sortOrder, isPublished])
+}
+
+model MusicRelease {
+  id            String               @id @default(cuid())
+  title         String
+  slug          String               @unique
+  releaseType   MusicReleaseType
+  description   String?
+  coverImageUrl String?
+  releaseDate   DateTime
+  labelName     String?
+  catalogNumber String?
+  isPublished   Boolean              @default(true)
+  externalLinks Json?
+  tracks        Track[]
+  contributors  ReleaseContributor[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@index([releaseDate, isPublished])
+}
+
+model MusicContributor {
+  id             String               @id @default(cuid())
+  name           String
+  slug           String               @unique
+  primaryRole    ContributorRole      @default(OTHER)
+  bio            String?
+  avatarUrl      String?
+  memberId       String?              @unique
+  member         BandMember?          @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  releaseCredits ReleaseContributor[]
+  trackCredits   TrackContributor[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([memberId])
+}
+
+model Track {
+  id              String             @id @default(cuid())
+  musicReleaseId  String
+  title           String
+  slug            String             @unique
+  trackNumber     Int
+  discNumber      Int                @default(1)
+  durationSeconds Int
+  trackType       TrackType          @default(ORIGINAL)
+  isrc            String?            @unique
+  lyrics          String?
+  audioPreviewUrl String?
+  spotifyUrl      String?
+  appleMusicUrl   String?
+  youtubeUrl      String?
+  musicRelease    MusicRelease       @relation(fields: [musicReleaseId], references: [id], onDelete: Cascade)
+  contributors    TrackContributor[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@unique([musicReleaseId, discNumber, trackNumber])
+  @@index([musicReleaseId])
+}
+
+model ReleaseContributor {
+  id                 String           @id @default(cuid())
+  musicReleaseId     String
+  musicContributorId String
+  role               ContributorRole
+  creditOrder        Int              @default(0)
+  musicRelease       MusicRelease     @relation(fields: [musicReleaseId], references: [id], onDelete: Cascade)
+  musicContributor   MusicContributor @relation(fields: [musicContributorId], references: [id], onDelete: Cascade)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@unique([musicReleaseId, musicContributorId, role])
+  @@index([musicReleaseId, creditOrder])
+}
+
+model TrackContributor {
+  id                 String           @id @default(cuid())
+  trackId            String
+  musicContributorId String
+  role               ContributorRole
+  creditOrder        Int              @default(0)
+  track              Track            @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  musicContributor   MusicContributor @relation(fields: [musicContributorId], references: [id], onDelete: Cascade)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@unique([trackId, musicContributorId, role])
+  @@index([trackId, creditOrder])
+}
+
+model PhotoAlbum {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  description   String?
+  coverImageUrl String?
+  eventDate     DateTime?
+  isPublished   Boolean   @default(true)
+  sortOrder     Int       @default(0)
+  photos        Photo[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([eventDate, isPublished])
+}
+
+model Photo {
+  id             String     @id @default(cuid())
+  photoAlbumId   String
+  title          String?
+  caption        String?
+  imageUrl       String
+  imageKitFileId String?    @unique
+  width          Int?
+  height         Int?
+  takenAt        DateTime?
+  sortOrder      Int        @default(0)
+  isCover        Boolean    @default(false)
+  photoAlbum     PhotoAlbum @relation(fields: [photoAlbumId], references: [id], onDelete: Cascade)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([photoAlbumId, sortOrder])
+}
+
+model VideoCollection {
+  id            String      @id @default(cuid())
+  title         String
+  slug          String      @unique
+  description   String?
+  coverImageUrl String?
+  isPublished   Boolean     @default(true)
+  sortOrder     Int         @default(0)
+  videos        VideoItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([sortOrder, isPublished])
+}
+
+model VideoItem {
+  id                String          @id @default(cuid())
+  videoCollectionId String
+  title             String
+  slug              String          @unique
+  description       String?
+  platform          VideoPlatform   @default(YOUTUBE)
+  videoUrl          String
+  thumbnailUrl      String?
+  durationSeconds   Int?
+  publishedAt       DateTime?
+  sortOrder         Int             @default(0)
+  isFeatured        Boolean         @default(false)
+  videoCollection   VideoCollection @relation(fields: [videoCollectionId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([videoCollectionId, sortOrder])
 }
