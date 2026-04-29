@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Flujo ImageKit en Sugarbay</title>
+    <style>
+      :root {
+        --ink: #18181b;
+        --muted: #52525b;
+        --line: #d4d4d8;
+        --panel: #f4f4f5;
+        --accent: #059669;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #ffffff;
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      main {
+        margin: 0 auto;
+        max-width: 820px;
+        padding: 40px 48px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.15;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 30px;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        border-top: 1px solid var(--line);
+        font-size: 19px;
+        margin-top: 26px;
+        padding-top: 18px;
+      }
+
+      h3 {
+        font-size: 15px;
+        margin-top: 18px;
+      }
+
+      p {
+        margin: 8px 0;
+      }
+
+      ul,
+      ol {
+        margin: 8px 0 8px 20px;
+        padding: 0;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+
+      code {
+        background: var(--panel);
+        border: 1px solid #e4e4e7;
+        border-radius: 4px;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 11px;
+        padding: 1px 4px;
+      }
+
+      pre {
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #111827;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 10.5px;
+        line-height: 1.45;
+        margin: 10px 0;
+        overflow-wrap: anywhere;
+        padding: 12px;
+        white-space: pre-wrap;
+      }
+
+      pre code {
+        background: transparent;
+        border: 0;
+        color: inherit;
+        padding: 0;
+      }
+
+      a {
+        color: #047857;
+        text-decoration: none;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 8px;
+      }
+
+      .badge {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 999px;
+        color: #047857;
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        padding: 4px 9px;
+        text-transform: uppercase;
+      }
+
+      .note {
+        background: #f0fdf4;
+        border-left: 4px solid var(--accent);
+        margin: 12px 0;
+        padding: 10px 12px;
+      }
+
+      .warning {
+        background: #fff7ed;
+        border-left: 4px solid #ea580c;
+        margin: 12px 0;
+        padding: 10px 12px;
+      }
+
+      .flow {
+        display: grid;
+        gap: 8px;
+        margin: 14px 0;
+      }
+
+      .flow-box {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+
+      .arrow {
+        color: var(--accent);
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .source-list li {
+        overflow-wrap: anywhere;
+      }
+
+      .page-break {
+        break-before: page;
+      }
+
+      @media print {
+        body {
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+
+        main {
+          max-width: none;
+          padding: 20mm;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <span class="badge">Sugarbayweb</span>
+      <h1>Flujo de ImageKit para imagenes reales de tienda</h1>
+      <p class="subtitle">
+        Resumen del proceso para conectar ImageKit, subir una imagen, guardar su URL en la base de datos y mostrarla en una tarjeta de producto.
+        Fecha: 28 de abril de 2026.
+      </p>
+
+      <h2>1. Idea principal</h2>
+      <p>
+        En este proyecto, ImageKit no sustituye a la base de datos. ImageKit guarda el archivo de imagen; Neon/PostgreSQL guarda los datos oficiales del producto; Next.js lee esos datos y renderiza la tarjeta.
+      </p>
+
+      <div class="flow">
+        <div class="flow-box">
+          <strong>ImageKit Media Library</strong>
+          <br />
+          Guarda el archivo real, por ejemplo:
+          <br />
+          <code>https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075</code>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="flow-box">
+          <strong>Base de datos</strong>
+          <br />
+          Guarda la referencia a la imagen en <code>ProductImage.imageUrl</code>, asociada a un <code>Product</code>.
+        </div>
+        <div class="arrow">↓</div>
+        <div class="flow-box">
+          <strong>lib/repositories/store.ts</strong>
+          <br />
+          Consulta el producto y convierte la primera imagen en <code>coverImageUrl</code>.
+        </div>
+        <div class="arrow">↓</div>
+        <div class="flow-box">
+          <strong>components/store/store-product-card.tsx</strong>
+          <br />
+          Muestra <code>coverImageUrl</code> dentro del componente <code>&lt;Image /&gt;</code> de Next.js.
+        </div>
+      </div>
+
+      <div class="note">
+        Regla practica: para crear otra tarjeta de tienda no se duplica el componente. Se crea otro producto en la base de datos y se crea otra fila en <code>ProductImage</code> con la URL de ImageKit.
+      </div>
+
+      <h2>2. Conexion con ImageKit</h2>
+      <p>
+        Para mostrar imagenes publicas de ImageKit, este proyecto solo necesita el endpoint publico en <code>.env</code>.
+      </p>
+
+      <pre><code>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/gq1enkszp
+IMAGEKIT_PUBLIC_KEY=""
+IMAGEKIT_PRIVATE_KEY=""</code></pre>
+
+      <p>
+        <code>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT</code> se puede usar en cliente y servidor porque empieza por <code>NEXT_PUBLIC_</code>. Las claves <code>IMAGEKIT_PUBLIC_KEY</code> e <code>IMAGEKIT_PRIVATE_KEY</code> se reservan para subidas desde la propia aplicacion.
+      </p>
+
+      <div class="warning">
+        La private key no debe meterse en componentes de cliente ni subirse a repositorios publicos. Si algun dia se implementa un panel admin para subir imagenes desde la web, la firma debe generarse en servidor.
+      </div>
+
+      <h2>3. Subir la foto a ImageKit</h2>
+      <ol>
+        <li>Entrar en el dashboard de ImageKit.</li>
+        <li>Ir a <strong>Media Library</strong>.</li>
+        <li>Crear una carpeta, por ejemplo <code>fotos</code> o <code>products</code>.</li>
+        <li>Subir la imagen de la camiseta.</li>
+        <li>Copiar la URL publica generada por ImageKit.</li>
+      </ol>
+
+      <p>Ejemplo real que has usado:</p>
+
+      <pre><code>https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075</code></pre>
+
+      <p>
+        Tambien puedes guardar solo el path si el endpoint ya esta en <code>.env</code>:
+      </p>
+
+      <pre><code>fotos/camiseta_black_neon?updatedAt=1777406425075</code></pre>
+
+      <h2>4. Donde se guarda la URL en datos reales</h2>
+      <p>
+        Para datos oficiales, la URL de la imagen debe guardarse en la base de datos. En este proyecto, la tabla relevante es <code>ProductImage</code>.
+      </p>
+
+      <h3>Modelo simplificado</h3>
+      <pre><code>Product
+- id
+- name
+- slug
+- basePrice
+- images: ProductImage[]
+
+ProductImage
+- id
+- productId
+- imageUrl
+- altText
+- isPrimary
+- sortOrder</code></pre>
+
+      <h3>Ejemplo de datos oficiales</h3>
+      <pre><code>Product
+id: "producto_123"
+name: "Sugarbay Tour Tee Black"
+slug: "sugarbay-tour-tee-black"
+basePrice: 31.90
+isPublished: true
+
+ProductImage
+productId: "producto_123"
+imageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075"
+altText: "Camiseta negra Sugarbay Neon"
+isPrimary: true
+sortOrder: 1</code></pre>
+
+      <p>
+        Con Prisma Studio se puede editar esto visualmente:
+      </p>
+
+      <pre><code>npm.cmd exec prisma studio</code></pre>
+
+      <p>
+        En Studio: abrir <code>Product</code>, localizar el producto, copiar su <code>id</code>, abrir <code>ProductImage</code>, buscar la fila con ese <code>productId</code> y actualizar <code>imageUrl</code>.
+      </p>
+
+      <div class="warning">
+        No conviene depender de <code>prisma/seed.ts</code> como fuente principal de datos oficiales. El seed sirve para cargar datos iniciales o demo. La fuente real debe ser la base de datos.
+      </div>
+
+      <h2 class="page-break">5. Como viaja la imagen por el codigo</h2>
+
+      <h3>Paso A: el repositorio consulta productos e imagenes</h3>
+      <p>
+        En <code>lib/repositories/store.ts</code>, la consulta pide las imagenes del producto ordenadas por prioridad:
+      </p>
+
+      <pre><code>images: {
+  select: {
+    imageUrl: true,
+    isPrimary: true,
+    sortOrder: true,
+  },
+  orderBy: [
+    { isPrimary: "desc" },
+    { sortOrder: "asc" },
+  ],
+  take: 1,
+}</code></pre>
+
+      <p>
+        Esto significa: de todas las imagenes del producto, dame primero la marcada como principal; si hay varias, ordena por <code>sortOrder</code>; usa solo una.
+      </p>
+
+      <h3>Paso B: se crea el dato que necesita la tarjeta</h3>
+      <p>
+        En la funcion que transforma el registro de base de datos a un producto de tienda, se crea <code>coverImageUrl</code>:
+      </p>
+
+      <pre><code>coverImageUrl: record.images[0]?.imageUrl ?? null,</code></pre>
+
+      <p>
+        Traduccion: si el producto tiene una imagen, usa la primera. Si no tiene imagen, usa <code>null</code>.
+      </p>
+
+      <h3>Paso C: la pagina pasa cada producto a la tarjeta</h3>
+      <p>
+        En <code>app/store/page.tsx</code>, la tienda recorre todos los productos y crea una tarjeta para cada uno:
+      </p>
+
+      <pre><code>{catalog.products.map((product) =&gt; (
+  &lt;StoreProductCard key={product.id} product={product} /&gt;
+))}</code></pre>
+
+      <p>
+        Aqui no se decide la URL. La pagina solo entrega el objeto <code>product</code> a la tarjeta.
+      </p>
+
+      <h3>Paso D: la tarjeta renderiza la imagen</h3>
+      <p>
+        En <code>components/store/store-product-card.tsx</code> se usa <code>product.coverImageUrl</code> como origen de la imagen:
+      </p>
+
+      <pre><code>&lt;Image
+  src={resolveImageUrl(product.coverImageUrl)}
+  alt={product.name}
+  fill
+  className="object-cover"
+  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+/&gt;</code></pre>
+
+      <p>
+        La tarjeta no sabe si la imagen viene de ImageKit, de otra URL externa o de un path relativo. Solo llama a <code>resolveImageUrl()</code>.
+      </p>
+
+      <h2>6. Que hace resolveImageUrl()</h2>
+      <p>
+        En <code>lib/services/imagekit.ts</code>, esta funcion normaliza el valor que viene de la base de datos.
+      </p>
+
+      <pre><code>export function resolveImageUrl(path?: string | null): string {
+  if (!path) return "/next.svg";
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+
+  if (!DEFAULT_IMAGEKIT_ENDPOINT) {
+    return `/${stripSlashes(path)}`;
+  }
+
+  return `${DEFAULT_IMAGEKIT_ENDPOINT.replace(/\/+$/, "")}/${stripSlashes(path)}`;
+}</code></pre>
+
+      <h3>Caso 1: guardas la URL completa</h3>
+      <pre><code>ProductImage.imageUrl =
+"https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075"
+
+resolveImageUrl(...) devuelve la misma URL.</code></pre>
+
+      <h3>Caso 2: guardas solo el path</h3>
+      <pre><code>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT =
+"https://ik.imagekit.io/gq1enkszp"
+
+ProductImage.imageUrl =
+"fotos/camiseta_black_neon?updatedAt=1777406425075"
+
+resolveImageUrl(...) devuelve:
+"https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075"</code></pre>
+
+      <p>
+        Para este proyecto, cualquiera de las dos opciones funciona. Guardar el path es mas limpio si todas las imagenes vienen de la misma cuenta de ImageKit.
+      </p>
+
+      <h2>7. Por que Next.js acepta esa imagen remota</h2>
+      <p>
+        El componente <code>next/image</code> necesita que el host remoto este permitido en <code>next.config.ts</code>. Tu proyecto ya lo prepara:
+      </p>
+
+      <pre><code>const imageKitHostnames = new Set&lt;string&gt;(["ik.imagekit.io"]);
+
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: Array.from(imageKitHostnames).map((hostname) =&gt; ({
+      protocol: "https",
+      hostname,
+      pathname: "/**",
+    })),
+  },
+};</code></pre>
+
+      <p>
+        Esto permite que <code>&lt;Image /&gt;</code> optimice imagenes servidas desde <code>https://ik.imagekit.io/...</code>.
+      </p>
+
+      <h2 class="page-break">8. Ejemplo completo: crear un producto con imagen</h2>
+      <p>
+        Este ejemplo muestra la idea programatica. En una aplicacion real, este codigo estaria detras de un panel admin protegido o se haria desde Prisma Studio.
+      </p>
+
+      <pre><code>const product = await prisma.product.create({
+  data: {
+    categoryId: tshirtsCategory.id,
+    name: "Camiseta Black Neon",
+    slug: "camiseta-black-neon",
+    description: "Camiseta oficial Sugarbay con arte neon.",
+    productType: ProductType.APPAREL,
+    basePrice: 31.9,
+    currency: "EUR",
+    isPublished: true,
+    images: {
+      create: [
+        {
+          imageUrl:
+            "https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075",
+          altText: "Camiseta negra Sugarbay Neon",
+          isPrimary: true,
+          sortOrder: 1,
+        },
+      ],
+    },
+  },
+});</code></pre>
+
+      <h3>Ejemplo para actualizar la imagen principal de un producto existente</h3>
+      <pre><code>const product = await prisma.product.findUnique({
+  where: { slug: "sugarbay-tour-tee-black" },
+  select: { id: true },
+});
+
+if (!product) {
+  throw new Error("Producto no encontrado");
+}
+
+await prisma.productImage.updateMany({
+  where: {
+    productId: product.id,
+    isPrimary: true,
+  },
+  data: {
+    imageUrl:
+      "https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075",
+    altText: "Camiseta negra Sugarbay Neon",
+    sortOrder: 1,
+  },
+});</code></pre>
+
+      <h2>9. Cuando se usan IMAGEKIT_PUBLIC_KEY e IMAGEKIT_PRIVATE_KEY</h2>
+      <p>
+        Ahora mismo, como subes imagenes manualmente desde el dashboard de ImageKit, no necesitas esas claves para mostrar imagenes.
+      </p>
+
+      <p>
+        Se usarian si quieres crear un panel dentro de Sugarbay para subir imagenes desde la web. El flujo seria:
+      </p>
+
+      <ol>
+        <li>El usuario admin selecciona un archivo en la web.</li>
+        <li>El cliente pide parametros de autenticacion a <code>/api/imagekit/auth</code>.</li>
+        <li>El servidor genera <code>token</code>, <code>signature</code> y <code>expire</code> usando la private key.</li>
+        <li>El cliente sube el archivo a ImageKit con esos parametros.</li>
+        <li>La app guarda la URL devuelta por ImageKit en <code>ProductImage.imageUrl</code>.</li>
+      </ol>
+
+      <p>Tu proyecto ya tiene preparada esta parte de servidor:</p>
+
+      <pre><code>const imageKit = getImageKitClient();
+const authParams = imageKit.helper.getAuthenticationParameters();
+return Response.json(authParams);</code></pre>
+
+      <p>
+        Pero falta una interfaz admin que use ese endpoint. Por eso, en la fase actual lo mas simple es: subir en ImageKit manualmente y guardar la URL en la base de datos.
+      </p>
+
+      <h2>10. Checklist recomendado</h2>
+      <ol>
+        <li>Configurar <code>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT</code> con tu endpoint real.</li>
+        <li>Subir cada imagen oficial a ImageKit Media Library.</li>
+        <li>Copiar la URL o el path del archivo.</li>
+        <li>Crear o editar el producto real en la base de datos.</li>
+        <li>Crear o editar su fila en <code>ProductImage</code>.</li>
+        <li>Marcar la imagen principal con <code>isPrimary: true</code>.</li>
+        <li>Usar <code>sortOrder: 1</code> para la imagen principal.</li>
+        <li>Refrescar <code>/store</code> y comprobar que aparece la tarjeta.</li>
+      </ol>
+
+      <h2>11. Fuentes</h2>
+      <p>
+        La explicacion del flujo interno sale de los archivos locales del proyecto:
+      </p>
+      <ul>
+        <li><code>components/store/store-product-card.tsx</code></li>
+        <li><code>lib/repositories/store.ts</code></li>
+        <li><code>lib/services/imagekit.ts</code></li>
+        <li><code>app/api/imagekit/auth/route.ts</code></li>
+        <li><code>next.config.ts</code></li>
+        <li><code>prisma/schema.prisma</code></li>
+      </ul>
+
+      <p>Documentacion oficial consultada:</p>
+      <ul class="source-list">
+        <li>
+          ImageKit - Upload assets:
+          <a href="https://imagekit.io/docs/dam/upload-assets">https://imagekit.io/docs/dam/upload-assets</a>
+        </li>
+        <li>
+          ImageKit - API keys:
+          <a href="https://imagekit.io/docs/api-keys">https://imagekit.io/docs/api-keys</a>
+        </li>
+        <li>
+          ImageKit - React SDK y parametros de autenticacion de subida:
+          <a href="https://imagekit.io/docs/integration/react">https://imagekit.io/docs/integration/react</a>
+        </li>
+        <li>
+          Next.js - Image Component, remote images y remotePatterns:
+          <a href="https://nextjs.org/docs/app/api-reference/components/image">https://nextjs.org/docs/app/api-reference/components/image</a>
+        </li>
+        <li>
+          Prisma - Prisma Studio:
+          <a href="https://www.prisma.io/docs/v6/orm/tools/prisma-studio">https://www.prisma.io/docs/v6/orm/tools/prisma-studio</a>
+        </li>
+        <li>
+          Prisma - CRUD con Prisma Client:
+          <a href="https://docs.prisma.io/docs/orm/prisma-client/queries/crud">https://docs.prisma.io/docs/orm/prisma-client/queries/crud</a>
+        </li>
+        <li>
+          Prisma - Relaciones y nested writes:
+          <a href="https://docs.prisma.io/docs/v6/orm/prisma-schema/data-model/relations">https://docs.prisma.io/docs/v6/orm/prisma-schema/data-model/relations</a>
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>

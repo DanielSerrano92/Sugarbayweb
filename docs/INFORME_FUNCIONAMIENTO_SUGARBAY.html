@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Informe Funcionamiento Sugarbay</title>
+    <style>
+      :root {
+        --ink: #1f2937;
+        --ink-soft: #4b5563;
+        --heading: #111827;
+        --border: #d1d5db;
+        --code-bg: #f3f4f6;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: var(--ink);
+        font-family: "Segoe UI", Arial, sans-serif;
+        line-height: 1.55;
+      }
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 42px 54px 64px;
+      }
+      h1, h2, h3, h4 {
+        color: var(--heading);
+        line-height: 1.28;
+        page-break-after: avoid;
+      }
+      h1 {
+        font-size: 30px;
+        margin: 0 0 14px;
+      }
+      h2 {
+        font-size: 24px;
+        margin: 30px 0 12px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 6px;
+      }
+      h3 {
+        font-size: 18px;
+        margin: 20px 0 10px;
+      }
+      p {
+        margin: 10px 0;
+        color: var(--ink);
+      }
+      ul, ol {
+        margin: 8px 0 12px 24px;
+        padding: 0;
+      }
+      li {
+        margin: 4px 0;
+      }
+      code {
+        background: var(--code-bg);
+        border: 1px solid #e5e7eb;
+        border-radius: 5px;
+        padding: 1px 6px;
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 0.94em;
+      }
+      pre {
+        background: var(--code-bg);
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px 14px;
+        overflow-x: auto;
+      }
+      pre code {
+        border: 0;
+        padding: 0;
+        background: transparent;
+      }
+      hr {
+        border: 0;
+        border-top: 1px solid var(--border);
+        margin: 20px 0;
+      }
+      strong {
+        color: #111827;
+      }
+      @page {
+        size: A4;
+        margin: 20mm;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>INFORME FUNCIONAMIENTO SUGARBAY (BASADO EN CODIGO REAL)</h1>
+      <p>Fecha de revision: 24 de abril de 2026 Repositorio revisado: <code>Sugarbayweb</code> (workspace local actual)</p>
+      <p>---</p>
+      <h2>1. Introduccion general</h2>
+      <p>Sugarbay es una aplicacion web full-stack para una banda de musica. Combina dos partes principales:</p>
+      <ol>
+      <li>Parte editorial/publica: conciertos, noticias, bio, musica y media.</li>
+      <li>Parte e-commerce: tienda, carrito, checkout, pago y cuenta de usuario.</li>
+      </ol>
+      <p>El proyecto esta hecho con Next.js App Router y TypeScript. A nivel de datos usa Prisma sobre PostgreSQL (Neon). El pago real esta conectado con Stripe (Checkout hospedado). ImageKit se usa para servir imagenes de productos y contenido multimedia.</p>
+      <p>Tecnologias y papel en esta app:</p>
+      <ol>
+      <li>Next.js App Router: define rutas por carpetas en <code>app/</code> y separa Server Components y Client Components.</li>
+      <li>TypeScript: tipado estricto (<code>strict: true</code> en <code>tsconfig.json</code>) para reducir errores de integracion.</li>
+      <li>Tailwind CSS v4: estilos globales y utilidades, con un sistema visual custom en <code>app/globals.css</code>.</li>
+      <li>Prisma: ORM que modela toda la base de datos en <code>prisma/schema.prisma</code> y ejecuta consultas desde <code>lib/repositories/*</code>.</li>
+      <li>Neon PostgreSQL: base de datos remota conectada por <code>DATABASE_URL</code> y <code>DIRECT_URL</code>.</li>
+      <li>Stripe: flujo real de pago por tarjeta en checkout, con webhook y sincronizacion de estado de pedido.</li>
+      <li>ImageKit: resolucion de URLs de imagen y endpoint de autenticacion server-side para futuras subidas.</li>
+      </ol>
+      <p>---</p>
+      <h2>2. Estructura general del proyecto</h2>
+      <p>Carpetas y archivos clave:</p>
+      <ol>
+      <li><code>app/</code>: rutas de la web (paginas), layouts globales, estados <code>loading</code> y <code>error</code>, y APIs (<code>app/api/*</code>).</li>
+      <li><code>components/</code>: componentes reutilizables por dominio (<code>layout</code>, <code>auth</code>, <code>cart</code>, <code>checkout</code>, <code>store</code>, <code>concerts</code>, <code>band</code>, <code>music</code>, <code>media</code>, <code>ui</code>).</li>
+      <li><code>lib/</code>: logica de negocio y acceso a datos.</li>
+      <li><code>lib/repositories/*</code>: capa principal de consultas/escrituras Prisma.</li>
+      <li><code>lib/auth/*</code>: sesion JWT en cookie httpOnly + DAL de usuario.</li>
+      <li><code>lib/services/*</code>: integraciones externas (Stripe, ImageKit) y navegacion.</li>
+      <li><code>lib/validators/*</code>: validaciones Zod para auth y checkout.</li>
+      <li><code>prisma/schema.prisma</code>: modelo de datos completo.</li>
+      <li><code>prisma/seed.ts</code>: datos demo funcionales.</li>
+      <li><code>lib/db.ts</code>: cliente Prisma singleton.</li>
+      <li><code>lib/env.ts</code>: validacion de variables de entorno.</li>
+      <li><code>proxy.ts</code>: proteccion de rutas privadas a nivel edge/proxy.</li>
+      </ol>
+      <p>Observaciones de estructura:</p>
+      <ol>
+      <li>La app esta organizada por dominios funcionales, no por capas monoliticas.</li>
+      <li>Se usan Server Components por defecto; los Client Components se reservan para modales, formularios, drawers, filtros interactivos y navegacion por teclado.</li>
+      <li>Hay archivos &quot;compatibilidad&quot; en <code>components/shop/*</code> y <code>lib/repositories/shop.ts</code> que delegan en la implementacion actual de tienda (<code>store</code>).</li>
+      </ol>
+      <p>---</p>
+      <h2>3. Funcionamiento general de la aplicacion (recorrido de usuario)</h2>
+      <p>Recorrido tipico:</p>
+      <ol>
+      <li>El usuario entra en <code>/</code> y ve hero, conciertos proximos, productos destacados y noticias.</li>
+      <li>Desde el header puede abrir buscador global, navegar a secciones y abrir carrito/perfil.</li>
+      <li>En contenido publico puede explorar:</li>
+      </ol>
+      <ul>
+      <li>conciertos futuros/pasados con filtros,</li>
+      <li>noticias y bio de banda,</li>
+      <li>catalogo de musica con modales,</li>
+      <li>media de fotos y videos.</li>
+      </ul>
+      <ol>
+      <li>En tienda (<code>/store</code>) puede filtrar, ordenar, paginar y abrir detalle de producto.</li>
+      <li>Para anadir al carrito necesita sesion.</li>
+      <li>En carrito (<code>/carrito</code>) puede actualizar cantidad, eliminar items o ir a checkout.</li>
+      <li>En checkout (<code>/checkout</code>) rellena envio/facturacion, elige metodo de pago, y si elige tarjeta se crea sesion Stripe.</li>
+      <li>Stripe procesa el pago y redirige a <code>/checkout/success?session_id=...</code>.</li>
+      <li>La app sincroniza estado del pedido contra Stripe y muestra resultado final.</li>
+      <li>El usuario autenticado ve su pagina <code>/account</code> con perfil y accesos rapidos.</li>
+      </ol>
+      <p>---</p>
+      <h2>4. Explicacion detallada de cada pagina (rutas reales)</h2>
+      <h3><code>/</code> (home)</h3>
+      <ol>
+      <li>Archivo: <code>app/page.tsx</code>.</li>
+      <li>Objetivo: landing principal.</li>
+      <li>Muestra:</li>
+      </ol>
+      <ul>
+      <li>hero,</li>
+      <li>proximos conciertos,</li>
+      <li>productos destacados,</li>
+      <li>ultimas noticias.</li>
+      </ul>
+      <ol>
+      <li>Datos: <code>getHomeSnapshot()</code> desde <code>lib/repositories/site.ts</code>.</li>
+      <li>Componentes principales: <code>PageHero</code>, <code>EmptyState</code>, <code>components/shop/product-card</code>.</li>
+      <li>Acciones de usuario: navegar a conciertos, tienda y banda.</li>
+      </ol>
+      <h3><code>/concerts</code></h3>
+      <ol>
+      <li>Archivo: <code>app/concerts/page.tsx</code>.</li>
+      <li>Objetivo: ruta raiz de conciertos.</li>
+      <li>Comportamiento: redirige a <code>/concerts/upcoming</code>.</li>
+      </ol>
+      <h3><code>/concerts/upcoming</code></h3>
+      <ol>
+      <li>Archivo: <code>app/concerts/upcoming/page.tsx</code>.</li>
+      <li>Objetivo: conciertos futuros.</li>
+      <li>Datos: <code>getConcertCatalog(&quot;upcoming&quot;, searchParams)</code>.</li>
+      <li>Componentes: <code>ConcertsCatalogPage</code> (usa filtros, cards, paginacion y modal info).</li>
+      <li>Acciones: filtrar por fecha/continente/pais, paginar, abrir modal, ir a ticket o gratis.</li>
+      </ol>
+      <h3><code>/concerts/past</code></h3>
+      <ol>
+      <li>Archivo: <code>app/concerts/past/page.tsx</code>.</li>
+      <li>Objetivo: historico de conciertos.</li>
+      <li>Datos: <code>getConcertCatalog(&quot;past&quot;, searchParams)</code>.</li>
+      <li>Componentes: mismos bloques que upcoming, con detalle extra (cronica, tracklist, links, fotos/videos).</li>
+      <li>Acciones: filtrar, paginar y abrir modal de detalle.</li>
+      </ol>
+      <h3><code>/band</code></h3>
+      <ol>
+      <li>Archivo: <code>app/band/page.tsx</code>.</li>
+      <li>Objetivo: raiz de seccion banda.</li>
+      <li>Comportamiento: redirige a <code>/band/news</code>.</li>
+      </ol>
+      <h3><code>/band/news</code></h3>
+      <ol>
+      <li>Archivo: <code>app/band/news/page.tsx</code>.</li>
+      <li>Objetivo: listado de noticias.</li>
+      <li>Datos: <code>getBandNewsCatalog(searchParams)</code>.</li>
+      <li>Componentes: <code>BandNewsFilters</code>, <code>BandNewsListClient</code>, <code>BandNewsPagination</code>.</li>
+      <li>Acciones: filtrar por fechas/tag, paginar, expandir/colapsar contenido de noticia.</li>
+      </ol>
+      <h3><code>/band/bio</code></h3>
+      <ol>
+      <li>Archivo: <code>app/band/bio/page.tsx</code>.</li>
+      <li>Objetivo: hub de bio.</li>
+      <li>Muestra: accesos a biografia y miembros.</li>
+      <li>Componentes: <code>PageHero</code> y tarjetas de navegacion.</li>
+      </ol>
+      <h3><code>/band/bio/biography</code></h3>
+      <ol>
+      <li>Archivo: <code>app/band/bio/biography/page.tsx</code>.</li>
+      <li>Objetivo: biografia por secciones con anclas.</li>
+      <li>Datos: <code>getBandBiographySections()</code>.</li>
+      <li>Componentes: <code>BiographySections</code>, <code>EmptyState</code>.</li>
+      <li>Acciones: navegar por indice lateral a secciones.</li>
+      </ol>
+      <h3><code>/band/bio/members</code></h3>
+      <ol>
+      <li>Archivo: <code>app/band/bio/members/page.tsx</code>.</li>
+      <li>Objetivo: directorio de miembros y colaboradores.</li>
+      <li>Datos: <code>getBandMembersDirectory()</code>.</li>
+      <li>Componentes: <code>MembersDirectoryClient</code>, <code>EmptyState</code>.</li>
+      <li>Acciones: abrir modal de detalle por persona.</li>
+      </ol>
+      <h3><code>/musica</code></h3>
+      <ol>
+      <li>Archivo: <code>app/musica/page.tsx</code>.</li>
+      <li>Objetivo: catalogo mixto canciones + albumes.</li>
+      <li>Datos: <code>getMusicCatalog(searchParams)</code>.</li>
+      <li>Componentes: <code>MusicFilters</code>, <code>MusicCatalogClient</code>, <code>MusicPagination</code>.</li>
+      <li>Acciones: filtrar, ordenar, paginar, abrir modal de cancion o album, y desde album abrir track (cancion).</li>
+      </ol>
+      <h3><code>/media</code></h3>
+      <ol>
+      <li>Archivo: <code>app/media/page.tsx</code>.</li>
+      <li>Objetivo: hub de media.</li>
+      <li>Datos: <code>getMediaOverviewStats()</code>.</li>
+      <li>Muestra: accesos a fotos y videos con conteos.</li>
+      </ol>
+      <h3><code>/media/photos</code></h3>
+      <ol>
+      <li>Archivo: <code>app/media/photos/page.tsx</code>.</li>
+      <li>Objetivo: listado de albumes de fotos.</li>
+      <li>Datos: <code>getPhotoAlbumsCatalog(searchParams)</code>.</li>
+      <li>Componentes: <code>PhotoFilters</code>, <code>PhotoPagination</code>, <code>EmptyState</code>.</li>
+      <li>Acciones: filtrar, ordenar, paginar, abrir detalle de album.</li>
+      </ol>
+      <h3><code>/media/photos/[slug]</code></h3>
+      <ol>
+      <li>Archivo: <code>app/media/photos/[slug]/page.tsx</code>.</li>
+      <li>Objetivo: detalle de album.</li>
+      <li>Datos: <code>getPhotoAlbumDetailBySlug(slug)</code>.</li>
+      <li>Componentes: <code>PhotoGalleryClient</code>.</li>
+      <li>Acciones: cambiar miniatura, navegar foto anterior/siguiente.</li>
+      </ol>
+      <h3><code>/media/videos</code></h3>
+      <ol>
+      <li>Archivo: <code>app/media/videos/page.tsx</code>.</li>
+      <li>Objetivo: listado de colecciones o videos unicos.</li>
+      <li>Datos: <code>getVideoCatalog(searchParams)</code>.</li>
+      <li>Componentes: <code>VideoFilters</code>, <code>VideoPagination</code>, <code>EmptyState</code>.</li>
+      <li>Acciones: filtrar, ordenar, paginar, abrir detalle.</li>
+      </ol>
+      <h3><code>/media/videos/[slug]</code></h3>
+      <ol>
+      <li>Archivo: <code>app/media/videos/[slug]/page.tsx</code>.</li>
+      <li>Objetivo: detalle de coleccion o video unico.</li>
+      <li>Datos: <code>getVideoDetailBySlug(slug)</code>.</li>
+      <li>Componentes:</li>
+      </ol>
+      <ul>
+      <li>coleccion: <code>VideoCollectionViewer</code>,</li>
+      <li>single: iframe embebido directo.</li>
+      </ul>
+      <ol>
+      <li>Acciones: seleccionar video de coleccion o navegar de vuelta.</li>
+      </ol>
+      <h3><code>/fanclub</code></h3>
+      <ol>
+      <li>Archivo: <code>app/fanclub/page.tsx</code>.</li>
+      <li>Objetivo: placeholder elegante.</li>
+      <li>Muestra: mensaje de &quot;proximamente&quot; y descripcion de la idea.</li>
+      </ol>
+      <h3><code>/store</code></h3>
+      <ol>
+      <li>Archivo: <code>app/store/page.tsx</code>.</li>
+      <li>Objetivo: catalogo de tienda con filtros avanzados.</li>
+      <li>Datos: <code>getStoreCatalog(searchParams)</code>.</li>
+      <li>Componentes: <code>StoreFiltersSidebar</code>, <code>StoreProductCard</code>, <code>StorePagination</code>, <code>EmptyState</code>.</li>
+      <li>Acciones: filtrar por categoria/subcategoria/precio/talla/genero/tipo media, ordenar y paginar.</li>
+      </ol>
+      <h3><code>/store/[slug]</code></h3>
+      <ol>
+      <li>Archivo: <code>app/store/[slug]/page.tsx</code>.</li>
+      <li>Objetivo: detalle de producto.</li>
+      <li>Datos:</li>
+      </ol>
+      <ul>
+      <li><code>getStoreProductBySlug(slug)</code>,</li>
+      <li><code>getRelatedStoreProducts(...)</code>,</li>
+      <li><code>isPhysicalMediaWithNotes(...)</code>.</li>
+      </ul>
+      <ol>
+      <li>Muestra: galeria, precio, descripcion, selector de cantidad/talla, tracklist/liner notes para media fisica.</li>
+      <li>Accion clave: anadir al carrito (<code>StoreProductPurchaseForm</code>).</li>
+      </ol>
+      <h3><code>/buscar</code></h3>
+      <ol>
+      <li>Archivo: <code>app/buscar/page.tsx</code>.</li>
+      <li>Objetivo: resultados completos de busqueda global.</li>
+      <li>Datos: <code>searchHeaderContent(query, { limit: 24 })</code>.</li>
+      <li>Muestra: coincidencias en paginas y productos.</li>
+      </ol>
+      <h3><code>/login</code></h3>
+      <ol>
+      <li>Archivo: <code>app/login/page.tsx</code>.</li>
+      <li>Objetivo: inicio de sesion.</li>
+      <li>Datos: comprueba sesion con <code>getSessionUser()</code>.</li>
+      <li>Componentes: <code>LoginForm</code>.</li>
+      <li>Accion: autenticarse y volver a landing.</li>
+      </ol>
+      <h3><code>/registro</code></h3>
+      <ol>
+      <li>Archivo: <code>app/registro/page.tsx</code>.</li>
+      <li>Objetivo: crear cuenta.</li>
+      <li>Datos: comprueba sesion con <code>getSessionUser()</code>.</li>
+      <li>Componentes: <code>RegisterForm</code>.</li>
+      <li>Accion: registrarse y volver a landing.</li>
+      </ol>
+      <h3><code>/account</code> (privada)</h3>
+      <ol>
+      <li>Archivo: <code>app/account/page.tsx</code>.</li>
+      <li>Objetivo: resumen de perfil.</li>
+      <li>Proteccion: <code>requireSession(&quot;/account&quot;)</code>.</li>
+      <li>Datos: <code>getCurrentUser()</code>.</li>
+      <li>Muestra: datos de usuario y accesos rapidos a carrito/tienda.</li>
+      </ol>
+      <h3><code>/carrito</code> (privada)</h3>
+      <ol>
+      <li>Archivo: <code>app/carrito/page.tsx</code>.</li>
+      <li>Objetivo: carrito completo.</li>
+      <li>Proteccion: <code>requireSession(&quot;/carrito&quot;)</code>.</li>
+      <li>Datos: <code>getCartForUser(userId)</code>.</li>
+      <li>Componentes: <code>CartLineItem</code>.</li>
+      <li>Acciones: actualizar cantidad, quitar item, vaciar carrito, ir a checkout.</li>
+      </ol>
+      <h3><code>/checkout</code> (privada)</h3>
+      <ol>
+      <li>Archivo: <code>app/checkout/page.tsx</code>.</li>
+      <li>Objetivo: envio + facturacion + pago.</li>
+      <li>Proteccion: <code>requireSession(&quot;/checkout&quot;)</code>.</li>
+      <li>Datos:</li>
+      </ol>
+      <ul>
+      <li>carrito: <code>getCartForUser</code>,</li>
+      <li>prefill: <code>getCheckoutPrefill</code>.</li>
+      </ul>
+      <ol>
+      <li>Componente principal: <code>CheckoutFlow</code>.</li>
+      <li>Acciones: validar formulario y crear sesion de pago Stripe.</li>
+      </ol>
+      <h3><code>/checkout/success</code> (privada)</h3>
+      <ol>
+      <li>Archivo: <code>app/checkout/success/page.tsx</code>.</li>
+      <li>Objetivo: resultado final de pago.</li>
+      <li>Proteccion: <code>requireSession(&quot;/checkout/success&quot;)</code>.</li>
+      <li>Datos:</li>
+      </ol>
+      <ul>
+      <li>sincroniza estado: <code>syncOrderWithStripeCheckoutSession(session_id)</code>,</li>
+      <li>resumen: <code>getOrderSummaryBySession(...)</code>.</li>
+      </ul>
+      <ol>
+      <li>Acciones: volver a cuenta o tienda/reintento.</li>
+      </ol>
+      <h3>APIs internas</h3>
+      <ol>
+      <li><code>app/api/search/route.ts</code>: busqueda rapida (paginas + productos).</li>
+      <li><code>app/api/checkout/route.ts</code>: valida checkout, guarda direcciones, crea orden pendiente y sesion Stripe.</li>
+      <li><code>app/api/stripe/webhook/route.ts</code>: actualiza estado de orden segun eventos Stripe.</li>
+      <li><code>app/api/imagekit/auth/route.ts</code>: firma de autenticacion ImageKit (preparada para subidas autenticadas).</li>
+      </ol>
+      <p>---</p>
+      <h2>5. Explicacion detallada de componentes importantes</h2>
+      <h3>Layout y navegacion</h3>
+      <ol>
+      <li><code>components/layout/site-header.tsx</code>: componente server que prepara datos de usuario y carrito para el header.</li>
+      <li><code>components/layout/header-client.tsx</code>: header interactivo (menu desktop/mobile, perfil, auth modal, drawer de carrito).</li>
+      <li><code>components/layout/global-search.tsx</code>: buscador con debounce, resultados rapidos y navegacion por teclado.</li>
+      <li><code>components/layout/site-footer.tsx</code>: footer con enlaces principales.</li>
+      </ol>
+      <h3>Auth</h3>
+      <ol>
+      <li><code>components/auth/auth-modal.tsx</code>: modal accesible con cierre por ESC y foco.</li>
+      <li><code>components/auth/auth-modal-panel.tsx</code>: conmutador login/registro dentro del modal.</li>
+      <li><code>components/auth/login-form.tsx</code>: formulario login conectado a server action.</li>
+      <li><code>components/auth/register-form.tsx</code>: formulario de alta completo conectado a server action.</li>
+      <li><code>components/auth/auth-submit-button.tsx</code>: boton submit con estado <code>pending</code>.</li>
+      </ol>
+      <h3>Tienda</h3>
+      <ol>
+      <li><code>components/store/store-filters-sidebar.tsx</code>: filtros de tienda sincronizados por query string.</li>
+      <li><code>components/store/store-product-card.tsx</code>: tarjeta de producto reusable.</li>
+      <li><code>components/store/store-pagination.tsx</code>: paginador que conserva filtros en URL.</li>
+      <li><code>components/store/store-product-purchase-form.tsx</code>: selector de talla/cantidad y alta en carrito.</li>
+      </ol>
+      <h3>Carrito y checkout</h3>
+      <ol>
+      <li><code>components/cart/cart-drawer.tsx</code>: drawer lateral del carrito (desde header).</li>
+      <li><code>components/cart/cart-line-item.tsx</code>: fila editable del carrito completo.</li>
+      <li><code>components/checkout/checkout-flow.tsx</code>: flujo completo checkout (estado local + validacion + llamada API).</li>
+      <li><code>components/checkout/checkout-address-fields.tsx</code>: bloque de campos envio/facturacion reutilizable.</li>
+      </ol>
+      <h3>Conciertos</h3>
+      <ol>
+      <li><code>components/concerts/concerts-catalog-page.tsx</code>: pagina base que compone hero/filtros/listado/paginacion.</li>
+      <li><code>components/concerts/concert-cards-client.tsx</code>: tarjetas y modal de detalle.</li>
+      <li><code>components/concerts/concert-filters.tsx</code>: formulario de filtros.</li>
+      <li><code>components/concerts/concert-pagination.tsx</code>: paginacion conservando filtros.</li>
+      </ol>
+      <h3>Banda</h3>
+      <ol>
+      <li><code>components/band/news-list-client.tsx</code>: noticias expandibles con enlaces relacionados.</li>
+      <li><code>components/band/news-filters.tsx</code>: filtros de fecha y tag.</li>
+      <li><code>components/band/news-pagination.tsx</code>: paginador de noticias.</li>
+      <li><code>components/band/biography-sections.tsx</code>: biografia por secciones con indice lateral y anclas.</li>
+      <li><code>components/band/members-directory-client.tsx</code>: directorio con modal de detalle de persona.</li>
+      </ol>
+      <h3>Musica</h3>
+      <ol>
+      <li><code>components/music/music-catalog-client.tsx</code>: listado y modales de cancion/album; tracklist de album enlaza a modal cancion.</li>
+      <li><code>components/music/music-filters.tsx</code>: filtros por fecha, tipo y orden.</li>
+      <li><code>components/music/music-pagination.tsx</code>: paginacion.</li>
+      </ol>
+      <h3>Media</h3>
+      <ol>
+      <li><code>components/media/photo-gallery-client.tsx</code>: miniaturas + foto grande + navegacion lateral/teclas.</li>
+      <li><code>components/media/video-collection-viewer.tsx</code>: selector de videos y reproductor embebido.</li>
+      <li><code>components/media/photo-filters.tsx</code>, <code>video-filters.tsx</code>: filtros.</li>
+      <li><code>components/media/photo-pagination.tsx</code>, <code>video-pagination.tsx</code>: paginacion.</li>
+      </ol>
+      <h3>UI base</h3>
+      <ol>
+      <li><code>components/ui/page-hero.tsx</code>: cabecera visual consistente entre secciones.</li>
+      <li><code>components/ui/empty-state.tsx</code>: estado vacio.</li>
+      <li><code>components/ui/loading-grid.tsx</code>: skeleton loading reutilizable.</li>
+      </ol>
+      <p>---</p>
+      <h2>6. Funciones y metodos importantes (archivo, tipo y rol)</h2>
+      <h2>Autenticacion y sesion</h2>
+      <ol>
+      <li><code>registerAction</code></li>
+      </ol>
+      <p>Archivo: <code>lib/auth/actions.ts</code> Tipo: server action Parametros: estado previo + <code>FormData</code> de registro Funcion: valida con Zod, hashea password con bcrypt, crea usuario+carrito, crea sesion, redirige <code>/</code>. Importancia: punto de entrada principal de alta de usuario.</p>
+      <ol>
+      <li><code>loginAction</code></li>
+      </ol>
+      <p>Archivo: <code>lib/auth/actions.ts</code> Tipo: server action Parametros: estado previo + <code>FormData</code> login Funcion: valida, busca usuario, compara hash, crea sesion, redirige <code>/</code>. Importancia: login persistente real.</p>
+      <ol>
+      <li><code>logoutAction</code></li>
+      </ol>
+      <p>Archivo: <code>lib/auth/actions.ts</code> Tipo: server action Funcion: limpia cookie de sesion y redirige a home.</p>
+      <ol>
+      <li><code>requireSession</code></li>
+      </ol>
+      <p>Archivo: <code>lib/auth/dal.ts</code> Tipo: helper server Parametro: ruta de retorno Funcion: si no hay sesion, redirige a <code>/login?redirect=...</code>; si hay, devuelve usuario de sesion.</p>
+      <ol>
+      <li><code>createSessionToken</code>, <code>decodeSessionToken</code>, <code>setSession</code>, <code>clearSession</code></li>
+      </ol>
+      <p>Archivo: <code>lib/auth/session.ts</code> Tipo: servicio auth Funcion: construccion y verificacion JWT (jose), y gestion de cookie <code>sb_session</code>.</p>
+      <ol>
+      <li><code>proxy</code></li>
+      </ol>
+      <p>Archivo: <code>proxy.ts</code> Tipo: edge/proxy handler Funcion: protege rutas privadas por presencia de cookie antes de llegar a pagina.</p>
+      <h2>Carrito</h2>
+      <ol>
+      <li><code>addToCartAction</code>, <code>updateCartItemAction</code>, <code>removeCartItemAction</code>, <code>clearCartAction</code></li>
+      </ol>
+      <p>Archivo: <code>lib/cart/actions.ts</code> Tipo: server actions Funcion: validan inputs con Zod, obligan sesion y llaman repositorio de carrito.</p>
+      <ol>
+      <li><code>addItemToCart</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/cart.ts</code> Tipo: repositorio Prisma Parametros: <code>userId</code>, <code>productId</code>, <code>productVariantId?</code>, <code>quantity?</code> Funcion: crea/asegura carrito, valida stock y variante, inserta o suma cantidad en <code>CartItem</code>.</p>
+      <ol>
+      <li><code>getCartForUser</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/cart.ts</code> Tipo: repositorio Prisma Funcion: lee carrito con relaciones y devuelve vista calculada (<code>totalItems</code>, <code>subtotal</code>).</p>
+      <ol>
+      <li><code>updateCartItemQuantity</code>, <code>removeCartItem</code>, <code>clearCartForUser</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/cart.ts</code> Funcion: operaciones de mantenimiento de carrito.</p>
+      <h2>Checkout y direcciones</h2>
+      <ol>
+      <li><code>getCheckoutPrefill</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/checkout.ts</code> Tipo: repositorio Prisma Funcion: carga direcciones default de envio/facturacion y construye datos iniciales del formulario.</p>
+      <ol>
+      <li><code>saveCheckoutAddresses</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/checkout.ts</code> Tipo: repositorio Prisma (write) Funcion: guarda/actualiza direcciones default y sincroniza pais/telefono en usuario.</p>
+      <ol>
+      <li><code>POST /api/checkout</code></li>
+      </ol>
+      <p>Archivo: <code>app/api/checkout/route.ts</code> Tipo: route handler server Funcion:</p>
+      <ul>
+      <li>valida payload checkout,</li>
+      <li>guarda direcciones,</li>
+      <li>exige <code>paymentMethod=card</code>,</li>
+      <li>crea pedido pendiente,</li>
+      <li>crea sesion Stripe Checkout,</li>
+      <li>guarda <code>checkoutSessionId</code> y <code>paymentIntentId</code>,</li>
+      <li>devuelve URL de Stripe.</li>
+      </ul>
+      <h2>Pedidos y Stripe</h2>
+      <ol>
+      <li><code>createPendingOrderFromCart</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/orders.ts</code> Tipo: repositorio Prisma (write) Funcion: crea pedido <code>PENDING</code> con snapshots de item y de direcciones.</p>
+      <ol>
+      <li><code>attachStripeCheckoutSessionToOrder</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/orders.ts</code> Funcion: enlaza IDs de Stripe al pedido.</p>
+      <ol>
+      <li><code>markOrderAsPaid</code>, <code>markOrderAsFailed</code>, <code>markOrderAsFailedByPaymentIntent</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/orders.ts</code> Funcion: transiciones de estado de pago/orden y limpieza de carrito tras pago correcto.</p>
+      <ol>
+      <li><code>syncOrderWithStripeCheckoutSession</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/orders.ts</code> Funcion: consulta Stripe por <code>session_id</code> y sincroniza estado en DB.</p>
+      <ol>
+      <li><code>POST /api/stripe/webhook</code></li>
+      </ol>
+      <p>Archivo: <code>app/api/stripe/webhook/route.ts</code> Funcion: verifica firma y procesa eventos <code>checkout.session.completed</code>, <code>...failed</code>, <code>...expired</code>, <code>payment_intent.payment_failed</code>.</p>
+      <h2>Busqueda</h2>
+      <ol>
+      <li><code>searchHeaderContent</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/search.ts</code> Tipo: repositorio mixto (paginas estaticas + Prisma productos) Funcion: devuelve resultados para header y pagina <code>/buscar</code>.</p>
+      <ol>
+      <li><code>searchSitePages</code></li>
+      </ol>
+      <p>Archivo: <code>lib/search/pages.ts</code> Tipo: helper de scoring local Funcion: ranking de paginas internas segun termino de busqueda.</p>
+      <h2>Catalogos de contenido</h2>
+      <ol>
+      <li><code>getStoreCatalog</code>, <code>getStoreProductBySlug</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/store.ts</code> Funcion: construyen catalogo de tienda con filtros/orden/paginacion y detalle.</p>
+      <ol>
+      <li><code>getConcertCatalog</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/concerts.ts</code> Funcion: separa upcoming/past, aplica filtros de ubicacion/fechas, enriquece detalle de venue/media.</p>
+      <ol>
+      <li><code>getBandNewsCatalog</code>, <code>getBandBiographySections</code>, <code>getBandMembersDirectory</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/band.ts</code> Funcion: alimentan noticias, biografia y miembros.</p>
+      <ol>
+      <li><code>getMusicCatalog</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/music.ts</code> Funcion: mezcla canciones y albumes, arma diccionarios de detalle para modales.</p>
+      <ol>
+      <li><code>getPhotoAlbumsCatalog</code>, <code>getPhotoAlbumDetailBySlug</code>, <code>getVideoCatalog</code>, <code>getVideoDetailBySlug</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/media.ts</code> Funcion: catalogos y detalles de media con filtros/paginacion.</p>
+      <h2>Integracion de imagen y utilidades</h2>
+      <ol>
+      <li><code>resolveImageUrl</code></li>
+      </ol>
+      <p>Archivo: <code>lib/services/imagekit.ts</code> Tipo: helper URL Funcion: transforma path relativo a endpoint ImageKit o devuelve URL absoluta si ya viene completa.</p>
+      <ol>
+      <li><code>getImageKitClient</code></li>
+      </ol>
+      <p>Archivo: <code>lib/services/imagekit-server.ts</code> Tipo: servicio server Funcion: inicializa cliente ImageKit para auth de subida.</p>
+      <ol>
+      <li><code>withDatabaseFallback</code></li>
+      </ol>
+      <p>Archivo: <code>lib/repositories/safe-query.ts</code> Funcion: captura ciertos errores Prisma recuperables y devuelve fallback.</p>
+      <ol>
+      <li><code>formatCurrency</code>, <code>formatDate</code></li>
+      </ol>
+      <p>Archivo: <code>lib/utils.ts</code> Funcion: formato coherente de moneda y fecha para la UI.</p>
+      <h2>Nota de uso real de funciones</h2>
+      <ol>
+      <li><code>persistOrderFromCart</code> existe en <code>lib/repositories/cart.ts</code> pero no se usa en el flujo actual (el flujo activo usa <code>lib/repositories/orders.ts</code>).</li>
+      <li><code>getCartCount</code> existe pero no es la via usada en header actual (header carga carrito completo y de ahi calcula count).</li>
+      </ol>
+      <p>---</p>
+      <h2>7. Funcionamiento de ImageKit en este proyecto</h2>
+      <p>Que es ImageKit aqui:</p>
+      <ol>
+      <li>Es la capa de entrega de imagenes y assets multimedia en frontend.</li>
+      <li>Se usa para productos, noticias, banda, musica, fotos, videos y detalles de conciertos (algunas URLs hardcoded en contenido extra).</li>
+      </ol>
+      <p>Como esta configurado:</p>
+      <ol>
+      <li>Variable publica: <code>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT</code>.</li>
+      <li>Variables server: <code>IMAGEKIT_PUBLIC_KEY</code>, <code>IMAGEKIT_PRIVATE_KEY</code>.</li>
+      <li>Archivo de entorno validado en <code>lib/env.ts</code>.</li>
+      <li><code>next.config.ts</code> agrega host remoto de ImageKit a <code>images.remotePatterns</code>.</li>
+      </ol>
+      <p>Piezas de integracion:</p>
+      <ol>
+      <li><code>lib/services/imagekit.ts</code>: <code>resolveImageUrl()</code> (cliente/servidor) para construir URL final.</li>
+      <li><code>lib/services/imagekit-server.ts</code>: cliente ImageKit server-side.</li>
+      <li><code>app/api/imagekit/auth/route.ts</code>: endpoint que entrega parametros firmados de autenticacion.</li>
+      </ol>
+      <p>Donde se usa en codigo:</p>
+      <ol>
+      <li>Tienda: <code>components/store/store-product-card.tsx</code>, <code>app/store/[slug]/page.tsx</code>, <code>components/store/store-product-purchase-form.tsx</code> (indirectamente por imagenes de producto).</li>
+      <li>Carrito/checkout: <code>components/cart/*</code>, <code>components/checkout/checkout-flow.tsx</code>.</li>
+      <li>Banda: <code>components/band/*</code> para news, bio y miembros.</li>
+      <li>Musica: <code>components/music/music-catalog-client.tsx</code>.</li>
+      <li>Media: <code>app/media/photos/page.tsx</code>, <code>app/media/videos/page.tsx</code>, <code>components/media/photo-gallery-client.tsx</code>.</li>
+      <li>Buscador: <code>components/layout/global-search.tsx</code>.</li>
+      </ol>
+      <p>Estado real de la integracion ImageKit:</p>
+      <ol>
+      <li>La carga de imagenes esta funcional (resolver URLs y mostrarlas).</li>
+      <li>Existe endpoint de auth para upload (<code>/api/imagekit/auth</code>), pero no hay UI de subida ni flujo CMS conectado en este repositorio actual.</li>
+      </ol>
+      <p>---</p>
+      <h2>8. Funcionamiento de Stripe en este proyecto</h2>
+      <p>Papel de Stripe:</p>
+      <ol>
+      <li>Metodo real de pago con tarjeta.</li>
+      <li>Se usa Stripe Checkout hospedado (no Stripe Elements en frontend).</li>
+      </ol>
+      <p>Archivos clave:</p>
+      <ol>
+      <li><code>lib/services/stripe.ts</code>: inicializa cliente Stripe con <code>STRIPE_SECRET_KEY</code>.</li>
+      <li><code>app/api/checkout/route.ts</code>: crea sesion Checkout.</li>
+      <li><code>app/api/stripe/webhook/route.ts</code>: procesa eventos asincornos.</li>
+      <li><code>lib/repositories/orders.ts</code>: crea y actualiza pedidos segun estado de pago.</li>
+      <li><code>app/checkout/success/page.tsx</code>: sincroniza estado al volver de Stripe.</li>
+      </ol>
+      <p>Flujo de pago real:</p>
+      <ol>
+      <li>Usuario completa <code>CheckoutFlow</code> en <code>/checkout</code>.</li>
+      <li>Frontend envia JSON a <code>POST /api/checkout</code>.</li>
+      <li>Backend valida payload (<code>checkoutPayloadSchema</code>).</li>
+      <li>Guarda direcciones por <code>saveCheckoutAddresses</code>.</li>
+      <li>Crea pedido pendiente con <code>createPendingOrderFromCart</code>.</li>
+      <li>Crea sesion Stripe Checkout con line items reales.</li>
+      <li>Guarda <code>checkoutSessionId</code>/<code>paymentIntentId</code> en pedido.</li>
+      <li>Frontend redirige al <code>session.url</code> de Stripe.</li>
+      <li>Stripe redirige a <code>/checkout/success?session_id=...</code>.</li>
+      <li>Pagina success ejecuta <code>syncOrderWithStripeCheckoutSession</code>.</li>
+      <li>Si pagado, pedido pasa a <code>PAID/PROCESSING</code> y se vacia carrito.</li>
+      <li>Webhook puede confirmar o corregir estado tambien en paralelo.</li>
+      </ol>
+      <p>Eventos webhook implementados:</p>
+      <ol>
+      <li><code>checkout.session.completed</code> -&gt; pago confirmado.</li>
+      <li><code>checkout.session.async_payment_failed</code> y <code>checkout.session.expired</code> -&gt; pago fallido.</li>
+      <li><code>payment_intent.payment_failed</code> -&gt; marca fallo por intent.</li>
+      </ol>
+      <p>PayPal:</p>
+      <ol>
+      <li>Solo UI en <code>CheckoutFlow</code> (radio button &quot;proximamente&quot;).</li>
+      <li>El backend rechaza <code>paymentMethod !== &quot;card&quot;</code> con mensaje claro.</li>
+      </ol>
+      <p>Notas reales:</p>
+      <ol>
+      <li><code>NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> esta en env schema, pero no se usa porque el flujo actual no monta Stripe Elements client-side.</li>
+      <li>Hay estructura preparada para webhooks (endpoint y logica), no solo redirect success.</li>
+      </ol>
+      <p>---</p>
+      <h2>9. Base de datos y Prisma (implementacion real)</h2>
+      <p>Rol de la base de datos:</p>
+      <ol>
+      <li>Guarda usuarios, auth, direcciones, catalogo tienda, carrito, pedidos, conciertos, noticias, bio, musica, fotos y videos.</li>
+      <li>Todo el contenido dinamico visible en UI sale de esta DB (excepto algunas listas estaticas de busqueda/navegacion y contenido extra hardcoded).</li>
+      </ol>
+      <p>Que es Prisma aqui:</p>
+      <ol>
+      <li>Es el ORM que define el modelo de datos y ejecuta consultas/escrituras.</li>
+      <li>El schema esta en <code>prisma/schema.prisma</code>.</li>
+      <li>El cliente se genera en <code>app/generated/prisma</code>.</li>
+      </ol>
+      <p>Configuracion Prisma/Neon:</p>
+      <ol>
+      <li>Cliente runtime: <code>lib/db.ts</code> usa <code>PrismaClient</code> + <code>PrismaPg</code> adapter con <code>DATABASE_URL</code>.</li>
+      <li>CLI Prisma: <code>prisma.config.ts</code> usa <code>DIRECT_URL</code> para comandos/migraciones.</li>
+      <li>Validacion env: <code>lib/env.ts</code>.</li>
+      </ol>
+      <p>Modelos principales del schema:</p>
+      <ol>
+      <li>Usuarios y auth: <code>User</code>, <code>Address</code>.</li>
+      <li>Tienda: <code>ProductCategory</code>, <code>Product</code>, <code>ProductImage</code>, <code>ProductVariant</code>.</li>
+      <li>Carrito/pedido: <code>Cart</code>, <code>CartItem</code>, <code>Order</code>, <code>OrderItem</code>.</li>
+      <li>Conciertos y banda: <code>Concert</code>, <code>News</code>, <code>BandMember</code>, <code>BiographySection</code>.</li>
+      <li>Musica: <code>MusicRelease</code>, <code>Track</code>, <code>MusicContributor</code>, <code>ReleaseContributor</code>, <code>TrackContributor</code>.</li>
+      <li>Media: <code>PhotoAlbum</code>, <code>Photo</code>, <code>VideoCollection</code>, <code>VideoItem</code>.</li>
+      <li>Enums de negocio: roles de usuario, estados de pedido/pago, tipos de producto, tipos de release/track, etc.</li>
+      </ol>
+      <p>Relaciones importantes:</p>
+      <ol>
+      <li><code>User</code> 1-1 <code>Cart</code>; <code>User</code> 1-N <code>Order</code>; <code>User</code> 1-N <code>Address</code>.</li>
+      <li><code>ProductCategory</code> arbol (parent/children) + <code>Product</code>.</li>
+      <li><code>Product</code> 1-N <code>ProductImage</code> y 1-N <code>ProductVariant</code>.</li>
+      <li><code>Cart</code> 1-N <code>CartItem</code>; <code>CartItem</code> apunta a <code>Product</code> y <code>ProductVariant</code>.</li>
+      <li><code>Order</code> 1-N <code>OrderItem</code>; snapshots guardan datos historicos aunque cambie el catalogo.</li>
+      <li><code>MusicRelease</code> 1-N <code>Track</code>; contributors via tablas intermedias <code>ReleaseContributor</code> y <code>TrackContributor</code>.</li>
+      <li><code>PhotoAlbum</code> 1-N <code>Photo</code>; <code>VideoCollection</code> 1-N <code>VideoItem</code>.</li>
+      </ol>
+      <p>Como se consulta Prisma en la app:</p>
+      <ol>
+      <li>Lecturas centralizadas en <code>lib/repositories/*</code>.</li>
+      <li>Escrituras en:</li>
+      </ol>
+      <ul>
+      <li>auth actions,</li>
+      <li>cart actions/repository,</li>
+      <li>checkout/orders repositories,</li>
+      <li>seed.</li>
+      </ul>
+      <p>Secciones de app y uso Prisma:</p>
+      <ol>
+      <li>Productos/tienda: <code>lib/repositories/store.ts</code>.</li>
+      <li>Conciertos: <code>lib/repositories/concerts.ts</code>.</li>
+      <li>Noticias/banda: <code>lib/repositories/band.ts</code>.</li>
+      <li>Musica: <code>lib/repositories/music.ts</code>.</li>
+      <li>Media: <code>lib/repositories/media.ts</code>.</li>
+      <li>Usuarios/sesion/perfil: <code>lib/auth/dal.ts</code>, <code>lib/auth/actions.ts</code>.</li>
+      <li>Carrito: <code>lib/repositories/cart.ts</code>, <code>lib/cart/actions.ts</code>.</li>
+      <li>Pedidos/pago: <code>lib/repositories/orders.ts</code>, <code>app/api/checkout/route.ts</code>, <code>app/api/stripe/webhook/route.ts</code>.</li>
+      </ol>
+      <p>Snapshots de direccion en pedidos:</p>
+      <ol>
+      <li><code>Order</code> guarda campos <code>shipping*</code> y <code>billing*</code>.</li>
+      <li>Esto evita perder el contexto del pedido aunque el usuario cambie direcciones despues.</li>
+      </ol>
+      <p>Seed de datos:</p>
+      <ol>
+      <li>Archivo: <code>prisma/seed.ts</code>.</li>
+      <li>Crea datos demo funcionales minimos: 1 user, categorias, 1 producto ropa, conciertos, 1 noticia, 1 album+1 track, 1 album de fotos+1 foto.</li>
+      <li>Tambien crea contributors y credits musicales.</li>
+      </ol>
+      <p>Migraciones:</p>
+      <ol>
+      <li>Hay script <code>npm run prisma:migrate</code>.</li>
+      <li>En este estado del repo no existe carpeta <code>prisma/migrations</code> (no hay migraciones versionadas en disco).</li>
+      <li>La configuracion y scripts existen, pero la historia de migraciones no esta incluida actualmente en el repo.</li>
+      </ol>
+      <p>Manejo de errores de DB:</p>
+      <ol>
+      <li><code>withDatabaseFallback</code> (<code>lib/repositories/safe-query.ts</code>) captura errores Prisma recuperables concretos (<code>P1001</code>, <code>P2021</code>, <code>P2022</code>) y devuelve fallback.</li>
+      <li>Esto evita caidas completas en algunas lecturas cuando hay problemas temporales o de schema.</li>
+      </ol>
+      <p>---</p>
+      <h2>10. Autenticacion y cuenta de usuario</h2>
+      <p>Registro:</p>
+      <ol>
+      <li>UI: <code>components/auth/register-form.tsx</code>.</li>
+      <li>Validacion cliente/servidor via Zod (<code>lib/validators/auth.ts</code>).</li>
+      <li>Server action <code>registerAction</code>:</li>
+      </ol>
+      <ul>
+      <li>valida,</li>
+      <li>hash de password con bcrypt,</li>
+      <li>crea usuario,</li>
+      <li>crea carrito inicial,</li>
+      <li>abre sesion.</li>
+      </ul>
+      <p>Login:</p>
+      <ol>
+      <li>UI: <code>components/auth/login-form.tsx</code>.</li>
+      <li><code>loginAction</code> valida credenciales y compara hash.</li>
+      <li>Si es correcto crea cookie de sesion.</li>
+      </ol>
+      <p>Sesion persistente:</p>
+      <ol>
+      <li>JWT firmado con <code>SESSION_SECRET</code> (<code>jose</code>) en <code>lib/auth/session.ts</code>.</li>
+      <li>Cookie <code>sb_session</code> con <code>httpOnly</code>, <code>sameSite=lax</code>, <code>secure</code> en prod.</li>
+      <li>Opcion remember extiende duracion de sesion.</li>
+      </ol>
+      <p>Proteccion de rutas:</p>
+      <ol>
+      <li>Primera barrera: <code>proxy.ts</code>.</li>
+      <li>Segunda barrera: chequeo server <code>requireSession</code> dentro de paginas/actions.</li>
+      </ol>
+      <p>Header autenticado/no autenticado:</p>
+      <ol>
+      <li><code>SiteHeader</code> y <code>HeaderClient</code> muestran submenu perfil.</li>
+      <li>No autenticado: opciones Login/Registro.</li>
+      <li>Autenticado: &quot;Hola + nombre&quot;, &quot;Cuenta&quot;, &quot;Cerrar sesion&quot;.</li>
+      </ol>
+      <p>Pagina de cuenta:</p>
+      <ol>
+      <li><code>/account</code> muestra datos de perfil y accesos rapidos.</li>
+      <li>No hay por ahora editor de perfil ni historico de pedidos en UI.</li>
+      </ol>
+      <p>---</p>
+      <h2>11. Tienda, carrito y checkout (e-commerce)</h2>
+      <p>Catalogo de tienda:</p>
+      <ol>
+      <li>Ruta <code>/store</code>.</li>
+      <li>Filtros por query params (categoria, subcategoria, precio, talla, genero, tipo media, orden, pagina).</li>
+      <li>Backend parsea y valida filtros con <code>parseStoreFilters</code>.</li>
+      </ol>
+      <p>Detalle de producto:</p>
+      <ol>
+      <li>Ruta <code>/store/[slug]</code>.</li>
+      <li>Muestra imagen principal, miniaturas, precio, descripcion, selector de talla si aplica.</li>
+      <li>Si es media fisica (<code>cd</code>/<code>vinilo</code>) muestra tracklist y liner notes desde metadata.</li>
+      </ol>
+      <p>Anadir al carrito:</p>
+      <ol>
+      <li><code>StoreProductPurchaseForm</code> envia a <code>addToCartAction</code>.</li>
+      <li>El backend valida y usa <code>addItemToCart</code>.</li>
+      <li>Si no hay sesion, redirige a login.</li>
+      </ol>
+      <p>Carrito:</p>
+      <ol>
+      <li>Drawer desde header (<code>CartDrawer</code>) y pagina completa (<code>/carrito</code>).</li>
+      <li>Permite eliminar, actualizar cantidad, vaciar carrito.</li>
+      <li>Totales se calculan a partir de snapshots de precio en <code>CartItem</code>.</li>
+      </ol>
+      <p>Checkout:</p>
+      <ol>
+      <li>Ruta protegida <code>/checkout</code>.</li>
+      <li>Formulario de envio y facturacion (con checkbox &quot;usar misma direccion&quot;).</li>
+      <li>Validacion en cliente (<code>checkoutPayloadSchema</code>) y en servidor (<code>/api/checkout</code>).</li>
+      <li>Borrador persistente en <code>localStorage</code> durante el flujo (<code>sugarbay.checkout.draft.v1</code>).</li>
+      <li>Boton de continuar depende de validacion correcta y metodo tarjeta.</li>
+      </ol>
+      <p>Pago:</p>
+      <ol>
+      <li>Metodo real: tarjeta con Stripe.</li>
+      <li>PayPal: solo placeholder visual.</li>
+      </ol>
+      <p>---</p>
+      <h2>12. Conciertos, banda, musica y media (funcionamiento por seccion)</h2>
+      <h2>Conciertos</h2>
+      <ol>
+      <li>Muestra proximos y pasados separados por fecha.</li>
+      <li>Fuente de datos: <code>lib/repositories/concerts.ts</code> sobre modelo <code>Concert</code>.</li>
+      <li>Filtros: rango de fechas, continente, pais.</li>
+      <li>Cards y modal de detalle con:</li>
+      </ol>
+      <ul>
+      <li>venue,</li>
+      <li>maps,</li>
+      <li>experiencias,</li>
+      <li>links,</li>
+      <li>cronica/tracklist/media para pasados.</li>
+      </ul>
+      <ol>
+      <li><code>lib/concerts/content.ts</code> inyecta detalles extra hardcoded por slug.</li>
+      </ol>
+      <h2>Banda (noticias + bio)</h2>
+      <ol>
+      <li>Noticias:</li>
+      </ol>
+      <ul>
+      <li>lista por fecha desc,</li>
+      <li>expandir/colapsar contenido,</li>
+      <li>filtros fecha/tag + paginacion.</li>
+      </ul>
+      <ol>
+      <li>Bio:</li>
+      </ol>
+      <ul>
+      <li><code>biography</code>: secciones con indice y anclas.</li>
+      <li><code>members</code>: separa banda y colaboradores, con modal de detalle.</li>
+      </ul>
+      <ol>
+      <li>Fuente de datos: <code>lib/repositories/band.ts</code> y modelos <code>News</code>, <code>BiographySection</code>, <code>BandMember</code>.</li>
+      </ol>
+      <h2>Musica</h2>
+      <ol>
+      <li>Catalogo mixto song/album con filtros de fecha/tipo/orden.</li>
+      <li>Cada item abre modal detalle.</li>
+      <li>En modal album, cada track abre modal de cancion (flujo album -&gt; track -&gt; song funcional en UI).</li>
+      <li>Fuente de datos: <code>lib/repositories/music.ts</code> y modelos <code>MusicRelease</code>, <code>Track</code>, contributors.</li>
+      </ol>
+      <h2>Media</h2>
+      <ol>
+      <li>Fotos:</li>
+      </ol>
+      <ul>
+      <li>listado de albumes con filtros,</li>
+      <li>detalle con miniaturas, foto principal y navegacion.</li>
+      </ul>
+      <ol>
+      <li>Videos:</li>
+      </ol>
+      <ul>
+      <li>listado de colecciones o videos unicos,</li>
+      <li>detalle con iframes embebidos (YouTube/Vimeo transformados).</li>
+      </ul>
+      <ol>
+      <li>Fuente: <code>lib/repositories/media.ts</code> con modelos <code>PhotoAlbum/Photo</code> y <code>VideoCollection/VideoItem</code>.</li>
+      </ol>
+      <p>---</p>
+      <h2>13. Flujo tecnico resumido (conexion entre capas)</h2>
+      <p>Flujo tecnico de extremo a extremo:</p>
+      <ol>
+      <li>Usuario interactua con UI en <code>app/*</code> y <code>components/*</code>.</li>
+      <li>Si la vista es server-side, la pagina llama repositorios en <code>lib/repositories/*</code>.</li>
+      <li>Repositorios usan <code>prisma</code> (<code>lib/db.ts</code>) para leer/escribir en Neon PostgreSQL.</li>
+      <li>Para acciones mutables (auth/cart), Client Components envian formularios a server actions.</li>
+      <li>Para checkout y webhooks, se usan route handlers (<code>app/api/*</code>).</li>
+      <li>Stripe:</li>
+      </ol>
+      <ul>
+      <li><code>api/checkout</code> crea sesion y guarda pedido pendiente,</li>
+      <li><code>api/stripe/webhook</code> confirma/cancela estado,</li>
+      <li><code>/checkout/success</code> sincroniza estado al volver.</li>
+      </ul>
+      <ol>
+      <li>ImageKit:</li>
+      </ol>
+      <ul>
+      <li><code>resolveImageUrl</code> construye URL final para <code>next/image</code>,</li>
+      <li>endpoint de auth listo para futuras subidas.</li>
+      </ul>
+      <p>---</p>
+      <h2>14. Puntos fuertes del proyecto</h2>
+      <ol>
+      <li>Arquitectura modular por dominio (<code>repositories</code>, <code>components</code> por seccion).</li>
+      <li>Uso coherente de App Router con Server Components por defecto.</li>
+      <li>TypeScript estricto y Zod en validaciones clave.</li>
+      <li>Flujo e-commerce completo: producto -&gt; carrito -&gt; checkout -&gt; Stripe -&gt; confirmacion.</li>
+      <li>Sistema de estados <code>loading</code>, <code>empty</code> y <code>error</code> muy extendido en rutas.</li>
+      <li>Header avanzado con buscador global, perfil y carrito drawer.</li>
+      <li>Modelo Prisma amplio y escalable, con snapshots de pedido bien planteados.</li>
+      <li>Integracion Stripe real (no mock) con webhook.</li>
+      <li>UI consistente mediante componentes base (<code>PageHero</code>, <code>EmptyState</code>, <code>LoadingGrid</code>) y design tokens en <code>globals.css</code>.</li>
+      </ol>
+      <p>---</p>
+      <h2>15. Limitaciones o partes mejorables (estado actual real)</h2>
+      <ol>
+      <li>No hay tests automaticos (unitarios/integracion/e2e) en el repo actual.</li>
+      <li>No existe <code>.env.example</code> en disco actualmente, aunque <code>README.md</code> lo menciona.</li>
+      <li>No hay carpeta <code>prisma/migrations</code> incluida; el historial de migraciones no esta versionado aqui.</li>
+      <li>Existen algunos textos con problemas de codificacion (<code>Â·</code>, acentos perdidos) en strings de UI.</li>
+      <li><code>persistOrderFromCart</code> en <code>lib/repositories/cart.ts</code> no se usa en el flujo actual.</li>
+      <li>Endpoint <code>GET /api/imagekit/auth</code> esta preparado, pero no hay UI de subida de archivos conectada.</li>
+      <li><code>NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> se valida en env pero no se utiliza en runtime actual (flujo usa Checkout hospedado).</li>
+      <li><code>proxy.ts</code> protege tambien <code>/cuenta</code>, pero esa ruta no existe como pagina en <code>app/</code>.</li>
+      <li>No hay panel admin/CMS para gestionar contenido; todo depende de DB/seed.</li>
+      <li>Cuenta de usuario no incluye aun gestion de pedidos historicos ni edicion avanzada de perfil.</li>
+      </ol>
+      <p>---</p>
+      <h2>16. Conclusion final</h2>
+      <p>Sugarbay, en su estado actual, es una aplicacion full-stack funcional y coherente: combina contenido musical/publico con e-commerce real y pago Stripe, sobre una base de datos bien modelada con Prisma. La estructura del codigo esta pensada para crecer por dominios, y las piezas clave (auth, carrito, checkout, catalogos y media) estan conectadas de forma clara entre frontend, backend y servicios externos.</p>
+      <p>No es una demo vacia: hay flujo completo de compra y contenido dinamico real. A la vez, todavia hay margen de mejora para nivel produccion total (tests, migraciones versionadas, panel de gestion y cierre de detalles de UX/texto).</p>
+      <p>---</p>
+      <h2>17. Resumen especifico de Prisma para exposicion (oral)</h2>
+      <p>Prisma es la capa que conecta el codigo con la base de datos de forma tipada y segura. En este proyecto:</p>
+      <ol>
+      <li>El modelo de datos completo esta en <code>prisma/schema.prisma</code>.</li>
+      <li>Desde <code>lib/repositories/*</code> se hacen todas las consultas y escrituras.</li>
+      <li>Prisma se conecta a Neon PostgreSQL usando <code>DATABASE_URL</code> y el adapter <code>PrismaPg</code>.</li>
+      <li>Interviene en todas las secciones: tienda, conciertos, noticias, musica, media, usuarios, carrito y pedidos.</li>
+      <li>Es clave porque evita SQL manual repetitivo, mantiene tipado con TypeScript y hace el proyecto mas mantenible y escalable.</li>
+      </ol>
+      <p>---</p>
+      <h2>18. Resumen especifico de funciones/metodos clave para exposicion (oral)</h2>
+      <p>Funciones clave para contar en una exposicion:</p>
+      <ol>
+      <li><code>registerAction</code> y <code>loginAction</code> (<code>lib/auth/actions.ts</code>): altas y acceso de usuario con validacion + hash + sesion.</li>
+      <li><code>requireSession</code> (<code>lib/auth/dal.ts</code>): protege rutas privadas.</li>
+      <li><code>addToCartAction</code> + <code>addItemToCart</code> (<code>lib/cart/actions.ts</code>, <code>lib/repositories/cart.ts</code>): anadir al carrito con control de stock.</li>
+      <li><code>getStoreCatalog</code> (<code>lib/repositories/store.ts</code>): catalogo tienda con filtros avanzados.</li>
+      <li><code>POST /api/checkout</code> (<code>app/api/checkout/route.ts</code>): valida checkout y crea sesion Stripe.</li>
+      <li><code>createPendingOrderFromCart</code> / <code>markOrderAsPaid</code> (<code>lib/repositories/orders.ts</code>): ciclo de vida del pedido.</li>
+      <li><code>POST /api/stripe/webhook</code> (<code>app/api/stripe/webhook/route.ts</code>): sincroniza estado de pago.</li>
+      <li><code>resolveImageUrl</code> (<code>lib/services/imagekit.ts</code>): sirve imagenes de forma consistente desde ImageKit.</li>
+      <li><code>getConcertCatalog</code>, <code>getBandNewsCatalog</code>, <code>getMusicCatalog</code>, <code>getPhotoAlbumsCatalog</code> (repositorios): alimentan toda la capa de contenido.</li>
+      </ol>
+      <p>Estas funciones son importantes porque conectan la interfaz con la logica de negocio y la base de datos, y hacen que la app funcione de extremo a extremo.</p>
+      <p>---</p>
+      <h2>Anexo breve: comprobaciones realizadas para este informe</h2>
+      <ol>
+      <li>Se revisaron rutas en <code>app/</code>, componentes en <code>components/</code>, logica en <code>lib/</code>, schema/seed en <code>prisma/</code>.</li>
+      <li>Se revisaron integraciones de Stripe e ImageKit en rutas API y servicios.</li>
+      <li>Se valido estado de lint (<code>npm.cmd run lint</code>) sin errores en el entorno local.</li>
+      <li>Este informe evita suposiciones y se basa en implementacion existente en el repositorio actual.</li>
+      </ol>
+    </main>
+  </body>
+</html>

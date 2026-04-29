@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import AppModal from "@/components/ui/app-modal";
 import type { ConcertCardView, ConcertPeriod } from "@/lib/concerts/types";
 import { formatDate } from "@/lib/utils";
 
@@ -33,24 +34,6 @@ export default function ConcertCardsClient({
     () => concerts.find((concert) => concert.id === selectedConcertId) ?? null,
     [concerts, selectedConcertId],
   );
-
-  useEffect(() => {
-    if (!selectedConcert) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setSelectedConcertId(null);
-      }
-    };
-
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [selectedConcert]);
 
   return (
     <>
@@ -135,38 +118,19 @@ export default function ConcertCardsClient({
       </div>
 
       {selectedConcert ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/70"
-            aria-label="Cerrar modal de informacion"
-            onClick={() => setSelectedConcertId(null)}
-          />
-
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="concert-modal-title"
-            className="sb-window relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl p-0 shadow-2xl"
-          >
-            <div className="sb-titlebar flex items-center justify-between gap-4 px-6 py-2">
-              <span>Detalle concierto</span>
-              <button
-                type="button"
-                onClick={() => setSelectedConcertId(null)}
-                className="sb-btn-secondary px-3 py-2 text-xs font-semibold text-white"
-              >
-                Cerrar
-              </button>
-            </div>
-
-            <div className="p-6">
+        <AppModal
+          title={selectedConcert.title}
+          onClose={() => setSelectedConcertId(null)}
+          maxWidth="1220px"
+          overlayOpacity={0.3}
+        >
+          <div>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
                   {selectedConcert.countryLabel} - {selectedConcert.city}
                 </p>
-                <h3 id="concert-modal-title" className="mt-2 text-2xl font-black text-zinc-900">
+                <h3 className="mt-2 text-2xl font-black text-zinc-900">
                   {selectedConcert.title}
                 </h3>
               </div>
@@ -254,9 +218,8 @@ export default function ConcertCardsClient({
                 </div>
               </section>
             ) : null}
-            </div>
-          </section>
-        </div>
+          </div>
+        </AppModal>
       ) : null}
     </>
   );

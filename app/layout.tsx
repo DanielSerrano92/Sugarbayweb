@@ -1,9 +1,30 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+
+import localFont from "next/font/local";
+import { Press_Start_2P } from "next/font/google";
 
 import SiteFooter from "@/components/layout/site-footer";
 import SiteHeader from "@/components/layout/site-header";
 
 import "./globals.css";
+
+const retroPixelFont = Press_Start_2P({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-retro-pixel",
+});
+
+const byteBounceFont = localFont({
+  src: "../public/fonts/ByteBounce.ttf",
+  variable: "--font-bytebounce",
+  display: "swap",
+});
+
+const retronoidFont = localFont({
+  src: "../public/fonts/Retronoid-BZX3.ttf",
+  variable: "--font-retronoid",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -30,7 +51,7 @@ export default function RootLayout({
     <html
       lang="es"
       data-scroll-behavior="smooth"
-      className="h-full antialiased"
+      className={`${retroPixelFont.variable} ${byteBounceFont.variable} ${retronoidFont.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-bg-canvas text-zinc-900">
         <div className="relative flex min-h-full flex-col">
@@ -44,4 +65,3 @@ export default function RootLayout({
     </html>
   );
 }
-

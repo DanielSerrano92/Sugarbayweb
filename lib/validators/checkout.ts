@@ -36,16 +36,48 @@ export const checkoutAddressSchema = z.object({
     .regex(phonePattern, "Introduce un telefono valido"),
 });
 
+const relaxedCheckoutAddressSchema = z.object({
+  firstName: z.string().trim().max(70).default(""),
+  lastName: z.string().trim().max(120).default(""),
+  address1: z.string().trim().max(140).default(""),
+  address2: optionalText(140).optional().default(""),
+  city: z.string().trim().max(90).default(""),
+  province: z.string().trim().max(90).default(""),
+  region: z.string().trim().max(90).default(""),
+  country: z.string().trim().max(70).default(""),
+  postalCode: z.string().trim().max(12).default(""),
+  phone: z.string().trim().max(20).default(""),
+});
+
 export const checkoutPayloadSchema = z
   .object({
     shipping: checkoutAddressSchema,
-    billing: checkoutAddressSchema,
+    billing: relaxedCheckoutAddressSchema,
     useSameAddress: z.boolean().default(false),
     paymentMethod: z.enum(["card", "paypal"]).default("card"),
   })
+  .superRefine((value, context) => {
+    if (value.useSameAddress) {
+      return;
+    }
+
+    const parsedBilling = checkoutAddressSchema.safeParse(value.billing);
+    if (parsedBilling.success) {
+      return;
+    }
+
+    for (const issue of parsedBilling.error.issues) {
+      context.addIssue({
+        ...issue,
+        path: ["billing", ...issue.path],
+      });
+    }
+  })
   .transform((value) => ({
     ...value,
-    billing: value.useSameAddress ? value.shipping : value.billing,
+    billing: value.useSameAddress
+      ? value.shipping
+      : checkoutAddressSchema.parse(value.billing),
   }));
 
 export type CheckoutAddressInput = z.infer<typeof checkoutAddressSchema>;

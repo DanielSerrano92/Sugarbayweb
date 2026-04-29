@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import AppModal from "@/components/ui/app-modal";
 import type {
   MusicAlbumDetail,
   MusicCatalogCard,
@@ -42,25 +43,6 @@ export default function MusicCatalogClient({
     [selectedAlbumSlug, albumsBySlug],
   );
 
-  useEffect(() => {
-    if (!selectedSong && !selectedAlbum) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setSelectedSongSlug(null);
-        setSelectedAlbumSlug(null);
-      }
-    };
-
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [selectedAlbum, selectedSong]);
-
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -98,38 +80,17 @@ export default function MusicCatalogClient({
       </div>
 
       {selectedSong ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <button
-            type="button"
-            onClick={() => setSelectedSongSlug(null)}
-            className="absolute inset-0 bg-black/70"
-            aria-label="Cerrar detalle de cancion"
-          />
-
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="song-detail-title"
-            className="sb-window relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl p-6 shadow-2xl"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Cancion</p>
-                <h3 id="song-detail-title" className="mt-1 text-3xl font-black text-zinc-900">
-                  {selectedSong.title}
-                </h3>
-                <p className="mt-1 text-sm text-zinc-600">
-                  {selectedSong.releaseTitle} · {formatDate(selectedSong.releaseDateIso)}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedSongSlug(null)}
-                className="sb-btn-secondary px-3 py-2 text-sm font-semibold text-white"
-              >
-                Cerrar
-              </button>
-            </div>
+        <AppModal
+          title={selectedSong.title}
+          onClose={() => setSelectedSongSlug(null)}
+          maxWidth="1220px"
+          overlayOpacity={0.3}
+        >
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Cancion</p>
+            <p className="mt-1 text-sm text-zinc-600">
+              {selectedSong.releaseTitle} - {formatDate(selectedSong.releaseDateIso)}
+            </p>
 
             <div className="mt-4 grid gap-5 lg:grid-cols-[220px_1fr]">
               <div className="relative h-56 overflow-hidden rounded-xl bg-zinc-100">
@@ -163,7 +124,7 @@ export default function MusicCatalogClient({
                     <ul className="space-y-1 text-sm text-zinc-700">
                       {selectedSong.credits.map((credit) => (
                         <li key={`${selectedSong.id}-${credit.id}-${credit.role}`}>
-                          {credit.name} · {credit.role}
+                          {credit.name} - {credit.role}
                         </li>
                       ))}
                     </ul>
@@ -232,43 +193,22 @@ export default function MusicCatalogClient({
                 </section>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </AppModal>
       ) : null}
 
       {selectedAlbum ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <button
-            type="button"
-            onClick={() => setSelectedAlbumSlug(null)}
-            className="absolute inset-0 bg-black/70"
-            aria-label="Cerrar detalle de album"
-          />
-
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="album-detail-title"
-            className="sb-window relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl p-6 shadow-2xl"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Album</p>
-                <h3 id="album-detail-title" className="mt-1 text-3xl font-black text-zinc-900">
-                  {selectedAlbum.title}
-                </h3>
-                <p className="mt-1 text-sm text-zinc-600">
-                  {formatDate(selectedAlbum.releaseDateIso)}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedAlbumSlug(null)}
-                className="sb-btn-secondary px-3 py-2 text-sm font-semibold text-white"
-              >
-                Cerrar
-              </button>
-            </div>
+        <AppModal
+          title={selectedAlbum.title}
+          onClose={() => setSelectedAlbumSlug(null)}
+          maxWidth="1220px"
+          overlayOpacity={0.3}
+        >
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Album</p>
+            <p className="mt-1 text-sm text-zinc-600">
+              {formatDate(selectedAlbum.releaseDateIso)}
+            </p>
 
             <div className="mt-4 grid gap-5 lg:grid-cols-[220px_1fr]">
               <div className="relative h-56 overflow-hidden rounded-xl bg-zinc-100">
@@ -299,7 +239,7 @@ export default function MusicCatalogClient({
                     <ul className="space-y-1 text-sm text-zinc-700">
                       {selectedAlbum.credits.map((credit) => (
                         <li key={`${selectedAlbum.id}-${credit.id}-${credit.role}`}>
-                          {credit.name} · {credit.role}
+                          {credit.name} - {credit.role}
                         </li>
                       ))}
                     </ul>
@@ -372,8 +312,8 @@ export default function MusicCatalogClient({
                 </section>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </AppModal>
       ) : null}
     </>
   );
