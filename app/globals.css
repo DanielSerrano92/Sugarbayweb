@@ -19,6 +19,8 @@
   --sb-danger-ink: #ffd5e6;
   --font-sans-custom: "Trebuchet MS", "Segoe UI", "Tahoma", "Verdana", sans-serif;
   --font-display-custom: "Franklin Gothic Demi Cond", "Arial Narrow", "Trebuchet MS", sans-serif;
+  --font-retro-ui: "Tahoma", "MS Sans Serif", "Verdana", "Trebuchet MS", sans-serif;
+  --font-retro-pixel: "Press Start 2P", "VT323", "Courier New", monospace;
 }
 
 @theme inline {
@@ -87,10 +89,9 @@ body {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(1200px 560px at 92% -12%, rgb(127 82 255 / 22%), transparent 62%),
-    radial-gradient(900px 520px at -12% 100%, rgb(59 165 255 / 24%), transparent 60%),
-    radial-gradient(840px 420px at 55% 112%, rgb(255 141 75 / 18%), transparent 64%),
-    linear-gradient(160deg, var(--sb-bg-main), var(--sb-bg-deep) 72%);
+    radial-gradient(circle at 20% 20%, rgb(78 52 180 / 35%), transparent 28%),
+    radial-gradient(circle at 80% 10%, rgb(23 148 214 / 30%), transparent 26%),
+    linear-gradient(180deg, #16155f 0%, #0b0b2f 100%);
   color: var(--sb-ink);
   font-family: var(--font-sans-custom);
 }
@@ -113,7 +114,7 @@ body::before {
       transparent 1px
     );
   background-size: 72px 72px;
-  opacity: 0.26;
+  opacity: 0.12;
   mask-image: radial-gradient(circle at center, black 36%, transparent 100%);
 }
 
@@ -295,6 +296,647 @@ p {
     background: linear-gradient(90deg, #21193f 25%, #2f2555 50%, #21193f 75%);
     background-size: 220% 100%;
     animation: sb-shimmer 2.1s linear infinite;
+  }
+
+  .sb-header-shell {
+    border-top: 2px solid #050505;
+    border-bottom: 2px solid #050505;
+    background: linear-gradient(90deg, #94cbff 0%, #b6b7ff 54%, #de86f4 100%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 54%);
+  }
+
+  .sb-header-row {
+    min-height: 68px;
+  }
+
+  .sb-header-brand-mobile {
+    color: #101010;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .sb-header-nav-track {
+    align-items: flex-start;
+  }
+
+  .sb-header-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    border: 1px solid #6d6d6d;
+    background: #cbcbcb;
+    color: #121212 !important;
+    padding: 0.3rem 0.82rem;
+    font-family: var(--font-retro-ui);
+    font-size: 0.96rem;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow:
+      inset 1px 1px 0 #f6f6f6,
+      inset -1px -1px 0 #8e8e8e;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .sb-header-tab:hover {
+    border-color: #995ab6;
+    background: linear-gradient(180deg, #ef8cff 0%, #ce68ea 100%);
+    color: #121212 !important;
+  }
+
+  .sb-header-tab-active {
+    border-color: #6d6d6d;
+    background: #cbcbcb;
+    color: #121212 !important;
+    box-shadow:
+      inset 1px 1px 0 #f6f6f6,
+      inset -1px -1px 0 #8e8e8e;
+  }
+
+  .sb-header-tab-band {
+    min-width: 92px;
+  }
+
+  .sb-header-subtab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    border: 1px solid #2f69c9;
+    background: linear-gradient(180deg, #1f70ff 0%, #0e57cb 100%);
+    color: #ffffff !important;
+    padding: 0.16rem 0.54rem;
+    font-family: var(--font-retro-ui);
+    font-size: 0.8rem;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow:
+      inset 1px 1px 0 #7bb0ff,
+      inset -1px -1px 0 #16489f;
+  }
+
+  .sb-header-subtab:hover {
+    filter: brightness(1.05);
+  }
+
+  .sb-header-dropdown {
+    border: 1px solid #000;
+    background: #d6d6d6;
+    box-shadow:
+      inset 1px 1px 0 #f3f3f3,
+      inset -1px -1px 0 #8a8a8a;
+  }
+
+  .sb-header-dropdown-item {
+    border: 1px solid #8a8a8a;
+    background: #f3f3f3;
+    color: #0d0d0d !important;
+    font-family: var(--font-retro-ui);
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .sb-header-dropdown-item + .sb-header-dropdown-item {
+    margin-top: 0.2rem;
+  }
+
+  .sb-header-dropdown-item:hover,
+  .sb-header-dropdown-item-active {
+    border-color: #2f69c9;
+    background: linear-gradient(180deg, #1f70ff 0%, #0e57cb 100%);
+    color: #ffffff !important;
+    box-shadow:
+      inset 1px 1px 0 #7bb0ff,
+      inset -1px -1px 0 #16489f;
+  }
+
+  .sb-header-search-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    border: 2px solid #07142e;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #d7edff 0%, #9fcdff 100%);
+    color: #030303 !important;
+    box-shadow:
+      inset 1px 1px 0 #ffffff,
+      inset -1px -1px 0 #5d8abc;
+    flex-shrink: 0;
+  }
+
+  .sb-header-search-btn:hover {
+    border-color: #995ab6;
+    background: linear-gradient(180deg, #f4b8ff 0%, #d97cef 100%);
+  }
+
+  .sb-header-search-pixel > svg {
+    shape-rendering: crispEdges;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    stroke-width: 2.8;
+  }
+
+  .sb-header-profile-icon-btn > svg {
+    transform: translateY(1px);
+  }
+
+  .sb-header-cart-icon-btn > svg {
+    transform: translateY(-1px);
+  }
+
+  .sb-header-brand {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 88px;
+    height: 56px;
+    margin: 0 0.15rem;
+  }
+
+  .sb-header-brand::before {
+    content: "";
+    position: absolute;
+    inset: 1px 10px;
+    background: linear-gradient(150deg, #ffec89 0%, #ff66db 54%, #6a46dd 100%);
+    clip-path: polygon(50% 0, 62% 24%, 100% 25%, 72% 46%, 82% 84%, 50% 62%, 18% 84%, 28% 46%, 0 25%, 38% 24%);
+    filter: drop-shadow(0 2px 0 rgb(0 0 0 / 38%));
+  }
+
+  .sb-header-brand::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid #6a39b4;
+    clip-path: polygon(50% 2%, 62% 24%, 98% 25%, 72% 46%, 82% 82%, 50% 62%, 18% 82%, 28% 46%, 2% 25%, 38% 24%);
+    opacity: 0.52;
+  }
+
+  .sb-header-brand-label {
+    position: relative;
+    z-index: 1;
+    color: #0f0f0f;
+    text-align: center;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 0.95;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0 rgb(255 255 255 / 70%);
+  }
+
+  .sb-header-icon-btn {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 33px;
+    height: 33px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #050505 !important;
+    padding: 0;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .sb-header-icon-btn:hover {
+    border-color: rgb(0 0 0 / 22%);
+    background: rgb(255 255 255 / 38%);
+  }
+
+  .sb-header-icon-btn:focus-visible {
+    outline: 2px solid rgb(0 0 0 / 52%);
+    outline-offset: 2px;
+  }
+
+  .sb-header-cart-badge {
+    position: absolute;
+    right: -4px;
+    top: -5px;
+    min-width: 16px;
+    height: 16px;
+    border: 1px solid #000;
+    border-radius: 999px;
+    background: #0b58cd;
+    color: #fff;
+    padding: 0 3px;
+    font-family: var(--font-retro-ui);
+    font-size: 0.62rem;
+    font-weight: 900;
+    line-height: 14px;
+    text-align: center;
+  }
+
+  .sb-header-menu-btn {
+    border: 1px solid #4f4f4f;
+    background: #d3d3d3;
+    color: #111 !important;
+    box-shadow:
+      inset 1px 1px 0 #efefef,
+      inset -1px -1px 0 #8c8c8c;
+  }
+
+  .sb-header-mobile-item {
+    border: 1px solid rgb(0 0 0 / 24%);
+    background: rgb(255 255 255 / 28%);
+  }
+
+  /* WINDOWS RETRO THEME (CONCERTS) */
+
+  .win-window {
+    border: 2px solid #000;
+    background: #c0c0c0;
+    color: #000;
+    box-shadow:
+      inset -2px -2px 0 #808080,
+      inset 2px 2px 0 #ffffff;  
+  }
+
+  .win-window:hover {
+    filter: brightness(1.02);
+  }
+
+  .win-titlebar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    padding: 6px 10px;
+    font-weight: 900;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .win-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #000;
+    background: #c0c0c0;
+    color: #000 !important;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    box-shadow:
+      inset -2px -2px 0 #808080,
+      inset 2px 2px 0 #ffffff;
+  }
+
+  .win-button:hover {
+  filter: brightness(1.06);
+}
+
+  .win-button:disabled,
+  .win-button[aria-disabled="true"] {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .win-button:active {
+    box-shadow:
+      inset 2px 2px 0 #808080,
+      inset -2px -2px 0 #ffffff;
+  }
+
+  .win-input {
+    width: 100%;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
+    padding: 6px 8px;
+    font-size: 0.875rem;
+    box-shadow:
+      inset 2px 2px 0 #808080,
+      inset -2px -2px 0 #ffffff;
+  }
+  
+  .win-input:focus {
+    outline: 2px dotted #000;
+    outline-offset: 2px;
+  }
+
+  .retro-top-controls {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-left: auto;
+  }
+
+  .retro-concert-card {
+    border: 2px solid #3d55d4;
+    background: #d0d0d0;
+    color: #111;
+    box-shadow: 2px 2px 0 rgb(0 0 0 / 35%);
+  }
+
+  .retro-concert-header {
+    background: linear-gradient(180deg, #2b41d4 0%, #1f35c8 100%);
+    color: #fff;
+    padding: 7px 10px 6px;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.92rem;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .retro-concert-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.62rem;
+    padding: 12px 12px 14px;
+    color: #111;
+  }
+
+  .retro-concert-title {
+    margin: 0;
+    color: #1b1b1b;
+    text-align: center;
+    font-family: var(--font-retro-ui);
+    font-size: 0.74rem;
+    font-weight: 900;
+    line-height: 1.2;
+    text-transform: none;
+  }
+
+  .retro-concert-row {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.55rem;
+    text-align: left;
+    color: #111;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.95rem;
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  .retro-concert-link {
+    color: #111 !important;
+    text-decoration: none;
+  }
+
+  .retro-concert-link:hover {
+    text-decoration: none;
+  }
+
+  .retro-concert-location {
+    display: block;
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+    overflow-wrap: break-word;
+    font-size: 0.84rem;
+  }
+
+  .retro-concert-description {
+    margin: 0;
+    color: #2b2b2b;
+    border-top: 1px solid #b9b9b9;
+    padding-top: 0.36rem;
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+    font-family: var(--font-retro-ui);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .retro-concert-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: #000;
+  }
+
+  .retro-card-actions {
+    margin-top: 0.18rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.48rem;
+  }
+
+  .retro-card-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    border: 2px solid #9f9f9f;
+    background: #d3d3d3;
+    padding: 4px 10px;
+    color: #000 !important;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.92rem;
+    font-weight: 900;
+    line-height: 1;
+    text-decoration: none;
+    box-shadow:
+      inset 1px 1px 0 #efefef,
+      inset -1px -1px 0 #b1b1b1;
+  }
+
+  .retro-card-action:hover {
+    background: #dadada;
+    filter: none;
+  }
+
+  .retro-card-action:active {
+    box-shadow:
+      inset -1px -1px 0 #efefef,
+      inset 1px 1px 0 #b1b1b1;
+  }
+
+  .retro-folder-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .retro-folder-icon {
+    position: relative;
+    display: block;
+    width: 54px;
+    height: 38px;
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #ffe689 0%, #f1c94e 100%);
+    box-shadow:
+      inset -2px -2px 0 #be9733,
+      inset 2px 2px 0 #fff5bf;
+  }
+
+  .retro-folder-icon::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: -8px;
+    width: 18px;
+    height: 9px;
+    border: 2px solid #000;
+    border-bottom: 0;
+    background: #f8da73;
+  }
+
+  .retro-modal-overlay {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgb(0 0 0 / 62%);
+  }
+
+  .retro-filters-modal {
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  .retro-win-close {
+    min-width: 34px;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+  }
+
+  .retro-pagination-shell {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 2px solid #000;
+    background: #bcbcbc;
+    padding: 0.35rem 0.45rem;
+    box-shadow:
+      inset -2px -2px 0 #8b8b8b,
+      inset 2px 2px 0 #ffffff;
+  }
+
+  .retro-pagination-arrow {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #2f7b25;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #92ea7a 0%, #63c34c 100%);
+    color: #1d5f18 !important;
+    font-size: 0.62rem;
+    font-weight: 900;
+    box-shadow:
+      inset -1px -1px 0 #3f9131,
+      inset 1px 1px 0 #d2ffc4;
+  }
+
+  .retro-pagination-pages {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    border: 2px solid #000;
+    background: #dddddd;
+    padding: 0 0.55rem;
+    color: #111;
+    box-shadow:
+      inset -1px -1px 0 #939393,
+      inset 1px 1px 0 #ffffff;
+  }
+
+  .retro-pagination-page,
+  .retro-pagination-ellipsis {
+    color: #111 !important;
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .retro-pagination-page.is-active {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .retro-pagination-separator {
+    margin: 0 0.28rem;
+    color: #111;
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  /* UPCOMING CONCERTS RETRO PALETTE + TYPOGRAPHY */
+
+  .retro-upcoming-theme {
+    background:
+      linear-gradient(180deg, #caa0eb 0%, #b690e6 34%, #87b8ee 68%, #67ace7 100%);
+    color: #040404;
+    font-family: var(--font-retro-ui);
+  }
+
+  .retro-upcoming-theme * {
+    font-family: var(--font-retro-ui);
+  }
+
+  .retro-upcoming-theme h1,
+  .retro-upcoming-theme h2,
+  .retro-upcoming-theme h3,
+  .retro-upcoming-theme .win-titlebar,
+  .retro-upcoming-theme .win-button,
+  .retro-upcoming-theme .retro-pagination-pages,
+  .retro-upcoming-theme .retro-pagination-page,
+  .retro-upcoming-theme .retro-pagination-separator,
+  .retro-upcoming-theme .retro-pagination-ellipsis {
+    font-family: var(--font-retro-pixel);
+    letter-spacing: 0.03em;
+  }
+
+  .retro-upcoming-theme h1 {
+    color: #d8f4ff;
+    text-shadow:
+      -2px 0 #3155c9,
+      2px 0 #3155c9,
+      0 -2px #3155c9,
+      0 2px #3155c9,
+      0 0 12px rgb(69 233 255 / 48%);
+  }
+
+  .retro-upcoming-theme .win-window {
+    background: #d0d0d0;
+    box-shadow:
+      inset -2px -2px 0 #8d8d8d,
+      inset 2px 2px 0 #ffffff;
+  }
+
+  .retro-upcoming-theme .win-titlebar {
+    background: linear-gradient(90deg, #2533c9 0%, #3b5ff3 100%);
+    color: #ffffff;
+  }
+
+  .retro-upcoming-theme .win-button {
+    background: #d8d8d8;
+    color: #000 !important;
+  }
+
+  .retro-upcoming-theme .win-button:hover {
+    background: #e6e6e6;
+    filter: none;
+  }
+
+  .retro-upcoming-theme .win-input {
+    background: #ffffff;
+    color: #000;
+  }
+
+  .retro-upcoming-theme a.text-blue-800 {
+    color: #17358e;
   }
 }
 

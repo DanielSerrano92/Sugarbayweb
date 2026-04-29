@@ -43,16 +43,36 @@ function CartIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-4 w-4"
+      className="h-5 w-5"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeWidth="2.6"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      shapeRendering="crispEdges"
     >
       <circle cx="9" cy="20" r="1.25" />
       <circle cx="18" cy="20" r="1.25" />
       <path d="M3 4h2l2.3 10.2a1 1 0 0 0 1 .8h9.8a1 1 0 0 0 1-.7L21 7H7" />
+    </svg>
+  );
+}
+
+function UserIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.6"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      shapeRendering="crispEdges"
+    >
+      <circle cx="12" cy="8" r="3.25" />
+      <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
     </svg>
   );
 }
@@ -62,20 +82,22 @@ function isCurrentPath(pathname: string, href: string): boolean {
   return pathname.startsWith(href);
 }
 
-const navItemClass =
-  "rounded-xl border px-3 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none";
+const desktopNavItemClass =
+  "sb-header-tab focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40";
 
-const headerActionHoverClass =
-  "hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white";
-
-const headerMenuItemHoverClass =
-  "hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white";
+const headerMenuItemHoverClass = "hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white";
+const headerIconLargeClass =
+  "inline-grid h-auto w-auto place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent hover:text-black focus-visible:outline-none focus-visible:ring-0 [&>svg]:h-10 [&>svg]:w-10";
 
 const LEFT_NAVIGATION_HREFS = ["/concerts", "/band/news", "/musica"];
 const RIGHT_NAVIGATION_HREFS = ["/media", "/fanclub", "/store"];
 
 function sortNavigationByOrder(items: NavItem[], order: string[]): NavItem[] {
   return [...items].sort((left, right) => order.indexOf(left.href) - order.indexOf(right.href));
+}
+
+function normalizeHrefPath(href: string): string {
+  return href.split("?")[0] ?? href;
 }
 
 export default function HeaderClient({
@@ -125,16 +147,15 @@ export default function HeaderClient({
 
   function renderDesktopNavItem(item: NavItem) {
     const active = isCurrentPath(pathname, item.href);
+    const isBandTab = item.href === "/band/news";
 
     if (!item.children?.length) {
       return (
         <Link
           key={item.href}
           href={item.href}
-          className={`${navItemClass} ${
-            active
-              ? "border-emerald-500 bg-emerald-700 text-white shadow-[0_10px_24px_rgba(58,35,140,0.45)] hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white"
-              : "border-zinc-300 bg-zinc-50 text-zinc-800 hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white"
+          className={`${desktopNavItemClass} ${active ? "sb-header-tab-active" : ""} ${
+            isBandTab ? "sb-header-tab-band" : ""
           }`}
         >
           {item.label}
@@ -146,26 +167,31 @@ export default function HeaderClient({
       <div key={item.href} className="group relative">
         <Link
           href={item.href}
-          className={`${navItemClass} ${
-            active
-              ? "border-emerald-500 bg-emerald-700 text-white shadow-[0_10px_24px_rgba(58,35,140,0.45)] hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white"
-              : "border-zinc-300 bg-zinc-50 text-zinc-800 hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white"
+          className={`${desktopNavItemClass} ${active ? "sb-header-tab-active" : ""} ${
+            isBandTab ? "sb-header-tab-band" : ""
           }`}
         >
           {item.label}
         </Link>
         <div
-          className="sb-window pointer-events-none invisible absolute left-0 top-full mt-2 w-56 rounded-xl p-2 opacity-0 transition group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100"
+          className="sb-header-dropdown pointer-events-none invisible absolute left-1/2 top-full z-40 mt-1 min-w-full w-max -translate-x-1/2 rounded-none p-1 opacity-0 transition group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100"
         >
-          {item.children.map((child) => (
+          {item.children.map((child) => {
+            const childPath = normalizeHrefPath(child.href);
+            const isChildActive = isCurrentPath(pathname, childPath);
+
+            return (
             <Link
               key={child.href}
               href={child.href}
-              className={`block rounded-lg border border-transparent px-3 py-2 text-sm text-zinc-700 transition ${headerMenuItemHoverClass}`}
+              className={`sb-header-dropdown-item block px-2 py-1.5 text-sm ${
+                isChildActive ? "sb-header-dropdown-item-active" : ""
+              }`}
             >
               {child.label}
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
     );
@@ -174,38 +200,43 @@ export default function HeaderClient({
   return (
     <>
       <header className="z-40 w-full">
-        <div className="sb-window w-full overflow-visible rounded-none border-x-0 border-t-0 bg-[linear-gradient(90deg,#6f4ad6_0%,#3ca7ff_57%,#ff8d4b_100%)]">
-          <div className="flex items-center gap-3 px-4 py-3 lg:px-5">
+        <div className="sb-header-shell w-full overflow-visible rounded-none border-x-0 border-t-0">
+          <div className="sb-header-row flex items-center gap-3 px-3 py-2 lg:px-4">
             <Link
               href="/"
-              className="shrink-0 text-lg font-black uppercase tracking-[0.24em] text-white lg:hidden"
+              className="sb-header-brand-mobile shrink-0 lg:hidden"
             >
               Sugarbay
             </Link>
 
-            <div className="hidden flex-1 items-center justify-center gap-2 lg:flex">
-              <nav className="flex items-center gap-2">
+            <GlobalSearch
+              className="sb-header-search-pixel inline-grid h-auto w-auto place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent hover:text-black focus-visible:outline-none focus-visible:ring-0 [&>span]:hidden [&>svg]:h-10 [&>svg]:w-10"
+            />
+
+            <div className="hidden flex-1 items-center justify-center gap-3 lg:flex">
+              <nav className="sb-header-nav-track flex items-start gap-2">
                 {leftNavigation.map((item) => renderDesktopNavItem(item))}
               </nav>
 
               <Link
                 href="/"
-                className="mx-3 shrink-0 text-lg font-black uppercase tracking-[0.24em] text-white xl:text-xl"
+                className="sb-header-brand mx-1 shrink-0"
+                aria-label="Ir al inicio Sugarbay"
               >
-                Sugarbay
+                <span className="sb-header-brand-label">
+                  Sugar
+                  <br />
+                  Bay
+                </span>
               </Link>
 
-              <nav className="flex items-center gap-2">
+              <nav className="sb-header-nav-track flex items-start gap-2">
                 {rightNavigation.map((item) => renderDesktopNavItem(item))}
               </nav>
             </div>
 
-            <div className="ml-auto flex items-center gap-2">
-              <GlobalSearch
-                className={`sb-btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-900 ${headerActionHoverClass}`}
-              />
-
-              <div className="hidden items-center gap-2 lg:flex">
+            <div className="flex items-center gap-2 lg:gap-1.5">
+              <div className="hidden items-center gap-1.5 lg:flex">
                 <div ref={profileMenuRef} className="relative">
                   <button
                     type="button"
@@ -213,9 +244,12 @@ export default function HeaderClient({
                     aria-expanded={profileMenuOpen}
                     aria-haspopup="menu"
                     aria-controls={profileMenuId}
-                    className={`sb-btn-primary px-3 py-2 text-sm font-semibold ${headerActionHoverClass}`}
+                    className={`${headerIconLargeClass} sb-header-profile-icon-btn`}
+                    aria-label={
+                      currentUser ? `Abrir menu de perfil de ${currentUser.firstName}` : "Abrir menu de perfil"
+                    }
                   >
-                    Perfil
+                    <UserIcon />
                   </button>
                   <div
                     id={profileMenuId}
@@ -278,11 +312,15 @@ export default function HeaderClient({
                 <button
                   type="button"
                   onClick={() => setCartDrawerOpen(true)}
-                  className={`sb-btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-zinc-900 ${headerActionHoverClass}`}
+                  className={`${headerIconLargeClass} sb-header-cart-icon-btn relative`}
                   aria-label={`Abrir carrito con ${cartCount} items`}
                 >
                   <CartIcon />
-                  <span>Carrito ({cartCount})</span>
+                  {cartCount > 0 ? (
+                    <span className="sb-header-cart-badge" aria-hidden="true">
+                      {cartCount}
+                    </span>
+                  ) : null}
                 </button>
               </div>
 
@@ -290,15 +328,19 @@ export default function HeaderClient({
                 <button
                   type="button"
                   onClick={() => setCartDrawerOpen(true)}
-                  className={`sb-btn-secondary inline-flex items-center gap-1 px-3 py-2 text-sm font-semibold text-zinc-900 ${headerActionHoverClass}`}
+                  className={`${headerIconLargeClass} sb-header-cart-icon-btn relative`}
                   aria-label={`Abrir carrito con ${cartCount} items`}
                 >
                   <CartIcon />
-                  <span>{cartCount}</span>
+                  {cartCount > 0 ? (
+                    <span className="sb-header-cart-badge" aria-hidden="true">
+                      {cartCount}
+                    </span>
+                  ) : null}
                 </button>
                 <button
                   type="button"
-                  className={`sb-btn-secondary inline-flex px-3 py-2 text-sm font-semibold text-zinc-900 ${headerActionHoverClass}`}
+                  className="sb-header-menu-btn px-3 py-2 text-sm font-semibold"
                   onClick={() => {
                     setMobileOpen((value) => !value);
                     setMobileProfileMenuOpen(false);
@@ -314,13 +356,13 @@ export default function HeaderClient({
 
           <div
             id="mobile-navigation"
-            className={`border-t border-zinc-300 px-4 py-4 lg:hidden ${
+            className={`border-t border-black/20 px-3 py-3 lg:hidden ${
               mobileOpen ? "block" : "hidden"
             }`}
           >
             <div className="space-y-2">
               {headerNavigation.map((item) => (
-                <div key={item.href} className="sb-panel-soft rounded-xl p-2">
+                <div key={item.href} className="sb-header-mobile-item rounded-lg p-2">
                   <Link
                     href={item.href}
                     className={`block rounded-lg px-2 py-2 text-sm font-semibold text-zinc-900 ${headerMenuItemHoverClass}`}
@@ -349,7 +391,7 @@ export default function HeaderClient({
                   setMobileOpen(false);
                   setCartDrawerOpen(true);
                 }}
-                className={`sb-btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-900 ${headerActionHoverClass}`}
+                className="sb-header-menu-btn inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-900"
               >
                 <CartIcon />
                 <span>Carrito ({cartCount})</span>
@@ -361,7 +403,7 @@ export default function HeaderClient({
                   </p>
                   <Link
                     href="/account"
-                    className={`sb-btn-primary px-3 py-2 text-sm font-semibold ${headerActionHoverClass}`}
+                    className="sb-header-menu-btn px-3 py-2 text-sm font-semibold"
                     onClick={() => setMobileOpen(false)}
                   >
                     Cuenta
@@ -369,7 +411,7 @@ export default function HeaderClient({
                   <form action={logoutAction}>
                     <button
                       type="submit"
-                      className={`sb-btn-secondary px-3 py-2 text-sm font-medium text-zinc-900 ${headerActionHoverClass}`}
+                      className="sb-header-menu-btn px-3 py-2 text-sm font-medium text-zinc-900"
                     >
                       Cerrar sesion
                     </button>
@@ -380,7 +422,7 @@ export default function HeaderClient({
                   <button
                     type="button"
                     onClick={() => setMobileProfileMenuOpen((value) => !value)}
-                    className={`sb-btn-primary w-full px-3 py-2 text-sm font-semibold ${headerActionHoverClass}`}
+                    className="sb-header-menu-btn w-full px-3 py-2 text-sm font-semibold"
                   >
                     Perfil
                   </button>
