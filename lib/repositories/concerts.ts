@@ -137,6 +137,92 @@ function sortDirectionForPeriod(
   return period === "upcoming" ? "asc" : "desc";
 }
 
+function addDays(base: Date, days: number, hour = 0, minutes = 0): Date {
+  const date = new Date(base);
+  date.setDate(date.getDate() + days);
+  date.setHours(hour, minutes, 0, 0);
+  return date;
+}
+
+function getLocalFallbackConcertRecords(): ConcertRecord[] {
+  const now = new Date();
+
+  return [
+    {
+      id: "fallback-concert-upcoming-madrid",
+      slug: "sugarbay-live-madrid-2026",
+      title: "Sugarbay Live in Madrid",
+      description:
+        "Concierto principal del tramo espanol de la gira Summer Lights 2026.",
+      startsAt: addDays(now, 45, 21, 0),
+      city: "Madrid",
+      country: "ES",
+      venueName: "Sala Riviera",
+      venueAddress: "Paseo Bajo de la Virgen del Puerto S/N",
+      ticketUrl: "https://tickets.sugarbaymusic.com/madrid-2026",
+      externalEventUrl: "https://www.salariviera.com",
+    },
+    {
+      id: "fallback-concert-past-barcelona",
+      slug: "sugarbay-barcelona-closing-night-2025",
+      title: "Sugarbay Sunset Session Barcelona",
+      description:
+        "Cierre especial de temporada con setlist ampliado y cronica disponible.",
+      startsAt: addDays(now, -120, 21, 0),
+      city: "Barcelona",
+      country: "ES",
+      venueName: "Razzmatazz",
+      venueAddress: "Carrer dels Almogavers 122",
+      ticketUrl: null,
+      externalEventUrl: "https://www.salarazzmatazz.com",
+    },
+  ];
+}
+
+function filterLocalConcertRecordsForBase(
+  records: ConcertRecord[],
+  period: ConcertPeriod,
+  filters: ConcertFilters,
+): ConcertRecord[] {
+  const now = new Date();
+  const dateRange = toDateRange({
+    from: filters.from,
+    to: filters.to,
+  });
+
+  return records
+    .filter((concert) => {
+      if (period === "upcoming") {
+        const lowerBound =
+          dateRange.from && dateRange.from > now ? dateRange.from : now;
+
+        if (concert.startsAt < lowerBound) return false;
+        if (dateRange.to && concert.startsAt > dateRange.to) return false;
+      } else {
+        const upperBound =
+          dateRange.to && dateRange.to < now ? dateRange.to : now;
+
+        if (concert.startsAt >= upperBound) return false;
+        if (dateRange.from && concert.startsAt < dateRange.from) return false;
+      }
+
+      if (filters.country && concert.country !== filters.country) {
+        return false;
+      }
+
+      return true;
+    })
+    .sort((left, right) => {
+      const byDate =
+        period === "upcoming"
+          ? left.startsAt.getTime() - right.startsAt.getTime()
+          : right.startsAt.getTime() - left.startsAt.getTime();
+
+      if (byDate !== 0) return byDate;
+      return left.city.localeCompare(right.city, "es", { sensitivity: "base" });
+    });
+}
+
 function daysBetween(left: Date, right: Date): number {
   const millis = Math.abs(left.getTime() - right.getTime());
   return Math.floor(millis / (1000 * 60 * 60 * 24));
@@ -311,6 +397,11 @@ export async function getConcertCatalog(
 
   const whereForList = buildBaseWhere(period, requestedFilters);
   const orderDirection = sortDirectionForPeriod(period);
+  let usedDatabaseFallback = false;
+
+  const onDatabaseFallback = () => {
+    usedDatabaseFallback = true;
+  };
 
   const [rawConcerts, filterConcerts, photoAlbums, videoCollections] =
     await Promise.all([
@@ -334,6 +425,7 @@ export async function getConcertCatalog(
             },
           }),
         [] as ConcertRecord[],
+        { onFallback: onDatabaseFallback },
       ),
       withDatabaseFallback(
         () =>
@@ -357,6 +449,7 @@ export async function getConcertCatalog(
             },
           }),
         [] as ConcertRecord[],
+        { onFallback: onDatabaseFallback },
       ),
       period === "past"
         ? withDatabaseFallback(
@@ -383,6 +476,7 @@ export async function getConcertCatalog(
                 },
               }),
             [] as PhotoAlbumRecord[],
+            { onFallback: onDatabaseFallback },
           )
         : Promise.resolve([] as PhotoAlbumRecord[]),
       period === "past"
@@ -409,14 +503,37 @@ export async function getConcertCatalog(
                 },
               }),
             [] as VideoCollectionRecord[],
+            { onFallback: onDatabaseFallback },
           )
         : Promise.resolve([] as VideoCollectionRecord[]),
     ]);
 
+  const localFallbackRecords =
+    usedDatabaseFallback && rawConcerts.length === 0
+      ? getLocalFallbackConcertRecords()
+      : [];
+
+  const sourceConcerts =
+    localFallbackRecords.length > 0
+      ? filterLocalConcertRecordsForBase(
+          localFallbackRecords,
+          period,
+          requestedFilters,
+        )
+      : rawConcerts;
+
+  const sourceFilterConcerts =
+    localFallbackRecords.length > 0
+      ? filterLocalConcertRecordsForBase(localFallbackRecords, period, {
+          ...requestedFilters,
+          country: undefined,
+        })
+      : filterConcerts;
+
   const continentFilteredConcerts =
     requestedFilters.continent === "all"
-      ? rawConcerts
-      : rawConcerts.filter(
+      ? sourceConcerts
+      : sourceConcerts.filter(
           (concert) =>
             getContinentForCountry(concert.country) === requestedFilters.continent,
         );
@@ -438,10 +555,11 @@ export async function getConcertCatalog(
   const page = normalizePage(totalPages, requestedFilters.page);
   const concerts = paginate(mappedConcerts, page, PAGE_SIZE);
 
-  const availableCountries = buildCountryOptions(filterConcerts).filter((option) =>
-    requestedFilters.continent === "all"
-      ? true
-      : option.continent === requestedFilters.continent,
+  const availableCountries = buildCountryOptions(sourceFilterConcerts).filter(
+    (option) =>
+      requestedFilters.continent === "all"
+        ? true
+        : option.continent === requestedFilters.continent,
   );
 
   return {
