@@ -4,6 +4,7 @@ import BandNewsListClient from "@/components/band/news-list-client";
 import BandNewsPagination from "@/components/band/news-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import type { BandNewsQueryParams } from "@/lib/band/types";
 import { getBandNewsCatalog } from "@/lib/repositories/band";
 
@@ -21,13 +22,15 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
   const catalog = await getBandNewsCatalog(params);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Band"
-        title="Noticias de Sugarbay"
-        description="Actualidad oficial de la banda con detalle expandible y enlaces relacionados."
-      />
-
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow="Band"
+          title="Noticias de Sugarbay"
+          description="Actualidad oficial de la banda con detalle expandible y enlaces relacionados."
+        />
+      )}
+    >
       <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
 
       <p className="text-sm text-zinc-600">
@@ -49,7 +52,7 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
           />
         </>
       )}
-    </div>
+    </PageShell>
   );
 }
 

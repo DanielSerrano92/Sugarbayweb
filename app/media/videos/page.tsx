@@ -6,6 +6,7 @@ import VideoFilters from "@/components/media/video-filters";
 import VideoPagination from "@/components/media/video-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import type { MediaVideoQueryParams } from "@/lib/media/types";
 import { getVideoCatalog } from "@/lib/repositories/media";
 import { resolveImageUrl } from "@/lib/services/imagekit";
@@ -25,13 +26,15 @@ export default async function MediaVideosPage({ searchParams }: MediaVideosPageP
   const catalog = await getVideoCatalog(params);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Media / Videos"
-        title="Colecciones y videos unicos"
-        description="Explora los videos oficiales de Sugarbay con filtros por fecha, tipo y orden."
-      />
-
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow="Media / Videos"
+          title="Colecciones y videos unicos"
+          description="Explora los videos oficiales de Sugarbay con filtros por fecha, tipo y orden."
+        />
+      )}
+    >
       <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <VideoFilters basePath="/media/videos" filters={catalog.filters} />
 
@@ -91,7 +94,7 @@ export default async function MediaVideosPage({ searchParams }: MediaVideosPageP
           )}
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }
 

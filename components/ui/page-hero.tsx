@@ -15,18 +15,19 @@ export default function PageHero({
   actions,
 }: PageHeroProps) {
   return (
-    <section className="-mt-6 lg:-mt-10">
+    <section className="relative z-10">
       <div
         className="relative block w-screen overflow-hidden"
         style={{ marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)" }}
       >
         <Image
-          src="https://ik.imagekit.io/gq1enkszp/fotos/proximos.png?tr=w-2400,h-690,cm-extract,fo-top&updatedAt=1777405652441"
+          src="https://ik.imagekit.io/gq1enkszp/fotos/proximos.png?tr=w-2400,h-620,cm-extract,fo-top&updatedAt=1777405652441"
           alt={`Hero ${title}`}
           width={2400}
-          height={760}
+          height={620}
           priority
           sizes="100vw"
+          unoptimized
           className="block h-auto w-full"
         />
       </div>

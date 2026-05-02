@@ -6,6 +6,7 @@ import PhotoFilters from "@/components/media/photo-filters";
 import PhotoPagination from "@/components/media/photo-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import type { MediaPhotoQueryParams } from "@/lib/media/types";
 import { getPhotoAlbumsCatalog } from "@/lib/repositories/media";
 import { resolveImageUrl } from "@/lib/services/imagekit";
@@ -25,13 +26,15 @@ export default async function MediaPhotosPage({ searchParams }: MediaPhotosPageP
   const catalog = await getPhotoAlbumsCatalog(params);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Media / Fotos"
-        title="Albumes de fotos"
-        description="Galerias oficiales de Sugarbay con filtros por fecha, tipo y orden."
-      />
-
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow="Media / Fotos"
+          title="Albumes de fotos"
+          description="Galerias oficiales de Sugarbay con filtros por fecha, tipo y orden."
+        />
+      )}
+    >
       <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <PhotoFilters basePath="/media/photos" filters={catalog.filters} />
 
@@ -91,7 +94,7 @@ export default async function MediaPhotosPage({ searchParams }: MediaPhotosPageP
           )}
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }
 

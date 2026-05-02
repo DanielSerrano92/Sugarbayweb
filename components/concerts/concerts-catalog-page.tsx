@@ -3,6 +3,7 @@ import ConcertFilters from "@/components/concerts/concert-filters";
 import ConcertPagination from "@/components/concerts/concert-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { getConcertCatalog } from "@/lib/repositories/concerts";
 import type { ConcertPeriod, ConcertQueryParams } from "@/lib/concerts/types";
 
@@ -40,13 +41,15 @@ export default async function ConcertsCatalogPage({
   const catalog = await getConcertCatalog(period, params);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow={pageMeta.eyebrow}
-        title={pageMeta.title}
-        description={pageMeta.description}
-      />
-
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow={pageMeta.eyebrow}
+          title={pageMeta.title}
+          description={pageMeta.description}
+        />
+      )}
+    >
       <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <ConcertFilters
           basePath={pageMeta.basePath}
@@ -76,6 +79,6 @@ export default async function ConcertsCatalogPage({
           )}
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }

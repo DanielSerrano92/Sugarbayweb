@@ -4,6 +4,7 @@ import MusicFiltersPanel from "@/components/music/music-filters";
 import MusicPagination from "@/components/music/music-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import type { MusicQueryParams } from "@/lib/music/types";
 import { getMusicCatalog } from "@/lib/repositories/music";
 
@@ -21,13 +22,15 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
   const catalog = await getMusicCatalog(params);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Musica"
-        title="Canciones y albumes"
-        description="Catalogo mixto con filtros por fecha, tipo y orden. Abre cualquier tarjeta para ver su detalle completo."
-      />
-
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow="Musica"
+          title="Canciones y albumes"
+          description="Catalogo mixto con filtros por fecha, tipo y orden. Abre cualquier tarjeta para ver su detalle completo."
+        />
+      )}
+    >
       <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <MusicFiltersPanel basePath="/musica" filters={catalog.filters} />
 
@@ -57,7 +60,7 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
           )}
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }
 

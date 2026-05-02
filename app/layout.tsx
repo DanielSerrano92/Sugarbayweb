@@ -56,7 +56,7 @@ export default function RootLayout({
       <body className="min-h-full bg-bg-canvas text-zinc-900">
         <div className="relative flex min-h-full flex-col">
           <SiteHeader />
-          <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 lg:px-8 lg:py-10">
+          <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 lg:px-8">
             {children}
           </main>
           <SiteFooter />

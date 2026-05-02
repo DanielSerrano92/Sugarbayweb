@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import EmptyState from "@/components/ui/empty-state";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import StoreFiltersSidebar from "@/components/store/store-filters-sidebar";
 import StorePagination from "@/components/store/store-pagination";
 import StoreProductCard from "@/components/store/store-product-card";
@@ -21,13 +22,15 @@ export default async function StorePage({ searchParams }: StorePageProps) {
   const catalog = await getStoreCatalog(params);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Store"
-        title="Tienda oficial Sugarbay"
-        description="Ropa, accesorios y media con filtros avanzados, ordenacion y paginacion."
-      />
-
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow="Store"
+          title="Tienda oficial Sugarbay"
+          description="Ropa, accesorios y media con filtros avanzados, ordenacion y paginacion."
+        />
+      )}
+    >
       <section className="grid gap-6 lg:grid-cols-[300px_1fr]">
         <StoreFiltersSidebar
           categories={catalog.categories}
@@ -61,7 +64,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
           )}
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }
 

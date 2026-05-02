@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import VideoCollectionViewer from "@/components/media/video-collection-viewer";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { getVideoDetailBySlug } from "@/lib/repositories/media";
 import { formatDate } from "@/lib/utils";
 
@@ -48,13 +49,15 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
 
   if (detail.kind === "collection") {
     return (
-      <div className="space-y-6">
-        <PageHero
-          eyebrow="Media / Videos"
-          title={detail.title}
-          description={detail.description ?? "Coleccion de videos oficiales de Sugarbay."}
-        />
-
+      <PageShell
+        hero={(
+          <PageHero
+            eyebrow="Media / Videos"
+            title={detail.title}
+            description={detail.description ?? "Coleccion de videos oficiales de Sugarbay."}
+          />
+        )}
+      >
         <div className="flex flex-wrap gap-2">
           <Link
             href="/media/videos"
@@ -68,17 +71,20 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
         </div>
 
         <VideoCollectionViewer videos={detail.videos} />
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Media / Videos"
-        title={detail.title}
-        description={detail.description ?? "Video oficial de Sugarbay."}
-      />
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow="Media / Videos"
+          title={detail.title}
+          description={detail.description ?? "Video oficial de Sugarbay."}
+        />
+      )}
+    >
 
         <div className="flex flex-wrap gap-2">
           <Link
@@ -114,6 +120,6 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
           <p>Plataforma: {detail.video.platform}</p>
         </div>
       </article>
-    </div>
+    </PageShell>
   );
 }

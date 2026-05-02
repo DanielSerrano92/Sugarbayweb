@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import LoginForm from "@/components/auth/login-form";
 import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { getSessionUser } from "@/lib/auth/dal";
 
 export const metadata: Metadata = {
@@ -29,13 +30,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const redirectTo = pickRedirect(params.redirect);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Acceso"
-        title="Inicia sesion"
-        description="Accede a tu cuenta para gestionar carrito, checkout y tu perfil."
-      />
-
+    <PageShell
+      hero={(
+        <PageHero
+          eyebrow="Acceso"
+          title="Inicia sesion"
+          description="Accede a tu cuenta para gestionar carrito, checkout y tu perfil."
+        />
+      )}
+    >
       <section className="mx-auto w-full max-w-lg sb-window rounded-2xl p-6">
         <LoginForm redirectTo={redirectTo} />
         <p className="mt-4 text-sm text-zinc-600">
@@ -45,7 +48,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </Link>
         </p>
       </section>
-    </div>
+    </PageShell>
   );
 }
 
