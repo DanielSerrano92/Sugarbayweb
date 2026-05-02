@@ -1,6 +1,7 @@
 import ConcertCardsClient from "@/components/concerts/concert-cards-client";
 import ConcertFilters from "@/components/concerts/concert-filters";
 import ConcertPagination from "@/components/concerts/concert-pagination";
+import ConcertsNavigationLink from "@/components/concerts/concerts-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
 import { getConcertCatalog } from "@/lib/repositories/concerts";
@@ -38,6 +39,10 @@ export default async function ConcertsCatalogPage({
   const params = await searchParams;
   const pageMeta = resolvePageMeta(period);
   const catalog = await getConcertCatalog(period, params);
+  const navigationLink =
+    period === "upcoming"
+      ? { href: "/concerts/past", label: "Anteriores" }
+      : { href: "/concerts/upcoming", label: "Próximos" };
 
   return (
     <PageShell
@@ -74,6 +79,11 @@ export default async function ConcertsCatalogPage({
         ) : (
           <ConcertCardsClient period={period} concerts={catalog.concerts} />
         )}
+
+        <ConcertsNavigationLink
+          href={navigationLink.href}
+          label={navigationLink.label}
+        />
       </section>
     </PageShell>
   );

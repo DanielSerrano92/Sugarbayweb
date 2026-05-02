@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import AppModal from "@/components/ui/app-modal";
 import type { ConcertCardView, ConcertPeriod } from "@/lib/concerts/types";
 import { formatDate } from "@/lib/utils";
 
@@ -30,13 +29,21 @@ function RetroHouseIcon() {
   );
 }
 
-function ExternalLink({ href, label }: { href: string; label: string }) {
+function ExternalLink({
+  href,
+  label,
+  className = "retro-card-action",
+}: {
+  href: string;
+  label: string;
+  className?: string;
+}) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="retro-card-action"
+      className={className}
     >
       {label}
     </a>
@@ -53,6 +60,26 @@ export default function ConcertCardsClient({
     () => concerts.find((concert) => concert.id === selectedConcertId) ?? null,
     [concerts, selectedConcertId],
   );
+
+  useEffect(() => {
+    if (!selectedConcert) return;
+
+    const originalOverflow = document.body.style.overflow;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedConcertId(null);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [selectedConcert]);
 
   return (
     <>
@@ -141,108 +168,146 @@ export default function ConcertCardsClient({
       </div>
 
       {selectedConcert ? (
-        <AppModal
-          title={selectedConcert.title}
-          onClose={() => setSelectedConcertId(null)}
-          maxWidth="1220px"
-          overlayOpacity={0.3}
-        >
-          <div>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                  {selectedConcert.countryLabel} - {selectedConcert.city}
-                </p>
-                <h3 className="mt-2 text-2xl font-black text-zinc-900">
-                  {selectedConcert.title}
-                </h3>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/70"
+            aria-label="Cerrar modal de informacion"
+            onClick={() => setSelectedConcertId(null)}
+          />
+
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="concert-modal-title"
+            className="win-window relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto p-0"
+          >
+            <div className="win-titlebar flex items-center justify-between gap-4">
+              <span>Detalle concierto</span>
+              <button
+                type="button"
+                onClick={() => setSelectedConcertId(null)}
+                className="win-button text-xs"
+              >
+                Cerrar
+              </button>
             </div>
 
-            <p className="mt-3 text-sm text-zinc-700">{selectedConcert.description}</p>
-
-            <div className="mt-4">
-              <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-zinc-700">
-                Tipos de experiencia / entradas
-              </h4>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {selectedConcert.experiences.map((experience) => (
-                  <span
-                    key={experience}
-                    className="rounded-full border border-zinc-300 px-3 py-1 text-xs font-semibold text-zinc-700"
-                  >
-                    {experience}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <section className="sb-panel-soft mt-5 rounded-2xl p-4">
-              <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-zinc-700">
-                Lugar del evento
-              </h4>
-
-              {selectedConcert.venueDetails.photoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={selectedConcert.venueDetails.photoUrl}
-                  alt={selectedConcert.venueDetails.name}
-                  className="mt-3 h-48 w-full rounded-xl object-cover"
-                  loading="lazy"
-                />
-              ) : null}
-
-              <p className="mt-3 text-sm font-semibold text-zinc-900">
-                {selectedConcert.venueDetails.name}
-              </p>
-              <p className="mt-1 text-sm text-zinc-700">
-                {selectedConcert.venueDetails.description}
-              </p>
-
-              <div className="mt-3 flex flex-wrap gap-2">
-                <ExternalLink href={selectedConcert.venueDetails.googleMapsUrl} label="Google Maps" />
-                {selectedConcert.venueDetails.websiteUrl ? (
-                  <ExternalLink href={selectedConcert.venueDetails.websiteUrl} label="Web oficial" />
-                ) : null}
-                {selectedConcert.venueDetails.contacts.map((contact) => (
-                  <ExternalLink key={contact.url} href={contact.url} label={contact.label} />
-                ))}
-              </div>
-            </section>
-
-            {period === "past" && selectedConcert.pastDetails ? (
-              <section className="sb-panel-soft mt-5 space-y-4 rounded-2xl p-4">
+            <div className="space-y-4 p-5 text-black">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-zinc-700">
-                    Cronica
-                  </h4>
-                  <p className="mt-2 text-sm text-zinc-700">
-                    {selectedConcert.pastDetails.chronicle}
+                  <p className="text-xs uppercase tracking-[0.2em] text-black">
+                    {selectedConcert.countryLabel} - {selectedConcert.city}
                   </p>
+                  <h3
+                    id="concert-modal-title"
+                    className="mt-2 text-2xl font-black text-black"
+                  >
+                    {selectedConcert.title}
+                  </h3>
                 </div>
+              </div>
 
-                {selectedConcert.pastDetails.tracklist.length > 0 ? (
-                  <div>
-                    <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-zinc-700">
-                      Tracklist
-                    </h4>
-                    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-zinc-800">
-                      {selectedConcert.pastDetails.tracklist.map((track) => (
-                        <li key={track}>{track}</li>
-                      ))}
-                    </ol>
-                  </div>
+              <p className="mt-3 text-sm text-black">{selectedConcert.description}</p>
+
+              <div className="mt-4">
+                <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-black">
+                  Tipos de experiencia / entradas
+                </h4>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {selectedConcert.experiences.map((experience) => (
+                    <span key={experience} className="win-button px-2 py-1 text-xs">
+                      {experience}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <section className="win-window mt-5 p-4">
+                <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-black">
+                  Lugar del evento
+                </h4>
+
+                {selectedConcert.venueDetails.photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={selectedConcert.venueDetails.photoUrl}
+                    alt={selectedConcert.venueDetails.name}
+                    className="mt-3 h-48 w-full object-cover"
+                    loading="lazy"
+                  />
                 ) : null}
 
-                <div className="flex flex-wrap gap-2">
-                  {selectedConcert.pastDetails.links.map((link) => (
-                    <ExternalLink key={link.url} href={link.url} label={link.label} />
+                <p className="mt-3 text-sm font-semibold text-black">
+                  {selectedConcert.venueDetails.name}
+                </p>
+                <p className="mt-1 text-sm text-zinc-700">
+                  {selectedConcert.venueDetails.description}
+                </p>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <ExternalLink
+                    href={selectedConcert.venueDetails.googleMapsUrl}
+                    label="Google Maps"
+                    className="win-button"
+                  />
+                  {selectedConcert.venueDetails.websiteUrl ? (
+                    <ExternalLink
+                      href={selectedConcert.venueDetails.websiteUrl}
+                      label="Web oficial"
+                      className="win-button"
+                    />
+                  ) : null}
+                  {selectedConcert.venueDetails.contacts.map((contact) => (
+                    <ExternalLink
+                      key={contact.url}
+                      href={contact.url}
+                      label={contact.label}
+                      className="win-button"
+                    />
                   ))}
                 </div>
               </section>
-            ) : null}
-          </div>
-        </AppModal>
+
+              {period === "past" && selectedConcert.pastDetails ? (
+                <section className="win-window mt-5 p-4">
+                  <div>
+                    <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-black">
+                      Cronica
+                    </h4>
+                    <p className="mt-2 text-sm text-black">
+                      {selectedConcert.pastDetails.chronicle}
+                    </p>
+                  </div>
+
+                  {selectedConcert.pastDetails.tracklist.length > 0 ? (
+                    <div>
+                      <h4 className="text-sm font-bold uppercase tracking-[0.12em] text-black">
+                        Tracklist
+                      </h4>
+                      <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-black">
+                        {selectedConcert.pastDetails.tracklist.map((track) => (
+                          <li key={track}>{track}</li>
+                        ))}
+                      </ol>
+                    </div>
+                  ) : null}
+
+                  <div className="flex flex-wrap gap-2">
+                    {selectedConcert.pastDetails.links.map((link) => (
+                      <ExternalLink
+                        key={link.url}
+                        href={link.url}
+                        label={link.label}
+                        className="win-button"
+                      />
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+            </div>
+          </section>
+        </div>
       ) : null}
     </>
   );
