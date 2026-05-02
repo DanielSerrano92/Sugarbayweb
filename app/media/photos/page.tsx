@@ -5,7 +5,6 @@ import Link from "next/link";
 import PhotoFilters from "@/components/media/photo-filters";
 import PhotoPagination from "@/components/media/photo-pagination";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import type { MediaPhotoQueryParams } from "@/lib/media/types";
 import { getPhotoAlbumsCatalog } from "@/lib/repositories/media";
@@ -27,13 +26,9 @@ export default async function MediaPhotosPage({ searchParams }: MediaPhotosPageP
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Media / Fotos"
-          title="Albumes de fotos"
-          description="Galerias oficiales de Sugarbay con filtros por fecha, tipo y orden."
-        />
-      )}
+      eyebrow="Media / Fotos"
+      title="Albumes de fotos"
+      description="Galerias oficiales de Sugarbay con filtros por fecha, tipo y orden."
     >
       <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <PhotoFilters basePath="/media/photos" filters={catalog.filters} />

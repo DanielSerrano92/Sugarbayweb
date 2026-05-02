@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { getCurrentUser, requireSession } from "@/lib/auth/dal";
 import { formatDate } from "@/lib/utils";
@@ -17,13 +16,9 @@ export default async function AccountPage() {
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Mi cuenta"
-          title={`Hola, ${user?.firstName ?? "Fan"}`}
-          description="Revisa tus datos de perfil y continua tu experiencia Sugarbay."
-        />
-      )}
+      eyebrow="Mi cuenta"
+      title={`Hola, ${user?.firstName ?? "Fan"}`}
+      description="Revisa tus datos de perfil y continua tu experiencia Sugarbay."
     >
       <section className="grid gap-4 md:grid-cols-2">
         <article className="sb-panel rounded-2xl p-5">

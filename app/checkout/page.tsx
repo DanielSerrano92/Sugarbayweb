@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import CheckoutFlow from "@/components/checkout/checkout-flow";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { requireSession } from "@/lib/auth/dal";
 import { getCartForUser } from "@/lib/repositories/cart";
@@ -37,13 +36,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Checkout"
-          title="Finalizar compra"
-          description="Valida envio y facturacion antes de pasar al pago seguro con Stripe."
-        />
-      )}
+      eyebrow="Checkout"
+      title="Finalizar compra"
+      description="Valida envio y facturacion antes de pasar al pago seguro con Stripe."
     >
       {paymentErrorMessage ? (
         <p className="sb-panel-soft rounded-2xl border border-amber-200 px-4 py-3 text-sm text-amber-900">

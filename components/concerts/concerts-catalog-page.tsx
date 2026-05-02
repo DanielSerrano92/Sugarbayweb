@@ -2,7 +2,6 @@ import ConcertCardsClient from "@/components/concerts/concert-cards-client";
 import ConcertFilters from "@/components/concerts/concert-filters";
 import ConcertPagination from "@/components/concerts/concert-pagination";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { getConcertCatalog } from "@/lib/repositories/concerts";
 import type { ConcertPeriod, ConcertQueryParams } from "@/lib/concerts/types";
@@ -42,13 +41,9 @@ export default async function ConcertsCatalogPage({
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow={pageMeta.eyebrow}
-          title={pageMeta.title}
-          description={pageMeta.description}
-        />
-      )}
+      eyebrow={pageMeta.eyebrow}
+      title={pageMeta.title}
+      description={pageMeta.description}
     >
       <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <ConcertFilters

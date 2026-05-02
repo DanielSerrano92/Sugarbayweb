@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import VideoCollectionViewer from "@/components/media/video-collection-viewer";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { getVideoDetailBySlug } from "@/lib/repositories/media";
 import { formatDate } from "@/lib/utils";
@@ -50,13 +49,9 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
   if (detail.kind === "collection") {
     return (
       <PageShell
-        hero={(
-          <PageHero
-            eyebrow="Media / Videos"
-            title={detail.title}
-            description={detail.description ?? "Coleccion de videos oficiales de Sugarbay."}
-          />
-        )}
+        eyebrow="Media / Videos"
+        title={detail.title}
+        description={detail.description ?? "Coleccion de videos oficiales de Sugarbay."}
       >
         <div className="flex flex-wrap gap-2">
           <Link
@@ -77,13 +72,9 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Media / Videos"
-          title={detail.title}
-          description={detail.description ?? "Video oficial de Sugarbay."}
-        />
-      )}
+      eyebrow="Media / Videos"
+      title={detail.title}
+      description={detail.description ?? "Video oficial de Sugarbay."}
     >
 
         <div className="flex flex-wrap gap-2">

@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import ProductCard from "@/components/shop/product-card";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { getHomeSnapshot } from "@/lib/repositories/site";
 import { formatDate } from "@/lib/utils";
@@ -19,29 +18,25 @@ export default async function HomePage() {
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Web oficial"
-          title="Sugarbay en directo, en streaming y en tu armario"
-          description="Bienvenido al nuevo espacio de Sugarbay. Descubre conciertos, escucha la msica ms reciente y visita la tienda oficial con drops exclusivos."
-          actions={
-            <>
-              <Link
-                href="/concerts/upcoming"
-                className="sb-btn-primary px-4 py-2.5 text-sm font-bold"
-              >
-                Ver Proximos conciertos
-              </Link>
-              <Link
-                href="/store"
-                className="sb-btn-secondary px-4 py-2.5 text-sm font-semibold text-zinc-200"
-              >
-                Ir a la tienda
-              </Link>
-            </>
-          }
-        />
-      )}
+      eyebrow="Web oficial"
+      title="Sugarbay en directo, en streaming y en tu armario"
+      description="Bienvenido al nuevo espacio de Sugarbay. Descubre conciertos, escucha la msica ms reciente y visita la tienda oficial con drops exclusivos."
+      actions={
+        <>
+          <Link
+            href="/concerts/upcoming"
+            className="sb-btn-primary px-4 py-2.5 text-sm font-bold"
+          >
+            Ver Proximos conciertos
+          </Link>
+          <Link
+            href="/store"
+            className="sb-btn-secondary px-4 py-2.5 text-sm font-semibold text-zinc-200"
+          >
+            Ir a la tienda
+          </Link>
+        </>
+      }
       contentClassName="space-y-8"
     >
           <section className="space-y-4">

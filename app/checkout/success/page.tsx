@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import PageShell from "@/components/ui/page-shell";
 import { requireSession } from "@/lib/auth/dal";
 import {
   getOrderSummaryBySession,
@@ -42,85 +43,97 @@ export default async function CheckoutSuccessPage({
   const isFailed = order?.paymentStatus === "FAILED";
 
   return (
-    <section
-      className={`mx-auto max-w-3xl rounded-3xl border p-8 text-center shadow-[0_20px_36px_rgba(6,3,18,0.52)] ${
+    <PageShell
+      eyebrow="Checkout"
+      title={
         isPaid
-          ? "border-emerald-200 bg-emerald-50"
-          : isFailed
-            ? "border-red-200 bg-red-50"
-            : "border-amber-200 bg-amber-50"
-      }`}
-    >
-      <p
-        className={`text-xs uppercase tracking-[0.3em] ${
-          isPaid
-            ? "text-emerald-700"
-            : isFailed
-              ? "text-red-700"
-              : "text-amber-700"
-        }`}
-      >
-        {isPaid
-          ? "Pago confirmado"
-          : isFailed
-            ? "Pago no completado"
-            : "Procesando pago"}
-      </p>
-      <h1
-        className={`mt-2 text-3xl font-black ${
-          isPaid
-            ? "text-emerald-900"
-            : isFailed
-              ? "text-red-900"
-              : "text-amber-900"
-        }`}
-      >
-        {isPaid
           ? "Gracias por tu compra"
           : isFailed
             ? "No pudimos confirmar tu pago"
-            : "Estamos confirmando tu pedido"}
-      </h1>
-
-      {order ? (
+            : "Estamos confirmando tu pedido"
+      }
+      description="Estado final de tu pedido y pago en Sugarbay."
+    >
+      <section
+        className={`mx-auto max-w-3xl rounded-3xl border p-8 text-center shadow-[0_20px_36px_rgba(6,3,18,0.52)] ${
+          isPaid
+            ? "border-emerald-200 bg-emerald-50"
+            : isFailed
+              ? "border-red-200 bg-red-50"
+              : "border-amber-200 bg-amber-50"
+        }`}
+      >
         <p
-          className={`mt-3 text-sm ${
+          className={`text-xs uppercase tracking-[0.3em] ${
             isPaid
-              ? "text-emerald-900/80"
+              ? "text-emerald-700"
               : isFailed
-                ? "text-red-900/80"
-                : "text-amber-900/80"
+                ? "text-red-700"
+                : "text-amber-700"
           }`}
         >
-          Pedido #{order.orderNumber} por{" "}
-          {formatCurrency(order.totalAmount, order.currency)}.
+          {isPaid
+            ? "Pago confirmado"
+            : isFailed
+              ? "Pago no completado"
+              : "Procesando pago"}
         </p>
-      ) : (
-        <p className="mt-3 text-sm text-zinc-700">
-          Aun no encontramos el pedido asociado. Si acabas de pagar, refresca en
-          unos segundos.
-        </p>
-      )}
-
-      {sessionId ? (
-        <p className="mt-2 text-xs text-zinc-600">Session: {sessionId}</p>
-      ) : null}
-
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <Link
-          href="/account"
-          className="sb-btn-primary px-4 py-2.5 text-sm font-semibold"
+        <h1
+          className={`mt-2 text-3xl font-black ${
+            isPaid
+              ? "text-emerald-900"
+              : isFailed
+                ? "text-red-900"
+                : "text-amber-900"
+          }`}
         >
-          Ver mi cuenta
-        </Link>
-        <Link
-          href={isFailed ? "/checkout?payment=failed" : "/store"}
-          className="sb-btn-secondary px-4 py-2.5 text-sm font-semibold text-zinc-200"
-        >
-          {isFailed ? "Reintentar checkout" : "Volver a la tienda"}
-        </Link>
-      </div>
-    </section>
+          {isPaid
+            ? "Gracias por tu compra"
+            : isFailed
+              ? "No pudimos confirmar tu pago"
+              : "Estamos confirmando tu pedido"}
+        </h1>
+
+        {order ? (
+          <p
+            className={`mt-3 text-sm ${
+              isPaid
+                ? "text-emerald-900/80"
+                : isFailed
+                  ? "text-red-900/80"
+                  : "text-amber-900/80"
+            }`}
+          >
+            Pedido #{order.orderNumber} por{" "}
+            {formatCurrency(order.totalAmount, order.currency)}.
+          </p>
+        ) : (
+          <p className="mt-3 text-sm text-zinc-700">
+            Aun no encontramos el pedido asociado. Si acabas de pagar, refresca en
+            unos segundos.
+          </p>
+        )}
+
+        {sessionId ? (
+          <p className="mt-2 text-xs text-zinc-600">Session: {sessionId}</p>
+        ) : null}
+
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link
+            href="/account"
+            className="sb-btn-primary px-4 py-2.5 text-sm font-semibold"
+          >
+            Ver mi cuenta
+          </Link>
+          <Link
+            href={isFailed ? "/checkout?payment=failed" : "/store"}
+            className="sb-btn-secondary px-4 py-2.5 text-sm font-semibold text-zinc-200"
+          >
+            {isFailed ? "Reintentar checkout" : "Volver a la tienda"}
+          </Link>
+        </div>
+      </section>
+    </PageShell>
   );
 }
 

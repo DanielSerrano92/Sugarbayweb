@@ -1,22 +1,31 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 type PageShellProps = {
-  hero: ReactNode;
+  title: string;
+  eyebrow?: string;
+  description?: string;
+  actions?: ReactNode;
   children: ReactNode;
   contentClassName?: string;
   sectionClassName?: string;
 };
 
 const DEFAULT_CONTENT_CLASS_NAME = "space-y-6";
+const PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/proximos.png?tr=w-2400,h-760,cm-extract,fo-top&updatedAt=1777405652441";
 
 export default function PageShell({
-  hero,
+  title,
+  eyebrow,
+  description,
+  actions,
   children,
   contentClassName,
   sectionClassName,
 }: PageShellProps) {
   const sectionClasses = [
-    "sb-home-content-background",
+    "page-background",
     "relative",
     "flex-1",
     "w-screen",
@@ -26,30 +35,39 @@ export default function PageShell({
     .join(" ");
 
   const contentClasses = [
-    "relative",
-    "z-10",
-    "mx-auto",
-    "w-full",
-    "max-w-7xl",
-    "px-4",
-    "py-6",
-    "lg:px-8",
-    "lg:py-8",
+    "page-content-wrapper",
     contentClassName ?? DEFAULT_CONTENT_CLASS_NAME,
   ].join(" ");
 
   return (
-    <div className="flex min-h-full flex-1 flex-col">
-      {hero}
-      <section
-        className={sectionClasses}
-        style={{
-          marginLeft: "calc(50% - 50vw)",
-          marginRight: "calc(50% - 50vw)",
-        }}
-      >
-        <div className={contentClasses}>{children}</div>
-      </section>
-    </div>
+    <section
+      className={sectionClasses}
+      style={{
+        marginLeft: "calc(50% - 50vw)",
+        marginRight: "calc(50% - 50vw)",
+      }}
+    >
+      <div className="page-header-image">
+        <Image
+          src={PAGE_HEADER_IMAGE_SRC}
+          alt={`Cabecera ${title}`}
+          width={2400}
+          height={760}
+          priority
+          sizes="100vw"
+          unoptimized
+          className="page-header-img"
+        />
+      </div>
+      <h1 className="sr-only">{title}</h1>
+      {eyebrow || description || actions ? (
+        <div className="sr-only">
+          {eyebrow ? <p>{eyebrow}</p> : null}
+          {description ? <p>{description}</p> : null}
+          {actions ? <div>{actions}</div> : null}
+        </div>
+      ) : null}
+      <div className={contentClasses}>{children}</div>
+    </section>
   );
 }

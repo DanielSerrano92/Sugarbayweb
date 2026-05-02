@@ -3,7 +3,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import RegisterForm from "@/components/auth/register-form";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { getSessionUser } from "@/lib/auth/dal";
 
@@ -31,13 +30,9 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Registro"
-          title="Crea tu cuenta Sugarbay"
-          description="Registrate para comprar en tienda, guardar tu carrito y completar checkout."
-        />
-      )}
+      eyebrow="Registro"
+      title="Crea tu cuenta Sugarbay"
+      description="Registrate para comprar en tienda, guardar tu carrito y completar checkout."
     >
       <section className="mx-auto w-full max-w-lg sb-window rounded-2xl p-6">
         <RegisterForm redirectTo={redirectTo} />

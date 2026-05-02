@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import CartLineItem from "@/components/cart/cart-line-item";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { requireSession } from "@/lib/auth/dal";
 import { clearCartAction } from "@/lib/cart/actions";
@@ -21,13 +20,9 @@ export default async function CarritoPage() {
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Carrito"
-          title="Tu seleccion"
-          description="Revisa cantidades, ajusta productos y contina al checkout seguro con Stripe."
-        />
-      )}
+      eyebrow="Carrito"
+      title="Tu seleccion"
+      description="Revisa cantidades, ajusta productos y contina al checkout seguro con Stripe."
     >
       {cart.items.length === 0 ? (
         <EmptyState

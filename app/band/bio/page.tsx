@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import BandBioModals from "@/components/band/band-bio-modals";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 
 export const metadata: Metadata = {
@@ -12,13 +11,9 @@ export const metadata: Metadata = {
 export default function BandBioPage() {
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Band"
-          title="Bio de Sugarbay"
-          description="Explora la historia de la banda y conoce a sus miembros y colaboradores."
-        />
-      )}
+      eyebrow="Band"
+      title="Bio de Sugarbay"
+      description="Explora la historia de la banda y conoce a sus miembros y colaboradores."
     >
       <BandBioModals />
     </PageShell>

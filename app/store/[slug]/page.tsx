@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import StoreProductDetailPanel from "@/components/store/store-product-detail-panel";
 import StoreProductCard from "@/components/store/store-product-card";
+import PageShell from "@/components/ui/page-shell";
 import {
   getRelatedStoreProducts,
   getStoreProductBySlug,
@@ -46,7 +47,15 @@ export default async function StoreProductPage({ params }: StoreProductPageProps
   );
 
   return (
-    <div className="space-y-8">
+    <PageShell
+      eyebrow="Store"
+      title={product.name}
+      description={
+        product.description ??
+        `Producto oficial de Sugarbay en la categoria ${product.category.name}.`
+      }
+      contentClassName="space-y-8"
+    >
       <StoreProductDetailPanel product={product} />
 
       {relatedProducts.length > 0 ? (
@@ -59,6 +68,6 @@ export default async function StoreProductPage({ params }: StoreProductPageProps
           </div>
         </section>
       ) : null}
-    </div>
+    </PageShell>
   );
 }

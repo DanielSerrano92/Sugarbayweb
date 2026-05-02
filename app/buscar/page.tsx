@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 import { searchHeaderContent } from "@/lib/repositories/search";
 import { formatCurrency } from "@/lib/utils";
@@ -36,17 +35,13 @@ export default async function BuscarPage({ searchParams }: SearchPageProps) {
 
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Busqueda"
-          title="Resultados"
-          description={
-            query
-              ? `Mostrando coincidencias para "${query}".`
-              : "Busca paginas y productos desde el header."
-          }
-        />
-      )}
+      eyebrow="Busqueda"
+      title="Resultados"
+      description={
+        query
+          ? `Mostrando coincidencias para "${query}".`
+          : "Busca paginas y productos desde el header."
+      }
     >
       {!query ? (
         <EmptyState

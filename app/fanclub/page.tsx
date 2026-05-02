@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/ui/page-hero";
 import PageShell from "@/components/ui/page-shell";
 
 export const metadata: Metadata = {
@@ -10,13 +9,9 @@ export const metadata: Metadata = {
 export default function FanclubPage() {
   return (
     <PageShell
-      hero={(
-        <PageHero
-          eyebrow="Fanclub"
-          title="Sugarbay Fanclub"
-          description="Estamos preparando una experiencia exclusiva para la comunidad: preventas, contenido indito, sorteos y encuentros."
-        />
-      )}
+      eyebrow="Fanclub"
+      title="Sugarbay Fanclub"
+      description="Estamos preparando una experiencia exclusiva para la comunidad: preventas, contenido indito, sorteos y encuentros."
     >
       <section className="relative overflow-hidden rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-100 via-orange-100 to-pink-100 p-8">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(127,82,255,0.3),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(255,141,75,0.25),transparent_45%)]" />
