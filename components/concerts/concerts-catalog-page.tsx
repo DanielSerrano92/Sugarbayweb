@@ -45,34 +45,35 @@ export default async function ConcertsCatalogPage({
       title={pageMeta.title}
       description={pageMeta.description}
     >
-      <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
-        <ConcertFilters
-          basePath={pageMeta.basePath}
-          filters={catalog.filters}
-          availableCountries={catalog.availableCountries}
-        />
-
-        <div>
-          <p className="mb-4 text-sm text-zinc-600">
-            Mostrando {catalog.concerts.length} de {catalog.totalItems} conciertos.
-          </p>
-
-          {catalog.concerts.length === 0 ? (
-            <EmptyState
-              title="No hay conciertos con estos filtros"
-              description="Prueba cambiando rango de fechas o ubicacion."
+      <section>
+        <div className="mb-5 flex justify-end">
+          <div className="concert-top-controls">
+            <ConcertFilters
+              basePath={pageMeta.basePath}
+              filters={catalog.filters}
+              availableCountries={catalog.availableCountries}
+              mode="icon-modal"
             />
-          ) : (
-            <>
-              <ConcertCardsClient period={period} concerts={catalog.concerts} />
-              <ConcertPagination
-                basePath={pageMeta.basePath}
-                filters={catalog.filters}
-                totalPages={catalog.totalPages}
-              />
-            </>
-          )}
+            <ConcertPagination
+              basePath={pageMeta.basePath}
+              filters={catalog.filters}
+              totalPages={catalog.totalPages}
+            />
+          </div>
         </div>
+
+        <p className="mb-4 text-sm text-zinc-600">
+          Mostrando {catalog.concerts.length} de {catalog.totalItems} conciertos.
+        </p>
+
+        {catalog.concerts.length === 0 ? (
+          <EmptyState
+            title="No hay conciertos con estos filtros"
+            description="Prueba cambiando rango de fechas o ubicacion."
+          />
+        ) : (
+          <ConcertCardsClient period={period} concerts={catalog.concerts} />
+        )}
       </section>
     </PageShell>
   );

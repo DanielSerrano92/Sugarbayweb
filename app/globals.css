@@ -745,6 +745,87 @@ p {
     padding: 1.5rem 1rem;
   }
 
+  .concert-top-controls {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.72rem;
+    max-width: 100%;
+  }
+
+  .concert-filter-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .concert-filter-icon-btn > svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .concert-pagination-shell {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .concert-pagination-arrow {
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    border: 1px solid #5b4a8f;
+    background: linear-gradient(180deg, #1d1738 0%, #151129 100%);
+    color: #fff !important;
+    font-size: 0.72rem;
+    font-weight: 700;
+    transition: transform 0.16s ease, border-color 0.16s ease;
+  }
+
+  .concert-pagination-arrow:hover {
+    transform: translateY(-1px);
+    border-color: #7f67bf;
+  }
+
+  .concert-pagination-pages {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.15rem;
+    border-radius: 0.85rem;
+    border: 1px solid #5b4a8f;
+    background: linear-gradient(180deg, #1d1738 0%, #151129 100%);
+    padding: 0 0.75rem;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
+  }
+
+  .concert-pagination-page,
+  .concert-pagination-ellipsis {
+    color: #f5f2ff !important;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .concert-pagination-page.is-active {
+    color: #98f7f3 !important;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .concert-pagination-separator {
+    margin: 0 0.3rem;
+    color: #d6cffa;
+    font-size: 0.78rem;
+    line-height: 1;
+  }
+
   @media (min-width: 1024px) {
     .page-content-wrapper {
       padding: 2rem;

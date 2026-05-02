@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 
 import { serializeConcertFilters } from "@/lib/concerts/filters";
@@ -7,6 +8,7 @@ type ConcertPaginationProps = {
   basePath: string;
   filters: ConcertFilters;
   totalPages: number;
+  className?: string;
 };
 
 function buildHref(basePath: string, filters: ConcertFilters, page: number): string {
@@ -30,50 +32,57 @@ export default function ConcertPagination({
   basePath,
   filters,
   totalPages,
+  className,
 }: ConcertPaginationProps) {
   if (totalPages <= 1) return null;
 
-  const currentPage = filters.page;
+  const effectiveTotalPages = Math.max(1, totalPages);
+  const currentPage = Math.min(Math.max(1, filters.page), effectiveTotalPages);
   const previousPage = Math.max(1, currentPage - 1);
-  const nextPage = Math.min(totalPages, currentPage + 1);
-  const visiblePages = getVisiblePages(currentPage, totalPages);
+  const nextPage = Math.min(effectiveTotalPages, currentPage + 1);
+  const visiblePages = getVisiblePages(currentPage, effectiveTotalPages);
 
   return (
-    <nav aria-label="Paginacion de conciertos" className="mt-6 flex flex-wrap items-center gap-2">
+    <nav
+      aria-label="Paginacion de conciertos"
+      className={["concert-pagination-shell", className].filter(Boolean).join(" ")}
+    >
       <Link
         href={buildHref(basePath, filters, previousPage)}
-        className={`rounded-xl border px-3 py-2 text-sm font-medium ${
-          currentPage === 1
-            ? "pointer-events-none border-zinc-200 text-zinc-400"
-            : "sb-btn-secondary text-zinc-200"
+        className={`concert-pagination-arrow ${
+          currentPage === 1 ? "pointer-events-none opacity-50" : ""
         }`}
       >
-        Anterior
+        <span aria-hidden="true">&lt;</span>
       </Link>
 
-      {visiblePages.map((page) => (
-        <Link
-          key={page}
-          href={buildHref(basePath, filters, page)}
-          className={`rounded-xl border px-3 py-2 text-sm font-semibold ${
-            page === currentPage
-              ? "border-emerald-700 bg-emerald-700 text-white shadow-[0_8px_20px_rgba(50,30,120,0.45)]"
-              : "sb-btn-secondary text-zinc-200"
-          }`}
-        >
-          {page}
-        </Link>
-      ))}
+      <div className="concert-pagination-pages">
+        {visiblePages.map((page, index) => (
+          <Fragment key={page}>
+            {index > 0 ? <span className="concert-pagination-separator">,</span> : null}
+            <Link
+              href={buildHref(basePath, filters, page)}
+              className={`concert-pagination-page ${page === currentPage ? "is-active" : ""}`}
+            >
+              {page}
+            </Link>
+          </Fragment>
+        ))}
+        {visiblePages[visiblePages.length - 1] < effectiveTotalPages ? (
+          <>
+            <span className="concert-pagination-separator">,</span>
+            <span className="concert-pagination-ellipsis">...</span>
+          </>
+        ) : null}
+      </div>
 
       <Link
         href={buildHref(basePath, filters, nextPage)}
-        className={`rounded-xl border px-3 py-2 text-sm font-medium ${
-          currentPage === totalPages
-            ? "pointer-events-none border-zinc-200 text-zinc-400"
-            : "sb-btn-secondary text-zinc-200"
+        className={`concert-pagination-arrow ${
+          currentPage === effectiveTotalPages ? "pointer-events-none opacity-50" : ""
         }`}
       >
-        Siguiente
+        <span aria-hidden="true">&gt;</span>
       </Link>
     </nav>
   );
