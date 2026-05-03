@@ -92,10 +92,9 @@ body {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(1200px 560px at 92% -12%, rgb(127 82 255 / 22%), transparent 62%),
-    radial-gradient(900px 520px at -12% 100%, rgb(59 165 255 / 24%), transparent 60%),
-    radial-gradient(840px 420px at 55% 112%, rgb(255 141 75 / 18%), transparent 64%),
-    linear-gradient(160deg, var(--sb-bg-main), var(--sb-bg-deep) 72%);
+    radial-gradient(circle at 20% 20%, rgb(78 52 180 / 35%), transparent 28%),
+    radial-gradient(circle at 80% 10%, rgb(23 148 214 / 30%), transparent 26%),
+    linear-gradient(180deg, #16155f 0%, #0b0b2f 100%);
   color: var(--sb-ink);
   font-family: var(--font-sans-custom);
 }
@@ -118,7 +117,7 @@ body::before {
       transparent 1px
     );
   background-size: 72px 72px;
-  opacity: 0.26;
+  opacity: 0.12;
   mask-image: radial-gradient(circle at center, black 36%, transparent 100%);
 }
 

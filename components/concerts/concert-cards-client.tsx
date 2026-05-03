@@ -44,6 +44,7 @@ function ExternalLink({
       target="_blank"
       rel="noreferrer"
       className={className}
+      className={className}
     >
       {label}
     </a>
@@ -84,11 +85,30 @@ export default function ConcertCardsClient({
   return (
     <>
       <div className="grid grid-cols-1 justify-items-center gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 justify-items-center gap-6 md:grid-cols-2 lg:grid-cols-3">
         {concerts.map((concert) => (
           <article
             key={concert.id}
             className="retro-concert-card w-full max-w-[280px] overflow-hidden"
+            className="retro-concert-card w-full max-w-[280px] overflow-hidden"
           >
+            <div className="retro-concert-header">
+              {concert.city}, {concert.countryLabel}
+            </div>
+
+            <div className="retro-concert-body">
+              <h2 className="retro-concert-title">{concert.title}</h2>
+
+              <div className="retro-concert-row">
+                <RetroCalendarIcon />
+                <span>
+                  {formatDate(concert.startsAtIso, "es-ES", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
             <div className="retro-concert-header">
               {concert.city}, {concert.countryLabel}
             </div>
@@ -116,9 +136,27 @@ export default function ConcertCardsClient({
                 <RetroHouseIcon />
                 <span className="retro-concert-location">{concert.locationLabel}</span>
               </a>
+              <a
+                href={concert.googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="retro-concert-row retro-concert-link"
+              >
+                <RetroHouseIcon />
+                <span className="retro-concert-location">{concert.locationLabel}</span>
+              </a>
 
               <p className="retro-concert-description">{concert.description}</p>
+              <p className="retro-concert-description">{concert.description}</p>
 
+              <div className="retro-card-actions">
+                <button
+                  type="button"
+                  onClick={() => setSelectedConcertId(concert.id)}
+                  className="retro-card-action"
+                >
+                  {concert.infoButtonLabel}
+                </button>
               <div className="retro-card-actions">
                 <button
                   type="button"
@@ -181,12 +219,15 @@ export default function ConcertCardsClient({
             aria-modal="true"
             aria-labelledby="concert-modal-title"
             className="win-window relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto p-0"
+            className="win-window relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto p-0"
           >
+            <div className="win-titlebar flex items-center justify-between gap-4">
             <div className="win-titlebar flex items-center justify-between gap-4">
               <span>Detalle concierto</span>
               <button
                 type="button"
                 onClick={() => setSelectedConcertId(null)}
+                className="win-button text-xs"
                 className="win-button text-xs"
               >
                 Cerrar
