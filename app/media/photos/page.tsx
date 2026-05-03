@@ -5,6 +5,7 @@ import Link from "next/link";
 import PhotoFilters from "@/components/media/photo-filters";
 import PhotoPagination from "@/components/media/photo-pagination";
 import EmptyState from "@/components/ui/empty-state";
+import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
 import type { MediaPhotoQueryParams } from "@/lib/media/types";
 import { getPhotoAlbumsCatalog } from "@/lib/repositories/media";
@@ -88,6 +89,8 @@ export default async function MediaPhotosPage({ searchParams }: MediaPhotosPageP
             />
           </>
         )}
+
+        <IconNavigationLink href="/media/videos" label="Videos" />
       </section>
     </PageShell>
   );

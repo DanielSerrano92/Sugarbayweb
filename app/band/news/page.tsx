@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import BandNewsFilters from "@/components/band/news-filters";
 import BandNewsListClient from "@/components/band/news-list-client";
 import BandNewsPagination from "@/components/band/news-pagination";
+import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
 import type { BandNewsQueryParams } from "@/lib/band/types";
@@ -49,6 +50,8 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
           />
         </>
       )}
+
+      <IconNavigationLink href="/band/bio" label="Bio" />
     </PageShell>
   );
 }

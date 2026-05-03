@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import BandBioModals from "@/components/band/band-bio-modals";
+import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function BandBioPage() {
       description="Explora la historia de la banda y conoce a sus miembros y colaboradores."
     >
       <BandBioModals />
+      <IconNavigationLink href="/band/news" label="Noticias" />
     </PageShell>
   );
 }
