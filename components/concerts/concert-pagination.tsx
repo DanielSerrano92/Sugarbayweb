@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { Fragment } from "react";
 import Link from "next/link";
 
 import { serializeConcertFilters } from "@/lib/concerts/filters";
@@ -42,8 +41,6 @@ export default function ConcertPagination({
   const previousPage = Math.max(1, currentPage - 1);
   const nextPage = Math.min(effectiveTotalPages, currentPage + 1);
   const visiblePages = getVisiblePages(currentPage, effectiveTotalPages);
-  const nextPage = Math.min(effectiveTotalPages, currentPage + 1);
-  const visiblePages = getVisiblePages(currentPage, effectiveTotalPages);
 
   return (
     <nav
@@ -56,7 +53,6 @@ export default function ConcertPagination({
           currentPage === 1 ? "pointer-events-none opacity-50" : ""
         }`}
       >
-        <span aria-hidden="true">&lt;</span>
         <span aria-hidden="true">&lt;</span>
       </Link>
 
@@ -86,7 +82,6 @@ export default function ConcertPagination({
           currentPage === effectiveTotalPages ? "pointer-events-none opacity-50" : ""
         }`}
       >
-        <span aria-hidden="true">&gt;</span>
         <span aria-hidden="true">&gt;</span>
       </Link>
     </nav>

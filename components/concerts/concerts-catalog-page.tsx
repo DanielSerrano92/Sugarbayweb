@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import ConcertCardsClient from "@/components/concerts/concert-cards-client";
 import ConcertFilters from "@/components/concerts/concert-filters";
 import ConcertPagination from "@/components/concerts/concert-pagination";
@@ -8,7 +6,6 @@ import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
 import { getConcertCatalog } from "@/lib/repositories/concerts";
 import type { ConcertPeriod, ConcertQueryParams } from "@/lib/concerts/types";
-import { getConcertCatalog } from "@/lib/repositories/concerts";
 
 type ConcertsCatalogPageProps = {
   period: ConcertPeriod;

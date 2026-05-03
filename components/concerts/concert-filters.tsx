@@ -1,9 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { continentOptions } from "@/lib/concerts/locations";
@@ -20,7 +17,6 @@ export default function ConcertFilters({
   basePath,
   filters,
   availableCountries,
-  mode = "panel",
   mode = "panel",
 }: ConcertFiltersProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
