@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import PhotoGalleryClient from "@/components/media/photo-gallery-client";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { getPhotoAlbumDetailBySlug } from "@/lib/repositories/media";
 import { formatDate } from "@/lib/utils";
 
@@ -41,12 +41,11 @@ export default async function PhotoAlbumDetailPage({ params }: PhotoAlbumDetailP
   }
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Media / Fotos"
-        title={album.title}
-        description={album.description ?? "Detalle completo del album fotografico."}
-      />
+    <PageShell
+      eyebrow="Media / Fotos"
+      title={album.title}
+      description={album.description ?? "Detalle completo del album fotografico."}
+    >
 
       <div className="flex flex-wrap gap-2">
         <Link
@@ -70,6 +69,6 @@ export default async function PhotoAlbumDetailPage({ params }: PhotoAlbumDetailP
       ) : (
         <PhotoGalleryClient photos={album.photos} />
       )}
-    </div>
+    </PageShell>
   );
 }

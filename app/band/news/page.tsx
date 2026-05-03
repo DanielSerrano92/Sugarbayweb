@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import BandNewsFilters from "@/components/band/news-filters";
 import BandNewsListClient from "@/components/band/news-list-client";
 import BandNewsPagination from "@/components/band/news-pagination";
+import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import type { BandNewsQueryParams } from "@/lib/band/types";
 import { getBandNewsCatalog } from "@/lib/repositories/band";
 
@@ -21,14 +22,14 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
   const catalog = await getBandNewsCatalog(params);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Band"
-        title="Noticias de Sugarbay"
-        description="Actualidad oficial de la banda con detalle expandible y enlaces relacionados."
-      />
-
-      <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
+    <PageShell
+      eyebrow="Band"
+      title="Noticias de Sugarbay"
+      description="Actualidad oficial de la banda con detalle expandible y enlaces relacionados."
+    >
+      <div className="flex justify-end">
+        <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
+      </div>
 
       <p className="text-sm text-zinc-600">
         Mostrando {catalog.items.length} de {catalog.totalItems} noticias.
@@ -49,7 +50,9 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
           />
         </>
       )}
-    </div>
+
+      <IconNavigationLink href="/band/bio" label="Bio" />
+    </PageShell>
   );
 }
 

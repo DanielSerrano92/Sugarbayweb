@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import FilterModalShell from "@/components/ui/filter-modal-shell";
 import { MEDIA_SORT_OPTIONS, type MediaVideoFilters } from "@/lib/media/types";
 
 type VideoFiltersProps = {
@@ -9,12 +10,10 @@ type VideoFiltersProps = {
 
 export default function VideoFilters({ basePath, filters }: VideoFiltersProps) {
   return (
-    <aside className="sb-panel h-fit rounded-2xl p-4">
-      <h2 className="text-base font-bold text-zinc-900">Filtros</h2>
-
-      <form method="get" className="mt-4 space-y-4">
+    <FilterModalShell modalId="video-filters-modal">
+      <form method="get" className="space-y-4 p-4 text-black">
         <div>
-          <label htmlFor="videos-from" className="mb-1.5 block text-sm font-semibold text-zinc-700">
+          <label htmlFor="videos-from" className="mb-1.5 block text-sm font-bold text-black">
             Fecha desde
           </label>
           <input
@@ -22,12 +21,12 @@ export default function VideoFilters({ basePath, filters }: VideoFiltersProps) {
             name="from"
             type="date"
             defaultValue={filters.from ?? ""}
-            className="sb-input"
+            className="win-input"
           />
         </div>
 
         <div>
-          <label htmlFor="videos-to" className="mb-1.5 block text-sm font-semibold text-zinc-700">
+          <label htmlFor="videos-to" className="mb-1.5 block text-sm font-bold text-black">
             Fecha hasta
           </label>
           <input
@@ -35,19 +34,19 @@ export default function VideoFilters({ basePath, filters }: VideoFiltersProps) {
             name="to"
             type="date"
             defaultValue={filters.to ?? ""}
-            className="sb-input"
+            className="win-input"
           />
         </div>
 
         <div>
-          <label htmlFor="videos-type" className="mb-1.5 block text-sm font-semibold text-zinc-700">
+          <label htmlFor="videos-type" className="mb-1.5 block text-sm font-bold text-black">
             Tipo
           </label>
           <select
             id="videos-type"
             name="type"
             defaultValue={filters.type}
-            className="sb-select"
+            className="win-input"
           >
             <option value="all">Todo</option>
             <option value="collection">Colecciones</option>
@@ -56,14 +55,14 @@ export default function VideoFilters({ basePath, filters }: VideoFiltersProps) {
         </div>
 
         <div>
-          <label htmlFor="videos-sort" className="mb-1.5 block text-sm font-semibold text-zinc-700">
+          <label htmlFor="videos-sort" className="mb-1.5 block text-sm font-bold text-black">
             Orden
           </label>
           <select
             id="videos-sort"
             name="sort"
             defaultValue={filters.sort}
-            className="sb-select"
+            className="win-input"
           >
             {MEDIA_SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -76,19 +75,19 @@ export default function VideoFilters({ basePath, filters }: VideoFiltersProps) {
         <div className="flex flex-wrap gap-2">
           <button
             type="submit"
-            className="sb-btn-primary px-4 py-2 text-sm font-semibold"
+            className="win-button"
           >
             Aplicar
           </button>
           <Link
             href={basePath}
-            className="sb-btn-secondary px-4 py-2 text-sm font-semibold text-zinc-200"
+            className="win-button"
           >
             Reset
           </Link>
         </div>
       </form>
-    </aside>
+    </FilterModalShell>
   );
 }
 

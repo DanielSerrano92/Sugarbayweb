@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { Fragment } from "react";
 import Link from "next/link";
 
 import { serializeConcertFilters } from "@/lib/concerts/filters";
@@ -8,6 +9,7 @@ type ConcertPaginationProps = {
   basePath: string;
   filters: ConcertFilters;
   totalPages: number;
+  className?: string;
 };
 
 function buildHref(basePath: string, filters: ConcertFilters, page: number): string {
@@ -31,31 +33,40 @@ export default function ConcertPagination({
   basePath,
   filters,
   totalPages,
+  className,
 }: ConcertPaginationProps) {
+  if (totalPages <= 1) return null;
+
   const effectiveTotalPages = Math.max(1, totalPages);
   const currentPage = Math.min(Math.max(1, filters.page), effectiveTotalPages);
   const previousPage = Math.max(1, currentPage - 1);
   const nextPage = Math.min(effectiveTotalPages, currentPage + 1);
   const visiblePages = getVisiblePages(currentPage, effectiveTotalPages);
+  const nextPage = Math.min(effectiveTotalPages, currentPage + 1);
+  const visiblePages = getVisiblePages(currentPage, effectiveTotalPages);
 
   return (
-    <nav aria-label="Paginacion de conciertos" className="retro-pagination-shell">
+    <nav
+      aria-label="Paginacion de conciertos"
+      className={["concert-pagination-shell", className].filter(Boolean).join(" ")}
+    >
       <Link
         href={buildHref(basePath, filters, previousPage)}
-        className={`retro-pagination-arrow ${
+        className={`concert-pagination-arrow ${
           currentPage === 1 ? "pointer-events-none opacity-50" : ""
         }`}
       >
         <span aria-hidden="true">&lt;</span>
+        <span aria-hidden="true">&lt;</span>
       </Link>
 
-      <div className="retro-pagination-pages">
+      <div className="concert-pagination-pages">
         {visiblePages.map((page, index) => (
           <Fragment key={page}>
-            {index > 0 ? <span className="retro-pagination-separator">,</span> : null}
+            {index > 0 ? <span className="concert-pagination-separator">,</span> : null}
             <Link
               href={buildHref(basePath, filters, page)}
-              className={`retro-pagination-page ${page === currentPage ? "is-active" : ""}`}
+              className={`concert-pagination-page ${page === currentPage ? "is-active" : ""}`}
             >
               {page}
             </Link>
@@ -63,18 +74,19 @@ export default function ConcertPagination({
         ))}
         {visiblePages[visiblePages.length - 1] < effectiveTotalPages ? (
           <>
-            <span className="retro-pagination-separator">,</span>
-            <span className="retro-pagination-ellipsis">...</span>
+            <span className="concert-pagination-separator">,</span>
+            <span className="concert-pagination-ellipsis">...</span>
           </>
         ) : null}
       </div>
 
       <Link
         href={buildHref(basePath, filters, nextPage)}
-        className={`retro-pagination-arrow ${
+        className={`concert-pagination-arrow ${
           currentPage === effectiveTotalPages ? "pointer-events-none opacity-50" : ""
         }`}
       >
+        <span aria-hidden="true">&gt;</span>
         <span aria-hidden="true">&gt;</span>
       </Link>
     </nav>

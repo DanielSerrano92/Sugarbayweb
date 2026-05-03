@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { continentOptions } from "@/lib/concerts/locations";
@@ -10,7 +13,7 @@ type ConcertFiltersProps = {
   basePath: string;
   filters: ConcertFilters;
   availableCountries: ConcertCountryOption[];
-  mode?: "panel" | "folder-modal";
+  mode?: "panel" | "icon-modal";
 };
 
 export default function ConcertFilters({
@@ -18,16 +21,31 @@ export default function ConcertFilters({
   filters,
   availableCountries,
   mode = "panel",
+  mode = "panel",
 }: ConcertFiltersProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const isFolderMode = mode === "folder-modal";
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const isIconMode = mode === "icon-modal";
+  const formClassName = isIconMode ? "space-y-4 p-4 text-black" : "mt-4 space-y-4";
+  const labelClassName = isIconMode
+    ? "mb-1.5 block text-sm font-bold text-black"
+    : "mb-1.5 block text-sm font-semibold text-zinc-700";
+  const fieldClassName = isIconMode ? "win-input" : "sb-input";
+  const selectClassName = isIconMode ? "win-input" : "sb-select";
+  const actionButtonClassName = isIconMode
+    ? "win-button"
+    : "sb-btn-primary inline-flex px-4 py-2 text-sm font-semibold";
+  const resetButtonClassName = isIconMode
+    ? "win-button"
+    : "sb-btn-secondary inline-flex px-4 py-2 text-sm font-semibold text-zinc-200";
 
   useEffect(() => {
-    if (!isFolderMode || !isOpen) return;
+    if (!isIconMode || !isModalOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setIsOpen(false);
+        setIsModalOpen(false);
       }
     };
 
@@ -35,15 +53,15 @@ export default function ConcertFilters({
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [isFolderMode, isOpen]);
+  }, [isIconMode, isModalOpen]);
 
   const form = (
-    <form method="get" className="space-y-4 p-4 text-black">
+    <form method="get" className={formClassName}>
       <div>
-        <label htmlFor="concert-from" className="mb-1.5 block text-sm font-bold text-black">
+        <label htmlFor="concert-from" className={labelClassName}>
           Fecha desde
         </label>
         <input
@@ -51,12 +69,12 @@ export default function ConcertFilters({
           name="from"
           type="date"
           defaultValue={filters.from ?? ""}
-          className="win-input"
+          className={fieldClassName}
         />
       </div>
 
       <div>
-        <label htmlFor="concert-to" className="mb-1.5 block text-sm font-bold text-black">
+        <label htmlFor="concert-to" className={labelClassName}>
           Fecha hasta
         </label>
         <input
@@ -64,19 +82,19 @@ export default function ConcertFilters({
           name="to"
           type="date"
           defaultValue={filters.to ?? ""}
-          className="win-input"
+          className={fieldClassName}
         />
       </div>
 
       <div>
-        <label htmlFor="concert-continent" className="mb-1.5 block text-sm font-bold text-black">
+        <label htmlFor="concert-continent" className={labelClassName}>
           Continente
         </label>
         <select
           id="concert-continent"
           name="continent"
           defaultValue={filters.continent}
-          className="win-input"
+          className={selectClassName}
         >
           {continentOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -87,14 +105,14 @@ export default function ConcertFilters({
       </div>
 
       <div>
-        <label htmlFor="concert-country" className="mb-1.5 block text-sm font-bold text-black">
+        <label htmlFor="concert-country" className={labelClassName}>
           Pais
         </label>
         <select
           id="concert-country"
           name="country"
           defaultValue={filters.country ?? ""}
-          className="win-input"
+          className={selectClassName}
         >
           <option value="">Todos los paises</option>
           {availableCountries.map((country) => (
@@ -106,21 +124,24 @@ export default function ConcertFilters({
       </div>
 
       <div className="flex flex-wrap gap-2 pt-2">
-        <button type="submit" className="win-button">
+        <button type="submit" className={actionButtonClassName}>
           Aplicar
         </button>
-
-        <Link href={basePath} className="win-button" onClick={() => setIsOpen(false)}>
+        <Link
+          href={basePath}
+          className={resetButtonClassName}
+          onClick={() => setIsModalOpen(false)}
+        >
           Reset
         </Link>
       </div>
     </form>
   );
 
-  if (!isFolderMode) {
+  if (!isIconMode) {
     return (
-      <aside className="win-window h-fit overflow-hidden">
-        <div className="win-titlebar">Filtros</div>
+      <aside className="sb-panel h-fit rounded-2xl p-4">
+        <h2 className="text-base font-bold text-zinc-900">Filtros</h2>
         {form}
       </aside>
     );
@@ -132,20 +153,20 @@ export default function ConcertFilters({
         type="button"
         className="retro-folder-button"
         aria-label="Abrir filtros"
-        aria-expanded={isOpen}
+        aria-expanded={isModalOpen}
         aria-controls="concert-filters-modal"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsModalOpen(true)}
       >
         <span className="retro-folder-icon" aria-hidden="true" />
       </button>
 
-      {isOpen ? (
+      {isModalOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <button
             type="button"
             className="retro-modal-overlay"
             aria-label="Cerrar modal de filtros"
-            onClick={() => setIsOpen(false)}
+            onClick={() => setIsModalOpen(false)}
           />
 
           <section
@@ -160,7 +181,8 @@ export default function ConcertFilters({
               <button
                 type="button"
                 className="win-button retro-win-close"
-                onClick={() => setIsOpen(false)}
+                aria-label="Cerrar modal de filtros"
+                onClick={() => setIsModalOpen(false)}
               >
                 X
               </button>

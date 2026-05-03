@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import RegisterForm from "@/components/auth/register-form";
-import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { getSessionUser } from "@/lib/auth/dal";
 
 export const metadata: Metadata = {
@@ -29,13 +29,11 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const redirectTo = pickRedirect(params.redirect);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Registro"
-        title="Crea tu cuenta Sugarbay"
-        description="Registrate para comprar en tienda, guardar tu carrito y completar checkout."
-      />
-
+    <PageShell
+      eyebrow="Registro"
+      title="Crea tu cuenta Sugarbay"
+      description="Registrate para comprar en tienda, guardar tu carrito y completar checkout."
+    >
       <section className="mx-auto w-full max-w-lg sb-window rounded-2xl p-6">
         <RegisterForm redirectTo={redirectTo} />
         <p className="mt-4 text-sm text-zinc-600">
@@ -45,7 +43,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           </Link>
         </p>
       </section>
-    </div>
+    </PageShell>
   );
 }
 

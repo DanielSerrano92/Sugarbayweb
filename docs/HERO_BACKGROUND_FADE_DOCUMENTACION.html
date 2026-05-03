@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documentacion Hero Sobre Background y Degradado</title>
+    <style>
+      :root {
+        --ink: #1f2937;
+        --ink-soft: #4b5563;
+        --heading: #111827;
+        --border: #d1d5db;
+        --code-bg: #f3f4f6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: var(--ink);
+        font-family: "Segoe UI", Arial, sans-serif;
+        line-height: 1.55;
+      }
+
+      main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 42px 54px 64px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: var(--heading);
+        line-height: 1.25;
+        page-break-after: avoid;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: 30px;
+      }
+
+      h2 {
+        margin: 30px 0 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+        font-size: 22px;
+      }
+
+      h3 {
+        margin: 18px 0 8px;
+        font-size: 17px;
+      }
+
+      p {
+        margin: 10px 0;
+      }
+
+      ul,
+      ol {
+        margin: 8px 0 12px 22px;
+        padding: 0;
+      }
+
+      li {
+        margin: 5px 0;
+      }
+
+      a {
+        color: #0b58cd;
+        text-decoration: none;
+      }
+
+      .meta {
+        color: var(--ink-soft);
+        font-size: 13px;
+      }
+
+      .note {
+        margin: 16px 0;
+        padding: 12px 14px;
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+        background: #eff6ff;
+      }
+
+      code {
+        border: 1px solid #e5e7eb;
+        border-radius: 5px;
+        background: var(--code-bg);
+        padding: 1px 5px;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 0.94em;
+      }
+
+      pre {
+        margin: 12px 0 18px;
+        padding: 12px 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: var(--code-bg);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        page-break-inside: avoid;
+      }
+
+      pre code {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        font-size: 12px;
+      }
+
+      @page {
+        size: A4;
+        margin: 18mm;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Hero sobre background y degradado real</h1>
+      <p class="meta">
+        Proyecto: Sugarbayweb. Fecha: 2026-05-02. Archivos principales:
+        <code>components/ui/page-shell.tsx</code> y <code>app/globals.css</code>.
+      </p>
+
+      <div class="note">
+        <strong>Resultado actual:</strong> cada pagina renderizada con <code>PageShell</code>
+        tiene una unica seccion principal con <code>imageBackground</code>. Dentro de esa
+        misma seccion se pinta primero la imagen superior del hero y despues el contenido.
+        El footer global queda fuera de la seccion con background.
+      </div>
+
+      <h2>Que se hizo para dejar el hero encima del background</h2>
+      <ol>
+        <li>
+          Se elimino el componente <code>PageHero</code> como bloque independiente.
+        </li>
+        <li>
+          <code>PageShell</code> paso a renderizar directamente una unica
+          <code>&lt;section className="page-background"&gt;</code>.
+        </li>
+        <li>
+          La imagen que antes funcionaba como hero se coloco al inicio de esa misma
+          seccion, dentro de <code>.page-header-image</code>.
+        </li>
+        <li>
+          El contenido de la pagina se coloco debajo, dentro de
+          <code>.page-content-wrapper</code>, sin salir del wrapper con background.
+        </li>
+        <li>
+          La clase <code>.page-background &gt; *</code> da <code>position: relative</code>
+          y <code>z-index: 1</code> a los hijos para que imagen y contenido queden
+          visualmente por encima del patron de fondo.
+        </li>
+      </ol>
+
+      <h2>Como se consiguio el degradado del hero</h2>
+      <p>
+        El degradado no usa una franja de color, ni blanco, ni negro superpuesto. Se usa
+        una mascara CSS real sobre la imagen: <code>mask-image</code> y
+        <code>-webkit-mask-image</code>. En una mascara, la parte negra mantiene visible
+        el elemento y la parte transparente lo oculta. Por eso la imagen del hero se ve
+        normal hasta el 76% de su altura y desde ahi pierde opacidad gradualmente hasta
+        desaparecer en el borde inferior.
+      </p>
+      <p>
+        Como la imagen se vuelve transparente en el bottom, lo que se ve a traves es el
+        <code>background-image</code> de la seccion padre <code>.page-background</code>.
+        Esto funde la cabecera con el fondo real de la pagina sin simularlo con colores.
+      </p>
+
+      <h2>Codigo modificado: PageShell</h2>
+      <p>
+        Archivo: <code>components/ui/page-shell.tsx</code>
+      </p>
+      <pre><code>import Image from "next/image";
+import type { ReactNode } from "react";
+
+type PageShellProps = {
+  title: string;
+  eyebrow?: string;
+  description?: string;
+  actions?: ReactNode;
+  children: ReactNode;
+  contentClassName?: string;
+  sectionClassName?: string;
+};
+
+const DEFAULT_CONTENT_CLASS_NAME = "space-y-6";
+const PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/proximos.png?tr=w-2400,h-760,cm-extract,fo-top&amp;updatedAt=1777405652441";
+
+export default function PageShell({
+  title,
+  eyebrow,
+  description,
+  actions,
+  children,
+  contentClassName,
+  sectionClassName,
+}: PageShellProps) {
+  const sectionClasses = [
+    "page-background",
+    "relative",
+    "flex-1",
+    "w-screen",
+    sectionClassName,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const contentClasses = [
+    "page-content-wrapper",
+    contentClassName ?? DEFAULT_CONTENT_CLASS_NAME,
+  ].join(" ");
+
+  return (
+    &lt;section
+      className={sectionClasses}
+      style={{
+        marginLeft: "calc(50% - 50vw)",
+        marginRight: "calc(50% - 50vw)",
+      }}
+    &gt;
+      &lt;div className="page-header-image"&gt;
+        &lt;Image
+          src={PAGE_HEADER_IMAGE_SRC}
+          alt={`Cabecera ${title}`}
+          width={2400}
+          height={760}
+          priority
+          sizes="100vw"
+          unoptimized
+          className="page-header-img"
+        /&gt;
+      &lt;/div&gt;
+      &lt;h1 className="sr-only"&gt;{title}&lt;/h1&gt;
+      {eyebrow || description || actions ? (
+        &lt;div className="sr-only"&gt;
+          {eyebrow ? &lt;p&gt;{eyebrow}&lt;/p&gt; : null}
+          {description ? &lt;p&gt;{description}&lt;/p&gt; : null}
+          {actions ? &lt;div&gt;{actions}&lt;/div&gt; : null}
+        &lt;/div&gt;
+      ) : null}
+      &lt;div className={contentClasses}&gt;{children}&lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+
+      <h2>Codigo modificado: estilos globales</h2>
+      <p>
+        Archivo: <code>app/globals.css</code>
+      </p>
+      <pre><code>.page-background {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--sb-bg-main);
+  background-image: url("https://ik.imagekit.io/gq1enkszp/fotos/rejilla%20(7).png");
+  background-position: top center;
+  background-repeat: repeat;
+  background-size: min(100vw, 1100px) auto;
+}
+
+.page-background &gt; * {
+  position: relative;
+  z-index: 1;
+}
+
+.page-header-image {
+  width: 100%;
+  overflow: hidden;
+}
+
+.page-header-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 76%,
+    transparent 100%
+  );
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 76%,
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+}
+
+.page-content-wrapper {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 1024px) {
+  .page-content-wrapper {
+    padding: 2rem;
+  }
+}</code></pre>
+
+      <h2>Decisiones concretas</h2>
+      <ul>
+        <li>
+          <code>background-repeat: repeat</code> mantiene el patron repetible segun lo pedido.
+        </li>
+        <li>
+          <code>background-size: min(100vw, 1100px) auto</code> hace que el fondo escale
+          hacia abajo con ventanas pequenas, pero no crezca mas al superar 1100px.
+        </li>
+        <li>
+          <code>sizes="100vw"</code> declara que la imagen superior ocupa el ancho de la
+          ventana.
+        </li>
+        <li>
+          <code>width={2400}</code> y <code>height={760}</code> mantienen una relacion
+          de aspecto estable para evitar saltos de layout.
+        </li>
+        <li>
+          La transformacion ImageKit <code>w-2400,h-760,cm-extract,fo-top</code> genera
+          una cabecera amplia con foco arriba y menos recorte vertical que la version
+          inicial de <code>h-620</code>.
+        </li>
+      </ul>
+
+      <h2>Fuentes consultadas</h2>
+      <ul>
+        <li>
+          MDN, <em>mask-image</em>: explica que <code>mask-image</code> usa una imagen o
+          gradiente como mascara y que las zonas transparentes ocultan el elemento.
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/mask-image">
+            https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/mask-image
+          </a>
+        </li>
+        <li>
+          MDN, <em>background-size</em>: documenta como controlar el tamano de una imagen
+          de fondo y que los fondos con transparencia dejan ver el <code>background-color</code>.
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/background-size">
+            https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/background-size
+          </a>
+        </li>
+        <li>
+          MDN, <em>min()</em>: documenta la funcion CSS usada para limitar el tamano maximo
+          del fondo y permitir que se reduzca con el viewport.
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/min">
+            https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/min
+          </a>
+        </li>
+        <li>
+          Next.js, <em>Image Component</em>: referencia de <code>src</code>,
+          <code>width</code>, <code>height</code>, <code>sizes</code> y
+          <code>unoptimized</code> para imagenes remotas y responsive.
+          <a href="https://nextjs.org/docs/app/api-reference/components/image">
+            https://nextjs.org/docs/app/api-reference/components/image
+          </a>
+        </li>
+        <li>
+          ImageKit, <em>Resize and crop images</em>: referencia de transformaciones
+          <code>w</code>, <code>h</code>, <code>cm-extract</code> y <code>fo</code>.
+          <a href="https://imagekit.io/docs/image-resize-and-crop">
+            https://imagekit.io/docs/image-resize-and-crop
+          </a>
+        </li>
+      </ul>
+
+      <h2>Validacion</h2>
+      <p>
+        El cambio documentado no modifica datos, rutas, repositorios, fetchs ni
+        funcionalidades. Es un ajuste de estructura visual compartida y CSS. La ultima
+        verificacion de lint ejecutada para este layout paso correctamente con
+        <code>npm.cmd run lint</code>.
+      </p>
+    </main>
+  </body>
+</html>

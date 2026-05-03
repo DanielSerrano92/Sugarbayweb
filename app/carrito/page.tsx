@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import CartLineItem from "@/components/cart/cart-line-item";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { requireSession } from "@/lib/auth/dal";
 import { clearCartAction } from "@/lib/cart/actions";
 import { getCartForUser } from "@/lib/repositories/cart";
@@ -19,13 +19,11 @@ export default async function CarritoPage() {
   const cart = await getCartForUser(session.userId);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Carrito"
-        title="Tu seleccion"
-        description="Revisa cantidades, ajusta productos y contina al checkout seguro con Stripe."
-      />
-
+    <PageShell
+      eyebrow="Carrito"
+      title="Tu seleccion"
+      description="Revisa cantidades, ajusta productos y contina al checkout seguro con Stripe."
+    >
       {cart.items.length === 0 ? (
         <EmptyState
           title="Tu carrito esta vacio"
@@ -73,7 +71,7 @@ export default async function CarritoPage() {
           </aside>
         </section>
       )}
-    </div>
+    </PageShell>
   );
 }
 

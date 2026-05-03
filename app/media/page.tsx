@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { getMediaOverviewStats } from "@/lib/repositories/media";
 
 export const metadata: Metadata = {
@@ -13,13 +13,11 @@ export default async function MediaPage() {
   const stats = await getMediaOverviewStats();
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Media"
-        title="Fotos y videos"
-        description="Explora albumes fotograficos y colecciones de video de Sugarbay con filtros avanzados."
-      />
-
+    <PageShell
+      eyebrow="Media"
+      title="Fotos y videos"
+      description="Explora albumes fotograficos y colecciones de video de Sugarbay con filtros avanzados."
+    >
       <section className="grid gap-4 md:grid-cols-2">
         <Link
           href="/media/photos"
@@ -43,7 +41,7 @@ export default async function MediaPage() {
           </p>
         </Link>
       </section>
-    </div>
+    </PageShell>
   );
 }
 

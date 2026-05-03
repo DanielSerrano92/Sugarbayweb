@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documentacion: estabilizacion del header y logo Sugarbay</title>
+    <style>
+      :root {
+        --ink: #1f2937;
+        --ink-soft: #4b5563;
+        --heading: #111827;
+        --border: #d1d5db;
+        --code-bg: #f3f4f6;
+        --panel: #f8fafc;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: var(--ink);
+        font-family: "Segoe UI", Arial, sans-serif;
+        line-height: 1.55;
+      }
+
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 42px 54px 64px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: var(--heading);
+        line-height: 1.25;
+        page-break-after: avoid;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: 30px;
+      }
+
+      h2 {
+        margin: 30px 0 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+        font-size: 23px;
+      }
+
+      h3 {
+        margin: 20px 0 8px;
+        font-size: 17px;
+      }
+
+      p {
+        margin: 10px 0;
+      }
+
+      ul,
+      ol {
+        margin: 8px 0 12px 24px;
+        padding: 0;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+
+      code {
+        border: 1px solid #e5e7eb;
+        border-radius: 5px;
+        background: var(--code-bg);
+        padding: 1px 5px;
+        font-family: "Consolas", "Courier New", monospace;
+        font-size: 0.94em;
+      }
+
+      pre {
+        margin: 10px 0 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: var(--code-bg);
+        padding: 12px 14px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+
+      pre code {
+        border: 0;
+        background: transparent;
+        padding: 0;
+      }
+
+      a {
+        color: #1d4ed8;
+        text-decoration: none;
+      }
+
+      .meta,
+      .note {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 12px 14px;
+      }
+
+      .muted {
+        color: var(--ink-soft);
+      }
+
+      .tag {
+        display: inline-block;
+        border-radius: 999px;
+        background: #e0e7ff;
+        color: #3730a3;
+        padding: 2px 8px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      @page {
+        size: A4;
+        margin: 18mm;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Estabilizacion del header y logo de Sugarbay</h1>
+      <p class="meta">
+        <strong>Proyecto:</strong> Sugarbayweb<br />
+        <strong>Fecha:</strong> 3 de mayo de 2026<br />
+        <strong>Area:</strong> frontend, header, responsive, logo, navegacion
+      </p>
+
+      <h2>1. Error detectado</h2>
+      <p>
+        El header presentaba un comportamiento inconsistente segun el ancho real
+        del viewport:
+      </p>
+      <ol>
+        <li>En pantalla maximizada y zoom 100%, solo aparecia un logo.</li>
+        <li>En ventana no maximizada pero estirada, aparecian dos logos.</li>
+        <li>Los botones cambiaban de tamano entre ventana normal estirada y pantalla completa.</li>
+        <li>Al entrar en responsive desaparecia la navegacion desktop, pero el logo debia seguir visible.</li>
+      </ol>
+
+      <h2>2. Causa raiz</h2>
+      <h3>2.1 Duplicacion del logo</h3>
+      <p>
+        El componente renderizaba dos enlaces a Home con espacio de logo: uno
+        dentro de la navegacion desktop y otro absoluto para el modo compacto.
+        Tras insertar la imagen en ambos slots, el DOM podia contener dos logos.
+      </p>
+      <p>
+        Ademas, en CSS existia una regla base para ocultar el logo compacto:
+        <code>.sb-header-compact-logo { display: none; }</code>. Pero esa regla
+        aparecia antes de <code>.sb-header-logo-slot { display: grid; }</code>.
+        Como ambas clases tenian especificidad equivalente y
+        <code>.sb-header-logo-slot</code> se declaraba despues, el
+        <code>display: grid</code> podia volver a mostrar el logo compacto fuera
+        de su breakpoint previsto.
+      </p>
+
+      <h3>2.2 Cambio de tamano de botones</h3>
+      <p>
+        El cambio de tamano venia de media queries especificas en torno a
+        <code>1919px</code> y <code>1920px</code>. Por debajo de 1920px se
+        aplicaban medidas menores; a partir de 1920px se aplicaban medidas
+        mayores. Al maximizar una ventana que cruzaba ese limite, el header
+        saltaba de un conjunto de tamanos a otro.
+      </p>
+      <p>
+        Tambien habia varias medidas dependientes de <code>vw</code> mediante
+        <code>clamp()</code> en botones, gaps, padding, iconos y altura. Eso
+        hacia que pequenos cambios de ancho modificaran la proporcion visual
+        del header en desktop.
+      </p>
+
+      <h2>3. Solucion aplicada</h2>
+      <ol>
+        <li>Se dejo un unico logo real renderizado en el header.</li>
+        <li>Ese unico logo sigue siendo un <code>Link href="/"</code> a Home.</li>
+        <li>Se sustituyo el logo del centro de la navegacion desktop por un espaciador invisible.</li>
+        <li>Se eliminaron las clases de alternancia <code>sb-header-compact-logo</code>, <code>sb-header-logo-slot-desktop</code> y <code>sb-header-logo-slot-compact</code>.</li>
+        <li>Se quitaron los breakpoints de <code>max-width: 1919px</code> y <code>min-width: 1920px</code> que provocaban el salto.</li>
+        <li>Se fijaron medidas desktop estables para botones, iconos, gaps, padding y altura del header.</li>
+        <li>Se mantuvieron reglas responsive solo donde el diseno cambia realmente: a partir de <code>max-width: 1560px</code> se oculta la navegacion desktop y el logo unico se reduce.</li>
+      </ol>
+
+      <h2>4. Codigo cambiado</h2>
+      <h3>4.1 Header antes de la correccion</h3>
+      <p>
+        El problema venia de tener dos lugares distintos donde podia aparecer el
+        logo:
+      </p>
+      <pre><code>&lt;Link
+  href="/"
+  className="sb-header-logo-slot sb-header-logo-slot-desktop mx-1 shrink-0"
+  aria-label="Ir a Home"
+&gt;
+  &lt;HeaderLogoImage /&gt;
+&lt;/Link&gt;
+
+...
+
+&lt;Link
+  href="/"
+  className="sb-header-logo-slot sb-header-logo-slot-compact sb-header-compact-logo pointer-events-auto absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 shrink-0"
+  aria-label="Ir a Home"
+&gt;
+  &lt;HeaderLogoImage /&gt;
+&lt;/Link&gt;</code></pre>
+
+      <h3>4.2 Header despues de la correccion</h3>
+      <p>
+        Ahora solo hay un logo real. El hueco central de desktop se conserva con
+        un espaciador sin contenido interactivo.
+      </p>
+      <pre><code>const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
+
+function HeaderLogoImage() {
+  return (
+    &lt;Image
+      src={HEADER_LOGO_SRC}
+      alt="Sugarbay"
+      fill
+      priority
+      sizes="(max-width: 639px) 70px, (max-width: 1560px) 106px, 156px"
+      className="sb-header-logo-image"
+    /&gt;
+  );
+}</code></pre>
+
+      <pre><code>&lt;span className="sb-header-logo-spacer" aria-hidden="true" /&gt;
+
+&lt;Link
+  href="/"
+  className="sb-header-logo-slot sb-header-logo-link pointer-events-auto absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 shrink-0"
+  aria-label="Ir a Home"
+&gt;
+  &lt;HeaderLogoImage /&gt;
+&lt;/Link&gt;</code></pre>
+
+      <h3>4.3 CSS antes de la correccion</h3>
+      <p>
+        Habia alternancia de logos y saltos de tamano ligados a 1919/1920px.
+      </p>
+      <pre><code>.sb-header-compact-logo {
+  display: none;
+}
+
+.sb-header-logo-slot {
+  display: grid;
+}
+
+@media (max-width: 1919px) {
+  .sb-header-tab {
+    min-width: clamp(136px, 8.2vw, 172px);
+    min-height: 52px;
+    font-size: clamp(1.65rem, 1.45vw, 2.1rem) !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .sb-header-tab {
+    min-width: 208px;
+    min-height: 74px;
+    font-size: 2.85rem !important;
+  }
+}</code></pre>
+
+      <h3>4.4 CSS despues de la correccion</h3>
+      <p>
+        El desktop queda con medidas estables y el responsive solo ajusta el
+        tamano del logo e iconos cuando se oculta la navegacion.
+      </p>
+      <pre><code>.sb-header-row {
+  min-height: 116px;
+  gap: 1rem;
+  padding-block: 0.7rem;
+  padding-inline: 1.35rem;
+}
+
+.sb-header-tab {
+  min-width: 160px;
+  min-height: 56px;
+  padding: 0.02rem 0.45rem !important;
+  font-size: 2.1rem !important;
+}
+
+.sb-header-logo-slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 156px;
+  height: 100px;
+}
+
+.sb-header-logo-spacer {
+  display: block;
+  width: 156px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1560px) {
+  .sb-header-desktop-nav {
+    display: none;
+  }
+
+  .sb-header-logo-slot {
+    width: clamp(72px, 22vw, 106px);
+    height: clamp(48px, 14vw, 72px);
+  }
+}</code></pre>
+
+      <h2>5. Archivos modificados</h2>
+      <ul>
+        <li><code>components/layout/header-client.tsx</code>: se consolido el logo en un unico enlace a <code>/</code> y se anadio el espaciador desktop.</li>
+        <li><code>app/globals.css</code>: se estabilizaron los tamanos desktop y se eliminaron las reglas que duplicaban/alternaban logos.</li>
+      </ul>
+
+      <h2>6. Validacion ejecutada</h2>
+      <pre><code>npm.cmd run lint
+npx.cmd tsc --noEmit
+git diff --check</code></pre>
+      <p>Resultado: sin errores de ESLint, TypeScript ni espacios invalidos en diff.</p>
+
+      <h2>7. Como comprobarlo manualmente</h2>
+      <ol>
+        <li>Abrir <code>http://localhost:3000</code>.</li>
+        <li>Comprobar pantalla maximizada con zoom 100%: debe verse un solo logo.</li>
+        <li>Salir de pantalla completa y estirar la ventana al maximo: debe seguir viendose un solo logo.</li>
+        <li>Comparar los botones entre ambos estados: no deben saltar de tamano.</li>
+        <li>Reducir la ventana hasta responsive: la navegacion desktop desaparece, pero el logo se mantiene visible.</li>
+        <li>Hacer clic en el logo: debe navegar a <code>/</code>.</li>
+      </ol>
+
+      <h2>8. Fuentes consultadas</h2>
+      <p>
+        No fue necesario usar foros ni videos de YouTube. La solucion salio de
+        inspeccionar el codigo local y contrastar el comportamiento con
+        documentacion oficial.
+      </p>
+      <ul>
+        <li>
+          <strong>Next.js Image Component.</strong> Se uso para validar
+          <code>fill</code>, padre posicionado y <code>sizes</code> en imagenes
+          responsive:
+          <a href="https://nextjs.org/docs/app/api-reference/components/image">https://nextjs.org/docs/app/api-reference/components/image</a>
+        </li>
+        <li>
+          <strong>Next.js Link Component.</strong> Se uso para mantener la
+          navegacion del logo con <code>href="/"</code>:
+          <a href="https://nextjs.org/docs/app/api-reference/components/link">https://nextjs.org/docs/app/api-reference/components/link</a>
+        </li>
+        <li>
+          <strong>MDN: Using media queries.</strong> Se uso para revisar como
+          <code>@media</code>, <code>max-width</code> y <code>min-width</code>
+          aplican estilos segun ancho del viewport:
+          <a href="https://developer.mozilla.org/docs/Web/CSS/CSS_media_queries/Using_media_queries">https://developer.mozilla.org/docs/Web/CSS/CSS_media_queries/Using_media_queries</a>
+        </li>
+        <li>
+          <strong>MDN: width media feature.</strong> Se uso como referencia para
+          entender consultas de ancho y sus variantes <code>min-width</code> /
+          <code>max-width</code>:
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/%40media/width">https://developer.mozilla.org/en-US/docs/Web/CSS/%40media/width</a>
+        </li>
+        <li>
+          <strong>MDN: object-fit.</strong> Se uso para justificar
+          <code>object-fit: contain</code> y evitar deformacion del logo:
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit">https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit</a>
+        </li>
+        <li>
+          <strong>MDN: transform.</strong> Se uso para revisar el impacto de
+          <code>transform</code> en elementos posicionados y aplicar el hover en
+          la imagen interna sin romper el centrado del enlace:
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transform">https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transform</a>
+        </li>
+      </ul>
+
+      <p class="note">
+        <span class="tag">Nota</span>
+        La correccion se limito al header. No se eliminaron submenus,
+        busqueda, carrito, perfil ni rutas existentes.
+      </p>
+    </main>
+  </body>
+</html>

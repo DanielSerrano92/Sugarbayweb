@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import CheckoutFlow from "@/components/checkout/checkout-flow";
 import EmptyState from "@/components/ui/empty-state";
-import PageHero from "@/components/ui/page-hero";
+import PageShell from "@/components/ui/page-shell";
 import { requireSession } from "@/lib/auth/dal";
 import { getCartForUser } from "@/lib/repositories/cart";
 import { getCheckoutPrefill } from "@/lib/repositories/checkout";
@@ -35,13 +35,11 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
   ]);
 
   return (
-    <div className="space-y-6">
-      <PageHero
-        eyebrow="Checkout"
-        title="Finalizar compra"
-        description="Valida envio y facturacion antes de pasar al pago seguro con Stripe."
-      />
-
+    <PageShell
+      eyebrow="Checkout"
+      title="Finalizar compra"
+      description="Valida envio y facturacion antes de pasar al pago seguro con Stripe."
+    >
       {paymentErrorMessage ? (
         <p className="sb-panel-soft rounded-2xl border border-amber-200 px-4 py-3 text-sm text-amber-900">
           {paymentErrorMessage}
@@ -61,7 +59,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
           initialUseSameAddress={checkoutPrefill.useSameAddress}
         />
       )}
-    </div>
+    </PageShell>
   );
 }
 
