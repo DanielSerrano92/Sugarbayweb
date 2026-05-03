@@ -77,25 +77,6 @@ function UserIcon() {
   );
 }
 
-function UserIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.6"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-      shapeRendering="crispEdges"
-    >
-      <circle cx="12" cy="8" r="3.25" />
-      <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
-    </svg>
-  );
-}
-
 const desktopNavItemClass =
   "sb-header-tab focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40";
 
