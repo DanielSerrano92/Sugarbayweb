@@ -26,34 +26,34 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
       title="Canciones y albumes"
       description="Catalogo mixto con filtros por fecha, tipo y orden. Abre cualquier tarjeta para ver su detalle completo."
     >
-      <section className="grid gap-6 lg:grid-cols-[320px_1fr]">
-        <MusicFiltersPanel basePath="/musica" filters={catalog.filters} />
-
-        <div>
-          <p className="mb-4 text-sm text-zinc-600">
-            Mostrando {catalog.items.length} de {catalog.totalItems} elementos.
-          </p>
-
-          {catalog.items.length === 0 ? (
-            <EmptyState
-              title="No hay resultados para estos filtros"
-              description="Prueba otro rango de fechas, tipo o criterio de orden."
-            />
-          ) : (
-            <>
-              <MusicCatalogClient
-                items={catalog.items}
-                songsBySlug={catalog.songsBySlug}
-                albumsBySlug={catalog.albumsBySlug}
-              />
-              <MusicPagination
-                basePath="/musica"
-                filters={catalog.filters}
-                totalPages={catalog.totalPages}
-              />
-            </>
-          )}
+      <section>
+        <div className="mb-5 flex justify-end">
+          <MusicFiltersPanel basePath="/musica" filters={catalog.filters} />
         </div>
+
+        <p className="mb-4 text-sm text-zinc-600">
+          Mostrando {catalog.items.length} de {catalog.totalItems} elementos.
+        </p>
+
+        {catalog.items.length === 0 ? (
+          <EmptyState
+            title="No hay resultados para estos filtros"
+            description="Prueba otro rango de fechas, tipo o criterio de orden."
+          />
+        ) : (
+          <>
+            <MusicCatalogClient
+              items={catalog.items}
+              songsBySlug={catalog.songsBySlug}
+              albumsBySlug={catalog.albumsBySlug}
+            />
+            <MusicPagination
+              basePath="/musica"
+              filters={catalog.filters}
+              totalPages={catalog.totalPages}
+            />
+          </>
+        )}
       </section>
     </PageShell>
   );

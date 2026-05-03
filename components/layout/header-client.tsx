@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -86,6 +87,7 @@ const headerIconLargeClass =
 
 const LEFT_NAVIGATION_HREFS = ["/concerts", "/band/news", "/musica"];
 const RIGHT_NAVIGATION_HREFS = ["/media", "/fanclub", "/store"];
+const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
 
 function sortNavigationByOrder(items: NavItem[], order: string[]): NavItem[] {
   return [...items].sort((left, right) => order.indexOf(left.href) - order.indexOf(right.href));
@@ -95,6 +97,19 @@ function getHeaderLabel(item: NavItem): string {
   if (item.href === "/musica") return "Musica";
   if (item.href === "/fanclub") return "FanClub";
   return item.label;
+}
+
+function HeaderLogoImage() {
+  return (
+    <Image
+      src={HEADER_LOGO_SRC}
+      alt="Sugarbay"
+      fill
+      priority
+      sizes="(max-width: 639px) 70px, (max-width: 1560px) 106px, 156px"
+      className="sb-header-logo-image"
+    />
+  );
 }
 
 export default function HeaderClient({
@@ -195,13 +210,7 @@ export default function HeaderClient({
                 {leftNavigation.map((item) => renderDesktopNavItem(item))}
               </nav>
 
-              <Link
-                href="/"
-                className="sb-header-logo-slot sb-header-logo-slot-desktop mx-1 shrink-0"
-                aria-label="Espacio reservado para logo en inicio"
-              >
-                <span className="sr-only">Espacio reservado para logo</span>
-              </Link>
+              <span className="sb-header-logo-spacer" aria-hidden="true" />
 
               <nav className="sb-header-nav-track sb-header-nav-right flex min-w-0 items-center">
                 {rightNavigation.map((item) => renderDesktopNavItem(item))}
@@ -210,10 +219,10 @@ export default function HeaderClient({
 
             <Link
               href="/"
-              className="sb-header-logo-slot sb-header-logo-slot-compact sb-header-compact-logo pointer-events-auto absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 shrink-0"
-              aria-label="Espacio reservado para logo en inicio"
+              className="sb-header-logo-slot sb-header-logo-link pointer-events-auto absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 shrink-0"
+              aria-label="Ir a Home"
             >
-              <span className="sr-only">Espacio reservado para logo</span>
+              <HeaderLogoImage />
             </Link>
 
             <div className="sb-header-actions ml-auto flex shrink-0 items-center">

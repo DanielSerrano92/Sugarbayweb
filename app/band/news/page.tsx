@@ -26,7 +26,9 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
       title="Noticias de Sugarbay"
       description="Actualidad oficial de la banda con detalle expandible y enlaces relacionados."
     >
-      <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
+      <div className="flex justify-end">
+        <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
+      </div>
 
       <p className="text-sm text-zinc-600">
         Mostrando {catalog.items.length} de {catalog.totalItems} noticias.
