@@ -374,6 +374,77 @@ const session = await stripe.checkout.sessions.retrieve(checkoutSessionId);
 Si `session.payment_status === "paid"`, marca el pedido como pagado. Si esta
 expirada o impagada, lo marca como fallido.
 
+### Sincronizacion visual del carrito tras pago
+
+Archivos:
+
+- `components/checkout/checkout-cart-sync.tsx`
+- `components/layout/header-client.tsx`
+- `lib/cart/events.ts`
+- `app/checkout/success/page.tsx`
+
+Cuando Stripe redirige a `/checkout/success?session_id=...`, la pagina de exito
+sincroniza el pedido con Stripe y, si el pago esta confirmado, la base de datos
+vacia el carrito mediante `markOrderAsPaid`.
+
+El problema era visual: el header y el drawer del carrito viven en el layout de
+Next.js. Los layouts se conservan entre navegaciones y pueden mostrar estado o
+props anteriores hasta que se solicita un refresco de los Server Components. Por
+eso el checkout ya veia el carrito vacio en base de datos, pero el icono y el
+drawer aun ensenaban el producto hasta hacer refresh manual del navegador.
+
+La correccion hace dos cosas cuando `isPaid === true` en la pagina de exito:
+
+1. Dispara un evento de navegador `sugarbay:cart-cleared` para vaciar el header y
+   el drawer de forma inmediata.
+2. Ejecuta `router.refresh()` una sola vez por `checkoutSessionId` para pedir al
+   servidor un nuevo payload de React Server Components y traer el carrito real
+   ya actualizado.
+
+Componente nuevo:
+
+```tsx
+<CheckoutCartSync checkoutSessionId={sessionId} shouldClearCart={isPaid} />
+```
+
+La proteccion con `sessionStorage` evita refrescos repetidos si la misma pagina
+de exito se vuelve a renderizar:
+
+```tsx
+const refreshKey = `sugarbay.checkout.cart-sync.${checkoutSessionId}`;
+if (window.sessionStorage.getItem(refreshKey)) return;
+
+window.sessionStorage.setItem(refreshKey, "1");
+window.dispatchEvent(new Event(CART_CLEARED_EVENT));
+router.refresh();
+```
+
+En `HeaderClient`, el carrito visible pasa a ser estado local derivado de los
+props del servidor. Cuando llega el evento `CART_CLEARED_EVENT`, se vacian
+`items`, `totalItems` y `subtotal`:
+
+```tsx
+setVisibleCart((currentCart) =>
+  currentCart
+    ? {
+        ...currentCart,
+        totalItems: 0,
+        subtotal: 0,
+        items: [],
+      }
+    : currentCart,
+);
+```
+
+Fuentes oficiales:
+
+- Next.js `router.refresh()`: https://nextjs.org/docs/app/api-reference/functions/use-router
+- Next.js layouts: https://nextjs.org/docs/app/building-your-application/routing/defining-routes
+- Next.js `revalidatePath`: https://nextjs.org/docs/app/api-reference/functions/revalidatePath
+- Stripe recomienda cumplir/sincronizar pedidos con webhooks y tambien desde la
+  landing de exito usando el `Checkout Session ID`:
+  https://docs.stripe.com/checkout/fulfillment
+
 ## Errores encontrados durante el setup
 
 ### 1. Error al crear la sesion de pago de Stripe
@@ -502,6 +573,36 @@ Solucion:
 - En local, usar el `whsec_...` que imprime `stripe listen`.
 - En produccion, usar el `whsec_...` del endpoint creado en Dashboard.
 - Mantener `request.text()` en `app/api/stripe/webhook/route.ts`.
+
+### 6. El carrito se queda visible despues de pagar hasta refrescar
+
+Sintoma:
+
+```txt
+La pagina de checkout dice que el carrito esta vacio, pero el icono del header
+y el drawer siguen mostrando 1 producto. Al actualizar la pagina, se corrige.
+```
+
+Causa:
+
+- `markOrderAsPaid` ya vaciaba el carrito en base de datos.
+- La pagina `/checkout/success` sincronizaba correctamente la sesion de Stripe.
+- El header/drawer estaba renderizado desde el layout y podia conservar el
+  estado anterior del carrito hasta un refresh.
+
+Solucion aplicada:
+
+- Nuevo evento compartido `CART_CLEARED_EVENT` en `lib/cart/events.ts`.
+- Nuevo componente cliente `CheckoutCartSync` en
+  `components/checkout/checkout-cart-sync.tsx`.
+- `app/checkout/success/page.tsx` renderiza ese componente solo cuando el pedido
+  esta pagado.
+- `components/layout/header-client.tsx` escucha el evento, vacia el carrito
+  visible y recibe despues el estado real mediante `router.refresh()`.
+
+Esta solucion respeta el flujo recomendado por Stripe: el pago se confirma con
+la `Checkout Session`, el pedido se sincroniza en servidor y la UI se refresca
+despues de la mutacion.
 
 ## Tarjetas de prueba
 
