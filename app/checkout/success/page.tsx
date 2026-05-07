@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import CheckoutCartSync from "@/components/checkout/checkout-cart-sync";
 import PageShell from "@/components/ui/page-shell";
 import { requireSession } from "@/lib/auth/dal";
 import {
@@ -54,6 +55,8 @@ export default async function CheckoutSuccessPage({
       }
       description="Estado final de tu pedido y pago en Sugarbay."
     >
+      <CheckoutCartSync checkoutSessionId={sessionId} shouldClearCart={isPaid} />
+
       <section
         className={`mx-auto max-w-3xl rounded-3xl border p-8 text-center shadow-[0_20px_36px_rgba(6,3,18,0.52)] ${
           isPaid

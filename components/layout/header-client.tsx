@@ -8,6 +8,7 @@ import AuthModalPanel, { type AuthMode } from "@/components/auth/auth-modal-pane
 import CartDrawer from "@/components/cart/cart-drawer";
 import GlobalSearch from "@/components/layout/global-search";
 import { logoutAction } from "@/lib/auth/actions";
+import { CART_CLEARED_EVENT } from "@/lib/cart/events";
 import { mainNavigation, type NavItem } from "@/lib/services/navigation";
 
 type HeaderClientProps = {
@@ -117,6 +118,7 @@ export default function HeaderClient({
   cart,
   currentUser,
 }: HeaderClientProps) {
+  const [visibleCart, setVisibleCart] = useState(cart);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("login");
@@ -132,6 +134,29 @@ export default function HeaderClient({
     headerNavigation.filter((item) => RIGHT_NAVIGATION_HREFS.includes(item.href)),
     RIGHT_NAVIGATION_HREFS,
   );
+  const visibleCartCount = visibleCart?.totalItems ?? cartCount;
+
+  useEffect(() => {
+    setVisibleCart(cart);
+  }, [cart]);
+
+  useEffect(() => {
+    function handleCartCleared() {
+      setVisibleCart((currentCart) =>
+        currentCart
+          ? {
+              ...currentCart,
+              totalItems: 0,
+              subtotal: 0,
+              items: [],
+            }
+          : currentCart,
+      );
+    }
+
+    window.addEventListener(CART_CLEARED_EVENT, handleCartCleared);
+    return () => window.removeEventListener(CART_CLEARED_EVENT, handleCartCleared);
+  }, []);
 
   useEffect(() => {
     if (!profileMenuOpen) return;
@@ -302,12 +327,12 @@ export default function HeaderClient({
                 type="button"
                 onClick={() => setCartDrawerOpen(true)}
                 className={`${headerIconLargeClass} sb-header-cart-icon-btn relative`}
-                aria-label={`Abrir carrito con ${cartCount} items`}
+                aria-label={`Abrir carrito con ${visibleCartCount} items`}
               >
                 <CartIcon />
-                {cartCount > 0 ? (
+                {visibleCartCount > 0 ? (
                   <span className="sb-header-cart-badge" aria-hidden="true">
-                    {cartCount}
+                    {visibleCartCount}
                   </span>
                 ) : null}
               </button>
@@ -327,7 +352,7 @@ export default function HeaderClient({
         open={cartDrawerOpen}
         onClose={() => setCartDrawerOpen(false)}
         currentUserFirstName={currentUser?.firstName}
-        cart={cart}
+        cart={visibleCart}
       />
     </>
   );
