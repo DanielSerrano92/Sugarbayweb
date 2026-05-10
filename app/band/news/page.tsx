@@ -8,6 +8,9 @@ import PageShell from "@/components/ui/page-shell";
 import type { BandNewsQueryParams } from "@/lib/band/types";
 import { getBandNewsCatalog } from "@/lib/repositories/band";
 
+const NEWS_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/noticias.png?tr=w-2400,h-760,cm-extract,fo-top";
+
 export const metadata: Metadata = {
   title: "Banda Noticias",
   description: "Noticias oficiales de Sugarbay con filtros y detalle expandible.",
@@ -26,30 +29,35 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
       eyebrow="Band"
       title="Noticias de Sugarbay"
       description="Actualidad oficial de la banda con detalle expandible y enlaces relacionados."
+      headerImageSrc={NEWS_PAGE_HEADER_IMAGE_SRC}
     >
-      <div className="flex justify-end">
-        <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
-      </div>
+      <section>
+        <div className="mb-5 flex justify-end">
+          <div className="concert-top-controls concert-top-controls-right">
+            <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
+            <BandNewsPagination
+              basePath="/band/news"
+              filters={catalog.filters}
+              totalPages={catalog.totalPages}
+            />
+          </div>
+        </div>
 
-      <p className="text-sm text-zinc-600">
-        Mostrando {catalog.items.length} de {catalog.totalItems} noticias.
-      </p>
+        {catalog.totalPages > 1 ? (
+          <p className="mb-4 text-sm text-zinc-600">
+            Mostrando {catalog.items.length} de {catalog.totalItems} noticias.
+          </p>
+        ) : null}
 
-      {catalog.items.length === 0 ? (
-        <EmptyState
-          title="No hay noticias con ese filtro"
-          description="Prueba cambiando el rango de fechas o resetear filtros."
-        />
-      ) : (
-        <>
-          <BandNewsListClient items={catalog.items} />
-          <BandNewsPagination
-            basePath="/band/news"
-            filters={catalog.filters}
-            totalPages={catalog.totalPages}
+        {catalog.items.length === 0 ? (
+          <EmptyState
+            title="No hay noticias con ese filtro"
+            description="Prueba cambiando el rango de fechas o resetear filtros."
           />
-        </>
-      )}
+        ) : (
+          <BandNewsListClient items={catalog.items} />
+        )}
+      </section>
 
       <IconNavigationLink href="/band/bio" label="Bio" />
     </PageShell>

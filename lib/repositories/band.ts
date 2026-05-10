@@ -14,6 +14,10 @@ import type {
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
 
 const BAND_NEWS_PAGE_SIZE = 6;
+const NEWS_IMAGE_OVERRIDES: Record<string, string> = {
+  "sugarbay-anuncia-single-y-fecha-madrid":
+    "https://ik.imagekit.io/gq1enkszp/fotos/noticia.png",
+};
 
 type NewsRecord = Prisma.NewsGetPayload<{
   select: {
@@ -106,7 +110,7 @@ function mapBandNews(record: NewsRecord): BandNewsItemView {
     summary: record.summary ?? record.content.slice(0, 160),
     content: record.content,
     publishedAtIso: publishedAt.toISOString(),
-    imageUrl: record.coverImageUrl,
+    imageUrl: NEWS_IMAGE_OVERRIDES[record.slug] ?? record.coverImageUrl,
     tags: record.tags,
     relatedLinks,
   };

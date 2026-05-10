@@ -15,7 +15,7 @@ import type {
   VideoDetailResult,
   VideoEmbedItem,
 } from "@/lib/media/types";
-import { resolveVideoEmbedUrl } from "@/lib/media/video";
+import { resolveVideoDurationSeconds, resolveVideoEmbedUrl } from "@/lib/media/video";
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
 
 const PHOTO_PAGE_SIZE = 9;
@@ -166,7 +166,14 @@ function compareBySort<T>(
   }
 }
 
-function mapVideoEmbedItem(video: VideoCollectionRecord["videos"][number]): VideoEmbedItem {
+async function mapVideoEmbedItem(video: VideoCollectionRecord["videos"][number]): Promise<VideoEmbedItem> {
+  const publishedDate = video.publishedAt ?? video.createdAt;
+  const durationSeconds = await resolveVideoDurationSeconds(
+    video.platform,
+    video.videoUrl,
+    video.durationSeconds,
+  );
+
   return {
     id: video.id,
     slug: video.slug,
@@ -176,8 +183,8 @@ function mapVideoEmbedItem(video: VideoCollectionRecord["videos"][number]): Vide
     videoUrl: video.videoUrl,
     embedUrl: resolveVideoEmbedUrl(video.platform, video.videoUrl),
     thumbnailUrl: video.thumbnailUrl,
-    durationSeconds: video.durationSeconds,
-    publishedAtIso: video.publishedAt ? video.publishedAt.toISOString() : null,
+    durationSeconds,
+    publishedAtIso: publishedDate.toISOString(),
   };
 }
 
@@ -528,6 +535,8 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
 
   if (collection) {
     const date = resolveCollectionDate(collection);
+    const videos = await Promise.all(collection.videos.map((video) => mapVideoEmbedItem(video)));
+
     return {
       kind: "collection",
       id: collection.id,
@@ -536,7 +545,7 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
       description: collection.description,
       coverImageUrl: collection.coverImageUrl ?? collection.videos[0]?.thumbnailUrl ?? null,
       dateIso: date.toISOString(),
-      videos: collection.videos.map(mapVideoEmbedItem),
+      videos,
     };
   }
 
@@ -577,6 +586,12 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
   if (!single || !single.videoCollection.isPublished) return null;
 
   const publishedAt = single.publishedAt ?? single.createdAt;
+  const durationSeconds = await resolveVideoDurationSeconds(
+    single.platform,
+    single.videoUrl,
+    single.durationSeconds,
+  );
+
   return {
     kind: "single",
     id: single.id,
@@ -594,8 +609,8 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
       videoUrl: single.videoUrl,
       embedUrl: resolveVideoEmbedUrl(single.platform, single.videoUrl),
       thumbnailUrl: single.thumbnailUrl,
-      durationSeconds: single.durationSeconds,
-      publishedAtIso: single.publishedAt ? single.publishedAt.toISOString() : null,
+      durationSeconds,
+      publishedAtIso: publishedAt.toISOString(),
     },
     collection: {
       slug: single.videoCollection.slug,

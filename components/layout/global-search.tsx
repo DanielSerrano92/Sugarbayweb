@@ -81,6 +81,28 @@ function SearchIcon() {
   );
 }
 
+function HeaderSearchIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.85"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      shapeRendering="geometricPrecision"
+    >
+      <circle cx="7.6" cy="7.8" r="5.4" />
+      <path d="m11.6 11.8 2.8 2.8" />
+      <path d="M14.8 7.2H21.8" />
+      <path d="M14.8 12H21.8" />
+      <path d="M14.8 16.8H21.8" />
+    </svg>
+  );
+}
+
 export default function GlobalSearch({ className }: GlobalSearchProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -281,7 +303,7 @@ export default function GlobalSearch({ className }: GlobalSearchProps) {
           "sb-btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-200"
         }
       >
-        <SearchIcon />
+        <HeaderSearchIcon />
         <span className="hidden sm:inline">Buscar</span>
         <span className="sb-kbd hidden lg:inline">
           Ctrl+K
