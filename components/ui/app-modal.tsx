@@ -11,6 +11,8 @@ type AppModalProps = {
   maxWidth?: string;
   bodyClassName?: string;
   overlayOpacity?: number;
+  variant?: "default" | "win95";
+  heightMode?: "fixed" | "content";
 };
 
 export default function AppModal({
@@ -20,8 +22,12 @@ export default function AppModal({
   maxWidth = "1220px",
   bodyClassName = "",
   overlayOpacity = 0.3,
+  variant = "default",
+  heightMode = "fixed",
 }: AppModalProps) {
   const titleId = useId();
+  const isWin95 = variant === "win95";
+  const useFixedHeight = heightMode === "fixed";
 
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
@@ -65,18 +71,28 @@ export default function AppModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="sb-window relative z-10 flex min-h-0 w-full flex-col overflow-hidden rounded-3xl shadow-2xl"
+        className={`relative z-10 flex min-h-0 w-full flex-col overflow-hidden shadow-2xl ${
+          isWin95 ? "win-window rounded-none" : "sb-window rounded-3xl"
+        }`}
         style={{
-          height: "min(760px, calc(100dvh - 1.5rem))",
+          height: useFixedHeight ? "min(760px, calc(100dvh - 1.5rem))" : "auto",
           maxHeight: "calc(100dvh - 1.5rem)",
           maxWidth,
           zIndex: 1,
         }}
       >
-        <header className="sb-titlebar sticky top-0 z-20 flex shrink-0 items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <header
+          className={`sticky top-0 z-20 flex shrink-0 items-center justify-between gap-4 ${
+            isWin95
+              ? "win-titlebar px-4 py-2"
+              : "sb-titlebar px-4 py-3 sm:px-6"
+          }`}
+        >
           <h2
             id={titleId}
-            className="min-w-0 truncate text-xs font-black uppercase tracking-[0.14em] text-white sm:text-sm"
+            className={`min-w-0 truncate font-black uppercase tracking-[0.14em] text-white ${
+              isWin95 ? "text-xs" : "text-xs sm:text-sm"
+            }`}
           >
             {title}
           </h2>
@@ -84,14 +100,18 @@ export default function AppModal({
             type="button"
             onClick={onClose}
             aria-label="Cerrar modal"
-            className="sb-btn-secondary inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-0 text-xl leading-none text-white"
+            className={`inline-flex shrink-0 items-center justify-center leading-none ${
+              isWin95
+                ? "win-button px-3 py-1 text-xs"
+                : "sb-btn-secondary h-9 w-9 rounded-full p-0 text-xl text-white"
+            }`}
           >
-            <span aria-hidden="true">&times;</span>
+            <span aria-hidden="true">{isWin95 ? "Cerrar" : "\u00D7"}</span>
           </button>
         </header>
 
         <div
-          className={`min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain p-4 sm:p-6 ${bodyClassName}`.trim()}
+          className={`min-h-0 ${useFixedHeight ? "flex-1" : "shrink-0"} touch-pan-y overflow-y-auto overscroll-contain p-4 sm:p-6 ${bodyClassName}`.trim()}
         >
           {children}
         </div>

@@ -1,5 +1,8 @@
-import { VariantSize } from "@/app/generated/prisma/client";
+"use client";
+
 import Link from "next/link";
+
+import FilterModalShell from "@/components/ui/filter-modal-shell";
 
 import {
   APPAREL_GENDERS,
@@ -9,228 +12,265 @@ import {
   type StoreFilters,
 } from "@/lib/store/types";
 
+const STORE_APPAREL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
+
 type StoreFiltersSidebarProps = {
   categories: StoreCategoryTree[];
   filters: StoreFilters;
+  mode?: "panel" | "icon-modal";
 };
 
 export default function StoreFiltersSidebar({
   categories,
   filters,
+  mode = "panel",
 }: StoreFiltersSidebarProps) {
+  const isIconMode = mode === "icon-modal";
   const selectedCategory = filters.category
     ? categories.find((category) => category.slug === filters.category)
     : null;
   const availableSubcategories = selectedCategory
     ? selectedCategory.children
     : categories.flatMap((category) => category.children);
+  const formClassName = "space-y-4 p-4 text-black store-filters-form";
+  const labelClassName = "mb-1.5 block text-sm font-bold text-black store-filters-label";
+  const inputClassName = "win-input";
+  const selectClassName = "win-input";
+  const fieldsetClassName = "store-filters-group space-y-2 border border-black/45 bg-white/25 p-3";
+  const legendClassName = "px-1 text-xs font-bold uppercase tracking-[0.08em] text-black";
+  const applyClassName = "win-button";
+  const resetClassName = "win-button";
+  const fieldPrefix = isIconMode ? "store-modal" : "store";
+  const categoryFieldId = `${fieldPrefix}-category`;
+  const subcategoryFieldId = `${fieldPrefix}-subcategory`;
+  const minPriceFieldId = `${fieldPrefix}-min-price`;
+  const maxPriceFieldId = `${fieldPrefix}-max-price`;
+  const sortFieldId = `${fieldPrefix}-sort`;
+  const sizeFieldId = `${fieldPrefix}-size`;
+  const genderFieldId = `${fieldPrefix}-gender`;
+  const mediaTypeFieldId = `${fieldPrefix}-media-type`;
+
+  const form = (
+    <form action="/store" method="get" className={formClassName}>
+      <input type="hidden" name="page" value="1" />
+
+      <div className="store-filters-field">
+        <label
+          htmlFor={categoryFieldId}
+          className={labelClassName}
+        >
+          Categoria
+        </label>
+        <select
+          id={categoryFieldId}
+          name="category"
+          defaultValue={filters.category ?? ""}
+          className={selectClassName}
+        >
+          <option value="">Todas</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.slug}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="store-filters-field">
+        <label
+          htmlFor={subcategoryFieldId}
+          className={labelClassName}
+        >
+          Subcategoria
+        </label>
+        <select
+          id={subcategoryFieldId}
+          name="subcategory"
+          defaultValue={filters.subcategory ?? ""}
+          className={selectClassName}
+        >
+          <option value="">Todas</option>
+          {availableSubcategories.map((subcategory) => (
+            <option key={subcategory.id} value={subcategory.slug}>
+              {subcategory.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="store-filters-price-grid grid grid-cols-2 gap-2">
+        <div className="store-filters-field">
+          <label
+            htmlFor={minPriceFieldId}
+            className={labelClassName}
+          >
+            Precio min
+          </label>
+          <input
+            id={minPriceFieldId}
+            name="minPrice"
+            type="number"
+            min={0}
+            step="0.01"
+            defaultValue={filters.priceMin ?? ""}
+            className={inputClassName}
+          />
+        </div>
+        <div className="store-filters-field">
+          <label
+            htmlFor={maxPriceFieldId}
+            className={labelClassName}
+          >
+            Precio max
+          </label>
+          <input
+            id={maxPriceFieldId}
+            name="maxPrice"
+            type="number"
+            min={0}
+            step="0.01"
+            defaultValue={filters.priceMax ?? ""}
+            className={inputClassName}
+          />
+        </div>
+      </div>
+
+      <div className="store-filters-field">
+        <label
+          htmlFor={sortFieldId}
+          className={labelClassName}
+        >
+          Ordenar
+        </label>
+        <select
+          id={sortFieldId}
+          name="sort"
+          defaultValue={filters.sort}
+          className={selectClassName}
+        >
+          {STORE_SORT_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <fieldset className={fieldsetClassName}>
+        <legend className={legendClassName}>
+          Filtros ropa
+        </legend>
+
+        <div className="store-filters-field">
+          <label
+            htmlFor={sizeFieldId}
+            className={labelClassName}
+          >
+            Talla
+          </label>
+          <select
+            id={sizeFieldId}
+            name="size"
+            defaultValue={filters.size ?? ""}
+            className={selectClassName}
+          >
+            <option value="">Todas</option>
+            {STORE_APPAREL_SIZES.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="store-filters-field">
+          <label
+            htmlFor={genderFieldId}
+            className={labelClassName}
+          >
+            Genero
+          </label>
+          <select
+            id={genderFieldId}
+            name="gender"
+            defaultValue={filters.gender ?? ""}
+            className={selectClassName}
+          >
+            <option value="">Todos</option>
+            {APPAREL_GENDERS.map((gender) => (
+              <option key={gender} value={gender}>
+                {gender[0]?.toUpperCase()}
+                {gender.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset className={fieldsetClassName}>
+        <legend className={legendClassName}>
+          Filtros media
+        </legend>
+
+        <div className="store-filters-field">
+          <label
+            htmlFor={mediaTypeFieldId}
+            className={labelClassName}
+          >
+            Tipo
+          </label>
+          <select
+            id={mediaTypeFieldId}
+            name="mediaType"
+            defaultValue={filters.mediaType ?? ""}
+            className={selectClassName}
+          >
+            <option value="">Todos</option>
+            {MEDIA_TYPES.map((mediaType) => (
+              <option key={mediaType} value={mediaType}>
+                {mediaType[0]?.toUpperCase()}
+                {mediaType.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </fieldset>
+
+      <div className="store-filters-actions flex flex-wrap gap-2 pt-1">
+        <button
+          type="submit"
+          className={applyClassName}
+        >
+          Aplicar
+        </button>
+        <Link
+          href="/store"
+          className={resetClassName}
+        >
+          Limpiar
+        </Link>
+      </div>
+    </form>
+  );
+
+  if (isIconMode) {
+    return (
+      <FilterModalShell
+        modalId="store-filters-modal"
+        title="Filtros tienda"
+        buttonLabel="Abrir filtros de tienda"
+      >
+        <div className="store-filters-modal-content">{form}</div>
+      </FilterModalShell>
+    );
+  }
 
   return (
-    <aside className="sb-panel h-fit rounded-2xl p-4">
-      <h2 className="text-base font-bold text-zinc-900">Filtros</h2>
-
-      <form action="/store" method="get" className="mt-4 space-y-4">
-        <input type="hidden" name="page" value="1" />
-
-        <div>
-          <label
-            htmlFor="store-category"
-            className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-          >
-            Categoria
-          </label>
-          <select
-            id="store-category"
-            name="category"
-            defaultValue={filters.category ?? ""}
-            className="sb-select"
-          >
-            <option value="">Todas</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.slug}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label
-            htmlFor="store-subcategory"
-            className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-          >
-            Subcategoria
-          </label>
-          <select
-            id="store-subcategory"
-            name="subcategory"
-            defaultValue={filters.subcategory ?? ""}
-            className="sb-select"
-          >
-            <option value="">Todas</option>
-            {availableSubcategories.map((subcategory) => (
-              <option key={subcategory.id} value={subcategory.slug}>
-                {subcategory.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <label
-              htmlFor="store-min-price"
-              className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-            >
-              Precio min
-            </label>
-            <input
-              id="store-min-price"
-              name="minPrice"
-              type="number"
-              min={0}
-              step="0.01"
-              defaultValue={filters.priceMin ?? ""}
-              className="sb-input"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="store-max-price"
-              className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-            >
-              Precio max
-            </label>
-            <input
-              id="store-max-price"
-              name="maxPrice"
-              type="number"
-              min={0}
-              step="0.01"
-              defaultValue={filters.priceMax ?? ""}
-              className="sb-input"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="store-sort"
-            className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-          >
-            Ordenar
-          </label>
-          <select
-            id="store-sort"
-            name="sort"
-            defaultValue={filters.sort}
-            className="sb-select"
-          >
-            {STORE_SORT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <fieldset className="space-y-2 rounded-xl border border-zinc-300 p-3">
-          <legend className="px-1 text-xs font-semibold uppercase text-zinc-600">
-            Filtros ropa
-          </legend>
-
-          <div>
-            <label
-              htmlFor="store-size"
-              className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-            >
-              Talla
-            </label>
-            <select
-              id="store-size"
-              name="size"
-              defaultValue={filters.size ?? ""}
-              className="sb-select"
-            >
-              <option value="">Todas</option>
-              {Object.values(VariantSize)
-                .filter((size) => size !== "OS")
-                .map((size) => (
-                  <option key={size} value={size}>
-                    {size}
-                  </option>
-                ))}
-            </select>
-          </div>
-
-          <div>
-            <label
-              htmlFor="store-gender"
-              className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-            >
-              Genero
-            </label>
-            <select
-              id="store-gender"
-              name="gender"
-              defaultValue={filters.gender ?? ""}
-              className="sb-select"
-            >
-              <option value="">Todos</option>
-              {APPAREL_GENDERS.map((gender) => (
-                <option key={gender} value={gender}>
-                  {gender[0]?.toUpperCase()}
-                  {gender.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </fieldset>
-
-        <fieldset className="space-y-2 rounded-xl border border-zinc-300 p-3">
-          <legend className="px-1 text-xs font-semibold uppercase text-zinc-600">
-            Filtros media
-          </legend>
-
-          <div>
-            <label
-              htmlFor="store-media-type"
-              className="mb-1.5 block text-xs font-semibold uppercase text-zinc-600"
-            >
-              Tipo
-            </label>
-            <select
-              id="store-media-type"
-              name="mediaType"
-              defaultValue={filters.mediaType ?? ""}
-              className="sb-select"
-            >
-              <option value="">Todos</option>
-              {MEDIA_TYPES.map((mediaType) => (
-                <option key={mediaType} value={mediaType}>
-                  {mediaType[0]?.toUpperCase()}
-                  {mediaType.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </fieldset>
-
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="submit"
-            className="sb-btn-primary px-4 py-2 text-sm font-semibold"
-          >
-            Aplicar
-          </button>
-          <Link
-            href="/store"
-            className="sb-btn-secondary px-4 py-2 text-sm font-medium text-zinc-200"
-          >
-            Limpiar
-          </Link>
-        </div>
-      </form>
+    <aside className="win-window store-filters-window h-fit overflow-hidden">
+      <div className="win-titlebar store-filters-titlebar">
+        <span>Filtros tienda</span>
+      </div>
+      <div className="store-filters-modal-content">{form}</div>
     </aside>
   );
 }

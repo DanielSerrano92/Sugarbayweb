@@ -227,7 +227,7 @@ export default function HeaderClient({
         <div className="sb-header-shell w-full max-w-full rounded-none">
           <div className="sb-header-row relative flex w-full min-w-0 items-center">
             <GlobalSearch
-              className="sb-header-search-pixel sb-header-icon-pop inline-grid h-auto w-auto shrink-0 place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0 [&>span]:hidden [&>svg]:!h-[3.25rem] [&>svg]:!w-[3.25rem] sm:[&>svg]:!h-[3.6rem] sm:[&>svg]:!w-[3.6rem] xl:[&>svg]:!h-[4rem] xl:[&>svg]:!w-[4rem]"
+              className="sb-header-search-pixel sb-header-icon-pop inline-grid h-auto w-auto shrink-0 place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0 [&>span]:hidden [&>svg]:origin-center [&>svg]:scale-[1.12] [&>svg]:translate-y-[2px] [&>svg]:!h-[3.25rem] [&>svg]:!w-[3.25rem] sm:[&>svg]:!h-[3.6rem] sm:[&>svg]:!w-[3.6rem] xl:[&>svg]:!h-[4rem] xl:[&>svg]:!w-[4rem]"
             />
 
             <div className="sb-header-desktop-nav min-w-0 flex-1 items-center justify-center">

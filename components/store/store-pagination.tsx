@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 
 import { serializeStoreFilters } from "@/lib/store/filters";
@@ -7,73 +8,86 @@ type StorePaginationProps = {
   currentPage: number;
   totalPages: number;
   filters: StoreFilters;
+  className?: string;
 };
 
 function getVisiblePages(currentPage: number, totalPages: number): number[] {
-  const pages = new Set<number>([1, totalPages, currentPage]);
-  for (let offset = 1; offset <= 2; offset += 1) {
-    pages.add(currentPage - offset);
-    pages.add(currentPage + offset);
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
   }
 
+  const pages = new Set<number>([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
   return Array.from(pages)
     .filter((page) => page >= 1 && page <= totalPages)
-    .sort((a, b) => a - b);
+    .sort((left, right) => left - right);
+}
+
+function buildHref(filters: StoreFilters, page: number): string {
+  const params = serializeStoreFilters(filters, { page });
+  const query = params.toString();
+  return query ? `/store?${query}` : "/store";
 }
 
 export default function StorePagination({
   currentPage,
   totalPages,
   filters,
+  className,
 }: StorePaginationProps) {
-  if (totalPages <= 1) return null;
-
-  const pages = getVisiblePages(currentPage, totalPages);
-  const previousPage = Math.max(1, currentPage - 1);
-  const nextPage = Math.min(totalPages, currentPage + 1);
+  const effectiveTotalPages = Math.max(1, totalPages);
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), effectiveTotalPages);
+  const previousPage = Math.max(1, safeCurrentPage - 1);
+  const nextPage = Math.min(effectiveTotalPages, safeCurrentPage + 1);
+  const pages = getVisiblePages(safeCurrentPage, effectiveTotalPages);
+  const isPreviousDisabled = safeCurrentPage === 1;
+  const isNextDisabled = safeCurrentPage === effectiveTotalPages;
 
   return (
     <nav
       aria-label="Paginacion de productos"
-      className="mt-6 flex flex-wrap items-center gap-2"
+      className={["concert-pagination-shell", className].filter(Boolean).join(" ")}
     >
       <Link
-        href={`/store?${serializeStoreFilters(filters, { page: previousPage }).toString()}`}
-        aria-disabled={currentPage === 1}
-        className={`rounded-xl border px-3 py-2 text-sm font-medium ${
-          currentPage === 1
-            ? "pointer-events-none border-zinc-200 text-zinc-400"
-            : "sb-btn-secondary border-zinc-300 text-zinc-200"
+        href={buildHref(filters, previousPage)}
+        className={`concert-pagination-arrow ${
+          isPreviousDisabled ? "pointer-events-none opacity-50" : ""
         }`}
+        aria-label="Pagina anterior"
+        aria-disabled={isPreviousDisabled}
       >
-        Anterior
+        <span aria-hidden="true">&lt;</span>
       </Link>
 
-      {pages.map((page) => (
-        <Link
-          key={`page-${page}`}
-          href={`/store?${serializeStoreFilters(filters, { page }).toString()}`}
-          aria-current={page === currentPage ? "page" : undefined}
-          className={`rounded-xl border px-3 py-2 text-sm font-semibold ${
-            page === currentPage
-              ? "border-emerald-700 bg-emerald-700 text-white shadow-[0_8px_20px_rgba(50,30,120,0.45)]"
-              : "sb-btn-secondary border-zinc-300 text-zinc-200"
-          }`}
-        >
-          {page}
-        </Link>
-      ))}
+      <div className="concert-pagination-pages">
+        {pages.map((page, index) => (
+          <Fragment key={`page-${page}`}>
+            {index > 0 ? <span className="concert-pagination-separator">,</span> : null}
+            <Link
+              href={buildHref(filters, page)}
+              aria-current={page === safeCurrentPage ? "page" : undefined}
+              className={`concert-pagination-page ${page === safeCurrentPage ? "is-active" : ""}`}
+            >
+              {page}
+            </Link>
+          </Fragment>
+        ))}
+        {pages[pages.length - 1] < effectiveTotalPages ? (
+          <>
+            <span className="concert-pagination-separator">,</span>
+            <span className="concert-pagination-ellipsis">...</span>
+          </>
+        ) : null}
+      </div>
 
       <Link
-        href={`/store?${serializeStoreFilters(filters, { page: nextPage }).toString()}`}
-        aria-disabled={currentPage === totalPages}
-        className={`rounded-xl border px-3 py-2 text-sm font-medium ${
-          currentPage === totalPages
-            ? "pointer-events-none border-zinc-200 text-zinc-400"
-            : "sb-btn-secondary border-zinc-300 text-zinc-200"
+        href={buildHref(filters, nextPage)}
+        className={`concert-pagination-arrow ${
+          isNextDisabled ? "pointer-events-none opacity-50" : ""
         }`}
+        aria-label="Pagina siguiente"
+        aria-disabled={isNextDisabled}
       >
-        Siguiente
+        <span aria-hidden="true">&gt;</span>
       </Link>
     </nav>
   );

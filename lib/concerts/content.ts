@@ -17,7 +17,7 @@ const concertContentRegistry: Record<string, ConcertExtraContent> = {
   "sugarbay-live-madrid-2026": {
     experiences: ["Entrada general", "Front stage", "Meet and greet"],
     venuePhotoUrl:
-      "https://ik.imagekit.io/sugarbay/venues/sala-riviera-madrid.jpg",
+      "https://ik.imagekit.io/gq1enkszp/fotos/sala-riviera.png",
     venueDescription:
       "Sala historica de Madrid con aforo medio, sonido directo y gran visibilidad desde platea y anfiteatro.",
     venueWebsiteUrl: "https://www.salariviera.com",
@@ -39,7 +39,7 @@ const concertContentRegistry: Record<string, ConcertExtraContent> = {
   },
   "sugarbay-barcelona-closing-night-2025": {
     experiences: ["Entrada pista", "Balcon"],
-    venuePhotoUrl: "https://ik.imagekit.io/sugarbay/venues/razzmatazz.jpg",
+    venuePhotoUrl: "https://ik.imagekit.io/gq1enkszp/fotos/razzmatazz-bcn.png",
     venueDescription:
       "Razzmatazz fue sede del cierre de gira con escenografia completa y setlist extendido.",
     venueWebsiteUrl: "https://www.salarazzmatazz.com",

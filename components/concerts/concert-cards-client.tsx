@@ -83,43 +83,61 @@ export default function ConcertCardsClient({
 
   return (
     <>
-      <div className="grid grid-cols-1 justify-items-center gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 justify-items-center gap-6 sm:gap-7 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-4">
         {concerts.map((concert) => (
           <article
             key={concert.id}
-            className="retro-concert-card w-full max-w-[280px] overflow-hidden"
+            className="retro-concert-card w-full max-w-[26.5rem] overflow-hidden"
           >
             <div className="retro-concert-header">
               {concert.city}, {concert.countryLabel}
             </div>
 
             <div className="retro-concert-body">
-              <h2 className="retro-concert-title">{concert.title}</h2>
-
-              <div className="retro-concert-row">
-                <RetroCalendarIcon />
-                <span>
-                  {formatDate(concert.startsAtIso, "es-ES", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </span>
+              <div className="retro-concert-title-block">
+                <h2 className="retro-concert-title">{concert.title}</h2>
               </div>
 
-              <a
-                href={concert.googleMapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="retro-concert-row retro-concert-link"
+              <div className="retro-concert-meta">
+                <div className="retro-concert-meta-item">
+                  <p className="retro-concert-meta-label">Fecha</p>
+                  <div className="retro-concert-row">
+                    <RetroCalendarIcon />
+                    <span>
+                      {formatDate(concert.startsAtIso, "es-ES", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="retro-concert-meta-item">
+                  <p className="retro-concert-meta-label">Lugar</p>
+                  <a
+                    href={concert.googleMapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="retro-concert-row retro-concert-link"
+                  >
+                    <RetroHouseIcon />
+                    <span className="retro-concert-location">{concert.locationLabel}</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="retro-concert-copy">
+                <p className="retro-concert-description">{concert.description}</p>
+              </div>
+
+              <div
+                className={`retro-card-actions ${
+                  period === "past"
+                    ? "retro-card-actions-past"
+                    : "retro-card-actions-upcoming"
+                }`}
               >
-                <RetroHouseIcon />
-                <span className="retro-concert-location">{concert.locationLabel}</span>
-              </a>
-
-              <p className="retro-concert-description">{concert.description}</p>
-
-              <div className="retro-card-actions">
                 <button
                   type="button"
                   onClick={() => setSelectedConcertId(concert.id)}
@@ -139,7 +157,7 @@ export default function ConcertCardsClient({
                       {concert.actionLabel}
                     </a>
                   ) : (
-                    <span className="retro-card-action opacity-60">
+                    <span className="retro-card-action is-disabled">
                       {concert.actionLabel}
                     </span>
                   )
@@ -148,14 +166,14 @@ export default function ConcertCardsClient({
                     {concert.pastDetails?.photos[0] ? (
                       <ExternalLink href={concert.pastDetails.photos[0].url} label="Fotos" />
                     ) : (
-                      <span className="retro-card-action opacity-60">
+                      <span className="retro-card-action is-disabled">
                         Fotos
                       </span>
                     )}
                     {concert.pastDetails?.videos[0] ? (
                       <ExternalLink href={concert.pastDetails.videos[0].url} label="Videos" />
                     ) : (
-                      <span className="retro-card-action opacity-60">
+                      <span className="retro-card-action is-disabled">
                         Videos
                       </span>
                     )}

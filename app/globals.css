@@ -272,6 +272,683 @@ p {
     outline: none;
   }
 
+  .store-filters-window {
+    border-color: #4f62ec;
+    box-shadow:
+      3px 3px 0 rgb(0 0 0 / 38%),
+      0 0 16px rgb(120 92 255 / 24%),
+      0 0 26px rgb(255 84 214 / 15%);
+  }
+
+  .store-filters-titlebar {
+    letter-spacing: 0.08em;
+  }
+
+  .store-filters-form {
+    display: grid;
+    gap: 0.92rem;
+  }
+
+  .store-filters-field {
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .store-filters-label {
+    letter-spacing: 0.04em;
+  }
+
+  .store-filters-group {
+    border: 1px solid rgb(0 0 0 / 45%);
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 32%), rgb(255 255 255 / 14%)),
+      linear-gradient(180deg, rgb(197 193 225 / 90%), rgb(181 175 213 / 90%));
+    box-shadow:
+      inset -1px -1px 0 rgb(126 126 126 / 70%),
+      inset 1px 1px 0 rgb(255 255 255 / 70%);
+  }
+
+  .store-filters-group legend {
+    color: #161616;
+    letter-spacing: 0.07em;
+  }
+
+  .store-filters-price-grid {
+    align-items: end;
+  }
+
+  .store-filters-actions {
+    border-top: 1px solid #5a4a95;
+    padding-top: 0.72rem;
+    margin-top: 0.14rem;
+  }
+
+  .store-filters-actions .win-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.32rem;
+    min-width: 8.4rem;
+  }
+
+  .store-filters-actions .win-button:first-child {
+    font-weight: 900;
+    color: #0f2f99 !important;
+  }
+
+  .store-filters-actions .win-button:focus-visible {
+    outline: 2px solid rgb(97 221 255 / 86%);
+    outline-offset: 2px;
+  }
+
+  .store-filters-modal-content {
+    background:
+      linear-gradient(180deg, rgb(215 211 237 / 96%), rgb(197 193 225 / 96%)),
+      radial-gradient(circle at 8% 0%, rgb(85 167 255 / 12%), transparent 46%),
+      radial-gradient(circle at 84% 0%, rgb(255 95 219 / 12%), transparent 44%);
+  }
+
+  .store-mobile-filters-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .store-results-shell {
+    width: 100%;
+  }
+
+  .store-results-shell.store-results-shell-empty {
+    max-width: none;
+  }
+
+  .store-results-toolbar {
+    width: 100%;
+  }
+
+  .store-top-controls,
+  .concert-top-controls.concert-top-controls-right.store-top-controls {
+    margin-right: 0;
+  }
+
+  .store-pagination-shell {
+    min-width: 8.6rem;
+  }
+
+  .store-products-grid {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .store-products-grid > :only-child {
+    grid-column: auto;
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  .store-empty-results-card {
+    width: 100%;
+    max-width: none;
+  }
+
+  @media (min-width: 768px) {
+    .store-products-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .page-content-wrapper.store-catalog-content {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .store-catalog-layout {
+    align-items: start;
+  }
+
+  .store-catalog-sidebar {
+    justify-self: start;
+  }
+
+  .store-catalog-sidebar .store-filters-window {
+    width: 100%;
+    max-width: 21rem;
+  }
+
+  .store-product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 35.5rem;
+    border: 2px solid #4766ee;
+    background:
+      linear-gradient(180deg, rgb(205 198 229 / 96%), rgb(192 184 220 / 96%)),
+      radial-gradient(circle at 10% 0%, rgb(91 169 255 / 16%), transparent 46%),
+      radial-gradient(circle at 92% 0%, rgb(255 90 216 / 16%), transparent 44%);
+    box-shadow:
+      3px 3px 0 rgb(0 0 0 / 42%),
+      0 0 16px rgb(120 92 255 / 22%),
+      0 0 26px rgb(255 84 214 / 14%);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .store-product-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(100% - 1px),
+      rgb(255 255 255 / 8%) 100%
+    );
+    background-size: 100% 3px;
+    opacity: 0.2;
+  }
+
+  .store-product-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 1px solid rgb(255 255 255 / 22%);
+    box-shadow: inset 0 0 0 1px rgb(60 36 129 / 32%);
+  }
+
+  .store-product-card:hover {
+    transform: translateY(-3px);
+    border-color: #5ecdfc;
+    box-shadow:
+      4px 4px 0 rgb(0 0 0 / 42%),
+      0 0 20px rgb(93 214 255 / 28%),
+      0 0 30px rgb(255 94 220 / 18%);
+  }
+
+  .store-product-card-header {
+    border-bottom: 1px solid #7f90ff;
+    background: linear-gradient(90deg, #2d46dd 0%, #7142df 54%, #f052c4 100%);
+    padding: 0.56rem 0.8rem 0.5rem;
+  }
+
+  .store-product-card-category {
+    margin: 0;
+    color: #f6f8ff;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.6rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgb(0 0 0 / 40%);
+  }
+
+  .store-product-card-media-link:focus-visible {
+    outline: none;
+  }
+
+  .store-product-card-media-link:focus-visible .store-product-card-media,
+  .store-product-card-title:focus-visible,
+  .store-product-card-cta:focus-visible {
+    outline: 2px solid rgb(95 224 255 / 84%);
+    outline-offset: 2px;
+  }
+
+  .store-product-card-media {
+    height: clamp(16rem, 34vw, 20rem);
+    border-bottom: 1px solid #7e76aa;
+    background:
+      radial-gradient(circle at 18% 10%, rgb(255 103 223 / 18%), transparent 48%),
+      radial-gradient(circle at 88% 80%, rgb(96 224 255 / 20%), transparent 46%),
+      linear-gradient(150deg, #241560 0%, #1f144f 54%, #17103e 100%);
+  }
+
+  .store-product-card-media-shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(120deg, transparent 0%, rgb(255 255 255 / 18%) 34%, transparent 60%),
+      linear-gradient(to top, rgb(18 12 44 / 44%), transparent 22%);
+    mix-blend-mode: screen;
+  }
+
+  .store-product-card-image {
+    transition: transform 0.26s ease, filter 0.26s ease;
+    filter: saturate(1.08) contrast(1.04);
+  }
+
+  .store-product-card:hover .store-product-card-image {
+    transform: scale(1.045);
+    filter: saturate(1.16) contrast(1.06);
+  }
+
+  .store-product-card-body {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.82rem;
+    padding: 0.96rem 0.94rem 1rem;
+    color: #141414;
+  }
+
+  .store-product-card-title {
+    margin: 0;
+    color: #1b1b1f;
+    font-family: var(--font-retronoid);
+    font-size: clamp(1.46rem, 2.4vw, 1.9rem);
+    font-weight: 700;
+    line-height: 1.07;
+    letter-spacing: 0.015em;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-wrap: balance;
+    transition: color 0.16s ease, text-shadow 0.16s ease;
+  }
+
+  .store-product-card-title:hover {
+    color: #112fa0;
+    text-shadow:
+      0 0 8px rgb(102 218 255 / 26%),
+      0 0 12px rgb(255 96 223 / 24%);
+  }
+
+  .store-product-card-description {
+    margin: 0;
+    color: #2d2c36;
+    font-size: 0.93rem;
+    line-height: 1.4;
+  }
+
+  .store-product-card-pricing {
+    display: grid;
+    gap: 0.18rem;
+    border: 1px solid #a4a4a4;
+    background: linear-gradient(180deg, #d6d6d6 0%, #c9c9c9 100%);
+    padding: 0.48rem 0.56rem;
+    box-shadow:
+      inset 1px 1px 0 #f4f4f4,
+      inset -1px -1px 0 #adadad;
+  }
+
+  .store-product-card-compare-price {
+    margin: 0;
+    color: #585866;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: line-through;
+  }
+
+  .store-product-card-price {
+    margin: 0;
+    color: #0f0f13;
+    font-family: var(--font-retro-ui);
+    font-size: clamp(1.62rem, 2.6vw, 2rem);
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    text-shadow:
+      0 0 8px rgb(94 223 255 / 24%),
+      0 0 10px rgb(255 99 223 / 14%);
+  }
+
+  .store-product-card-cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 2.34rem;
+    border: 2px solid #8f8f8f;
+    background: linear-gradient(180deg, #dfdfdf 0%, #cecece 100%);
+    color: #0f0f12 !important;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow:
+      inset 1px 1px 0 #f2f2f2,
+      inset -1px -1px 0 #b1b1b1,
+      0 0 10px rgb(95 224 255 / 18%);
+    transition: transform 0.14s ease, box-shadow 0.14s ease;
+  }
+
+  .store-product-card-cta:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 1px 1px 0 #ffffff,
+      inset -1px -1px 0 #b1b1b1,
+      0 0 12px rgb(95 224 255 / 28%),
+      0 0 16px rgb(255 102 224 / 18%);
+  }
+
+  .store-detail-panel {
+    border: 1px solid #8c79c2;
+    background:
+      linear-gradient(180deg, rgb(214 205 234 / 96%), rgb(197 188 223 / 96%)),
+      radial-gradient(circle at 12% 0%, rgb(89 175 255 / 10%), transparent 48%),
+      radial-gradient(circle at 88% 0%, rgb(255 108 226 / 12%), transparent 46%);
+    box-shadow:
+      2px 2px 0 rgb(0 0 0 / 36%),
+      0 0 14px rgb(120 92 255 / 16%),
+      0 0 20px rgb(255 84 214 / 10%);
+    padding: 1rem;
+  }
+
+  .store-detail-panel-default {
+    border-radius: 1rem;
+  }
+
+  .store-detail-panel-compact {
+    border-radius: 0.78rem;
+    padding: 0.88rem;
+  }
+
+  .store-detail-media-column {
+    min-width: 0;
+  }
+
+  .store-detail-hero {
+    border: 1px solid #8978bc;
+    background:
+      radial-gradient(circle at 18% 10%, rgb(255 110 226 / 14%), transparent 50%),
+      radial-gradient(circle at 84% 84%, rgb(97 223 255 / 14%), transparent 48%),
+      linear-gradient(145deg, #59457f 0%, #4b3a73 48%, #433561 100%);
+    box-shadow:
+      inset 1px 1px 0 rgb(255 255 255 / 18%),
+      inset -1px -1px 0 rgb(96 79 146 / 45%),
+      0 0 10px rgb(109 220 255 / 14%);
+  }
+
+  .store-detail-empty-label {
+    margin: 0;
+    color: #f5f2ff;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 8px rgb(108 222 255 / 26%),
+      0 0 12px rgb(255 98 223 / 22%);
+  }
+
+  .store-detail-thumbs {
+    gap: 0.5rem;
+  }
+
+  .store-detail-thumb-item {
+    border: 1px solid #8d8d8d;
+    background: linear-gradient(180deg, #e2e2e2 0%, #d2d2d2 100%);
+    box-shadow:
+      inset 1px 1px 0 #f4f4f4,
+      inset -1px -1px 0 #adadad;
+  }
+
+  .store-detail-content {
+    display: grid;
+    align-content: start;
+    gap: 0.78rem;
+    min-width: 0;
+  }
+
+  .store-detail-category {
+    margin: 0;
+    color: #2c2740;
+    width: fit-content;
+    border: 1px solid #a392ce;
+    background: linear-gradient(90deg, #e2dbf3 0%, #d4cae9 52%, #d8cde9 100%);
+    padding: 0.3rem 0.56rem;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.54rem;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    box-shadow:
+      inset 1px 1px 0 rgb(255 255 255 / 54%),
+      inset -1px -1px 0 rgb(176 160 206 / 46%);
+  }
+
+  .store-detail-title {
+    margin: 0;
+    color: #14121e;
+    font-family: var(--font-retronoid);
+    font-size: clamp(1.82rem, 2.9vw, 2.42rem);
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    line-height: 1.02;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .store-detail-title-compact {
+    font-size: clamp(1.5rem, 2.45vw, 2rem);
+  }
+
+  .store-detail-pricing {
+    display: grid;
+    gap: 0.16rem;
+    border: 1px solid #9689b7;
+    background: linear-gradient(180deg, #ddd4ed 0%, #cdc2e2 100%);
+    padding: 0.42rem 0.56rem;
+    box-shadow:
+      inset 1px 1px 0 #f3edff,
+      inset -1px -1px 0 #b0a3cf;
+  }
+
+  .store-detail-compare-price {
+    margin: 0;
+    color: #5c5278;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: line-through;
+  }
+
+  .store-detail-price {
+    margin: 0;
+    color: #1b162a;
+    font-family: var(--font-retro-ui);
+    font-size: clamp(1.36rem, 2.1vw, 1.76rem);
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    text-shadow:
+      0 0 6px rgb(97 214 255 / 16%),
+      0 0 8px rgb(255 92 219 / 10%);
+  }
+
+  .store-detail-price-compact {
+    font-size: clamp(1.22rem, 1.9vw, 1.52rem);
+  }
+
+  .store-detail-description {
+    margin: 0;
+    color: #3b3551;
+    font-size: 0.92rem;
+    line-height: 1.42;
+  }
+
+  .store-detail-purchase-form {
+    border: 1px solid #978ab8;
+    background: linear-gradient(180deg, #ddd4ed 0%, #cdc2e2 100%);
+    box-shadow:
+      inset 1px 1px 0 #f3edff,
+      inset -1px -1px 0 #b0a3cf,
+      0 0 8px rgb(102 217 255 / 10%);
+    padding: 0.74rem;
+  }
+
+  .store-detail-field-label {
+    color: #2c2840;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.66rem;
+    font-family: var(--font-retro-pixel);
+  }
+
+  .store-detail-control {
+    width: 100%;
+    min-height: 2.3rem;
+    border: 1px solid #9a8ebd;
+    background: linear-gradient(180deg, #e7e0f6 0%, #d8cfea 100%);
+    color: #1f1a2e;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    box-shadow:
+      inset 1px 1px 0 #f6f2ff,
+      inset -1px -1px 0 #b3a8cf;
+  }
+
+  .store-detail-control:focus {
+    outline: 2px solid rgb(95 224 255 / 64%);
+    outline-offset: 1px;
+    border-color: #7f9cf3;
+  }
+
+  .store-detail-submit {
+    border: 1px solid #988bb7;
+    background: linear-gradient(180deg, #e5ddf4 0%, #d4cae8 100%);
+    color: #241f34 !important;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow:
+      inset 1px 1px 0 #f5f1ff,
+      inset -1px -1px 0 #b6a9d3,
+      0 0 8px rgb(95 224 255 / 12%);
+    transition: transform 0.14s ease, box-shadow 0.14s ease;
+  }
+
+  .store-detail-submit:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 1px 1px 0 #ffffff,
+      inset -1px -1px 0 #b6a9d3,
+      0 0 10px rgb(95 224 255 / 18%),
+      0 0 14px rgb(255 102 224 / 14%);
+  }
+
+  .store-detail-submit:focus-visible {
+    outline: 2px solid rgb(95 224 255 / 86%);
+    outline-offset: 2px;
+  }
+
+  .store-detail-alert {
+    margin: 0;
+    border: 1px solid #8f8f8f;
+    background: linear-gradient(180deg, #dfdfdf 0%, #cecece 100%);
+    padding: 0.72rem 0.82rem;
+    color: #19191f;
+    font-size: 0.88rem;
+    font-weight: 700;
+    box-shadow:
+      inset 1px 1px 0 #f4f4f4,
+      inset -1px -1px 0 #ababab;
+  }
+
+  .store-detail-alert-danger {
+    border-color: #ad637e;
+    box-shadow:
+      inset 1px 1px 0 #f7e5ed,
+      inset -1px -1px 0 #d5b9c5,
+      0 0 10px rgb(255 98 163 / 18%);
+  }
+
+  .store-detail-alert-warning {
+    border-color: #b08559;
+    box-shadow:
+      inset 1px 1px 0 #f8eee2,
+      inset -1px -1px 0 #d9c1a5,
+      0 0 10px rgb(255 178 98 / 16%);
+  }
+
+  .store-detail-notes {
+    display: grid;
+    gap: 0.78rem;
+    border: 1px solid #988bb8;
+    background: linear-gradient(180deg, #ddd4ed 0%, #cdc2e2 100%);
+    box-shadow:
+      inset 1px 1px 0 #f3edff,
+      inset -1px -1px 0 #b0a3cf;
+    padding: 0.74rem;
+  }
+
+  .store-detail-notes-title {
+    margin: 0;
+    color: #57418a;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.56rem;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .store-detail-notes-list,
+  .store-detail-notes-copy {
+    margin: 0;
+    color: #302a43;
+    font-size: 0.86rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 639px) {
+    .store-product-card {
+      min-height: 33.6rem;
+    }
+
+    .store-product-card-media {
+      height: 15.7rem;
+    }
+
+    .store-product-card-body {
+      padding: 0.84rem 0.82rem 0.9rem;
+      gap: 0.72rem;
+    }
+
+    .store-product-card-title {
+      font-size: 1.28rem;
+    }
+
+    .store-product-card-description {
+      font-size: 0.88rem;
+    }
+
+    .store-product-card-price {
+      font-size: 1.55rem;
+    }
+
+    .store-mobile-filters-trigger .retro-folder-icon {
+      width: 52px;
+      height: 36px;
+    }
+
+    .store-detail-panel,
+    .store-detail-panel-compact {
+      padding: 0.88rem;
+    }
+
+    .store-detail-title {
+      font-size: 1.5rem;
+    }
+
+    .store-detail-description,
+    .store-detail-notes-list,
+    .store-detail-notes-copy {
+      font-size: 0.86rem;
+    }
+
+    .store-detail-price {
+      font-size: 1.28rem;
+    }
+
+    .store-detail-thumbs {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
   .sb-checkbox,
   .sb-radio {
     accent-color: #7f52ff;
@@ -302,17 +979,55 @@ p {
   }
 
   .sb-header-shell {
+    position: relative;
+    isolation: isolate;
     border: 6px solid #fff;
-    background: linear-gradient(90deg, #8ab5e4 0%, #b596e8 52%, #dd67ea 100%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 40%);
+    background:
+      radial-gradient(circle at 14% 22%, rgb(126 227 255 / 34%), transparent 42%),
+      radial-gradient(circle at 86% 18%, rgb(255 114 227 / 36%), transparent 38%),
+      linear-gradient(90deg, #7eaede 0%, #b08ee8 52%, #d95fe7 100%);
+    background-size: 100% 100%, 100% 100%, 260% 100%;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 40%),
+      0 0 24px rgb(255 94 218 / 36%),
+      0 0 38px rgb(94 223 255 / 28%);
     width: min(100%, 100vw);
     max-width: 100vw;
     overflow-x: hidden;
     overflow-x: clip;
     overflow-y: visible;
+    animation: sb-header-shell-neon 4.8s ease-in-out infinite;
+  }
+
+  .sb-header-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        100deg,
+        transparent 0%,
+        rgb(255 255 255 / 9%) 28%,
+        rgb(255 255 255 / 2%) 48%,
+        transparent 70%
+      );
+    opacity: 0.8;
+    animation: sb-header-shell-scan 3.6s linear infinite;
+  }
+
+  .sb-header-shell::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    pointer-events: none;
+    border: 1px solid rgb(255 255 255 / 34%);
+    opacity: 0.72;
+    animation: sb-header-shell-frame 3.1s ease-in-out infinite;
   }
 
   .sb-header-row {
+    position: relative;
     min-height: 116px;
     min-width: 0;
     width: 100%;
@@ -376,6 +1091,7 @@ p {
   }
 
   .sb-header-tab {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -398,7 +1114,33 @@ p {
     text-decoration: none;
     white-space: nowrap;
     transform-origin: center;
-    transition: background-color 0.15s ease, filter 0.15s ease, transform 0.15s ease;
+    overflow: hidden;
+    text-shadow:
+      0 0 5px rgb(255 255 255 / 18%),
+      0 0 8px rgb(119 80 255 / 12%);
+    transition:
+      background-color 0.15s ease,
+      filter 0.15s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .sb-header-tab::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -44%;
+    width: 38%;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgb(255 255 255 / 18%) 44%,
+      transparent 100%
+    );
+    opacity: 0;
+    animation: sb-header-tab-sheen 5.6s linear infinite;
   }
 
   .sb-header-tab:hover,
@@ -409,6 +1151,9 @@ p {
     border-bottom: 4px solid #755e9f;
     background: #ecc2f5;
     color: #121212 !important;
+    box-shadow:
+      0 0 10px rgb(255 84 214 / 24%),
+      0 0 16px rgb(95 224 255 / 14%);
     transform: translateY(-2px) scale(var(--sb-header-hover-scale));
   }
 
@@ -479,21 +1224,60 @@ p {
   .sb-header-search-pixel > svg {
     width: 4rem !important;
     height: 4rem !important;
-    shape-rendering: crispEdges;
-    stroke-linecap: square;
-    stroke-linejoin: miter;
-    stroke-width: 3.3;
+    shape-rendering: geometricPrecision;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.45;
   }
 
   .sb-header-icon-pop {
     color: #000 !important;
     transform-origin: center;
-    transition: transform 0.12s ease, color 0.12s ease, filter 0.12s ease;
+    filter:
+      drop-shadow(0 0 6px rgb(255 95 224 / 20%))
+      drop-shadow(0 0 10px rgb(100 223 255 / 16%));
+    animation: sb-header-icon-breathe 5.2s ease-in-out infinite;
+    transition:
+      transform 0.22s cubic-bezier(0.22, 0.61, 0.36, 1),
+      color 0.14s ease,
+      filter 0.22s ease;
+    will-change: transform, filter;
   }
 
-  .sb-header-icon-pop:hover {
-    color: #f500c8 !important;
-    transform: translateY(-1px) scale(1.12);
+  .sb-header-icon-pop:hover,
+  .sb-header-icon-pop:focus-visible {
+    transform: translateY(-1px) scale(1.065);
+    animation-play-state: paused;
+  }
+
+  .sb-header-search-pixel,
+  .sb-header-profile-icon-btn,
+  .sb-header-cart-icon-btn {
+    position: relative;
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  .sb-header-search-pixel::before,
+  .sb-header-profile-icon-btn::before,
+  .sb-header-cart-icon-btn::before {
+    content: "";
+    position: absolute;
+    inset: -0.24rem;
+    pointer-events: none;
+    border: 1px solid transparent;
+    background: linear-gradient(180deg, rgb(255 255 255 / 10%) 0%, rgb(255 255 255 / 2%) 100%);
+    opacity: 0;
+    transform: translateY(1px) scale(0.95);
+    z-index: -1;
+    box-shadow:
+      inset 1px 1px 0 rgb(255 255 255 / 10%),
+      inset -1px -1px 0 rgb(0 0 0 / 18%);
+    transition:
+      opacity 0.18s ease,
+      transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.24s ease,
+      border-color 0.18s ease;
   }
 
   .sb-header-profile-icon-btn > svg {
@@ -514,8 +1298,51 @@ p {
   }
 
   .sb-header-profile-icon-btn:hover,
-  .sb-header-cart-icon-btn:hover {
-    color: #58c1ff !important;
+  .sb-header-cart-icon-btn:hover,
+  .sb-header-profile-icon-btn:focus-visible,
+  .sb-header-cart-icon-btn:focus-visible {
+    color: #61d7ff !important;
+    filter:
+      drop-shadow(0 0 10px rgb(97 215 255 / 40%))
+      drop-shadow(0 0 14px rgb(255 95 224 / 20%));
+  }
+
+  .sb-header-profile-icon-btn:hover::before,
+  .sb-header-cart-icon-btn:hover::before,
+  .sb-header-profile-icon-btn:focus-visible::before,
+  .sb-header-cart-icon-btn:focus-visible::before {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    border-color: rgb(97 215 255 / 66%);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 18%),
+      0 0 11px rgb(97 215 255 / 30%),
+      0 0 18px rgb(255 95 224 / 18%);
+  }
+
+  .sb-header-search-pixel:hover,
+  .sb-header-search-pixel:focus-visible {
+    color: #ff59d9 !important;
+    filter:
+      drop-shadow(0 0 10px rgb(255 89 217 / 42%))
+      drop-shadow(0 0 15px rgb(100 223 255 / 24%));
+  }
+
+  .sb-header-search-pixel:hover::before,
+  .sb-header-search-pixel:focus-visible::before {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    border-color: rgb(255 89 217 / 70%);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 18%),
+      0 0 11px rgb(255 89 217 / 34%),
+      0 0 18px rgb(100 223 255 / 22%);
+  }
+
+  .sb-header-search-pixel:active,
+  .sb-header-profile-icon-btn:active,
+  .sb-header-cart-icon-btn:active {
+    transform: translateY(0) scale(1.02);
   }
 
   .sb-header-logo-slot {
@@ -526,11 +1353,19 @@ p {
     height: 100px;
     flex-shrink: 0;
     overflow: visible;
+    filter:
+      drop-shadow(0 0 10px rgb(255 95 223 / 24%))
+      drop-shadow(0 0 14px rgb(102 223 255 / 16%));
+    animation: sb-header-logo-float 2.9s ease-in-out infinite;
     transition: filter 0.15s ease;
+    will-change: transform, filter;
   }
 
   .sb-header-logo-slot:hover {
-    filter: brightness(1.06);
+    filter:
+      brightness(1.08)
+      drop-shadow(0 0 13px rgb(255 95 223 / 30%))
+      drop-shadow(0 0 18px rgb(102 223 255 / 22%));
   }
 
   .sb-header-logo-image {
@@ -568,6 +1403,7 @@ p {
     font-weight: 900;
     line-height: 16px;
     text-align: center;
+    animation: sb-header-badge-pulse 1.9s ease-in-out infinite;
   }
 
   .sb-header-menu-btn {
@@ -696,9 +1532,47 @@ p {
     display: inline-flex;
     align-items: center;
     justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 0.72rem;
+    flex-wrap: nowrap;
+    gap: 0.42rem;
     max-width: 100%;
+    position: relative;
+  }
+
+  .concert-top-controls-right {
+    margin-right: -1.5rem;
+  }
+
+  .concert-top-controls .retro-folder-icon {
+    width: 4.25rem;
+    height: 3rem;
+    filter:
+      drop-shadow(0 0 7px rgb(255 95 225 / 38%))
+      drop-shadow(0 0 11px rgb(86 236 255 / 24%));
+  }
+
+  .concert-top-controls .retro-folder-button {
+    position: relative;
+    border-radius: 2px;
+    box-shadow:
+      inset -1px -1px 0 #858585,
+      inset 1px 1px 0 #ffffff,
+      0 0 12px rgb(255 78 210 / 25%);
+    animation: sb-folder-float 2.8s ease-in-out infinite;
+  }
+
+  .concert-top-controls .retro-folder-button:hover {
+    box-shadow:
+      inset -1px -1px 0 #858585,
+      inset 1px 1px 0 #ffffff,
+      0 0 16px rgb(255 78 210 / 36%),
+      0 0 24px rgb(90 225 255 / 28%);
+  }
+
+  .concert-top-controls .retro-folder-icon::before {
+    left: 0.48rem;
+    top: -0.56rem;
+    width: 1.4rem;
+    height: 0.72rem;
   }
 
   .concert-filter-icon-btn {
@@ -719,58 +1593,179 @@ p {
   .concert-pagination-shell {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.58rem;
+    min-height: 3.05rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid #2f224f;
+    background: #c0c0c0;
+    box-shadow:
+      inset -1px -1px 0 #808080,
+      inset 1px 1px 0 #ffffff,
+      0 0 12px rgb(229 71 255 / 28%),
+      0 0 22px rgb(74 221 255 / 18%);
+    position: relative;
+    overflow: hidden;
+    animation: sb-pager-pulse 3.2s ease-in-out infinite;
+  }
+
+  .concert-pagination-shell::after {
+    content: "";
+    position: absolute;
+    inset: -40% auto -40% -40%;
+    width: 42%;
+    pointer-events: none;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      rgb(255 255 255 / 0%) 30%,
+      rgb(255 255 255 / 48%) 52%,
+      rgb(255 255 255 / 0%) 70%,
+      transparent 100%
+    );
+    animation: sb-pager-sheen 3.8s linear infinite;
   }
 
   .concert-pagination-arrow {
     display: grid;
     place-items: center;
-    width: 1.8rem;
-    height: 1.8rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
     border-radius: 999px;
-    border: 1px solid #5b4a8f;
-    background: linear-gradient(180deg, #1d1738 0%, #151129 100%);
-    color: #fff !important;
-    font-size: 0.72rem;
-    font-weight: 700;
-    transition: transform 0.16s ease, border-color 0.16s ease;
+    border: 1px solid #2f5f2f;
+    background: linear-gradient(180deg, #91f69f 0%, #50c264 100%);
+    color: #143914 !important;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.7rem;
+    font-weight: 900;
+    line-height: 1;
+    transition: transform 0.12s ease, filter 0.12s ease;
+    animation: sb-arrow-throb 1.9s ease-in-out infinite;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 18%),
+      0 0 8px rgb(120 255 150 / 35%);
   }
 
   .concert-pagination-arrow:hover {
     transform: translateY(-1px);
-    border-color: #7f67bf;
+    filter: brightness(1.08);
+  }
+
+  .concert-pagination-arrow:focus-visible {
+    outline: 2px solid #1f70ff;
+    outline-offset: 1px;
   }
 
   .concert-pagination-pages {
     display: inline-flex;
     align-items: center;
-    min-height: 2.15rem;
-    border-radius: 0.85rem;
-    border: 1px solid #5b4a8f;
-    background: linear-gradient(180deg, #1d1738 0%, #151129 100%);
-    padding: 0 0.75rem;
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%);
+    min-height: 2.26rem;
+    border: 1px solid #6f62a6;
+    background: #d3d3d3;
+    padding: 0 0.95rem;
+    box-shadow:
+      inset -1px -1px 0 #ececec,
+      inset 1px 1px 0 #aaaaaa,
+      0 0 0 1px rgb(230 110 255 / 22%);
   }
 
   .concert-pagination-page,
   .concert-pagination-ellipsis {
-    color: #f5f2ff !important;
-    font-size: 0.82rem;
-    font-weight: 700;
+    color: #111 !important;
+    font-family: var(--font-retro-pixel);
+    font-size: 1rem;
+    font-weight: 900;
     line-height: 1;
+  }
+
+  .concert-pagination-page:hover {
+    color: #0d42b7 !important;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-shadow: 0 0 7px rgb(255 122 226 / 35%);
+  }
+
+  .concert-pagination-page:focus-visible {
+    outline: 2px solid #1f70ff;
+    outline-offset: 1px;
   }
 
   .concert-pagination-page.is-active {
-    color: #98f7f3 !important;
+    color: #0f2f99 !important;
     text-decoration: underline;
+    text-decoration-thickness: 2px;
     text-underline-offset: 2px;
+    text-shadow:
+      0 0 8px rgb(38 90 255 / 45%),
+      0 0 14px rgb(255 103 229 / 35%);
+    animation: sb-active-glow 2.2s ease-in-out infinite;
   }
 
   .concert-pagination-separator {
-    margin: 0 0.3rem;
-    color: #d6cffa;
-    font-size: 0.78rem;
+    margin: 0 0.42rem;
+    color: #242424;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.86rem;
     line-height: 1;
+  }
+
+  @media (max-width: 640px) {
+    .concert-top-controls {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .concert-top-controls-right {
+      margin-right: 0;
+    }
+
+    .concert-top-controls .retro-folder-icon {
+      width: 3.7rem;
+      height: 2.62rem;
+    }
+
+    .concert-pagination-shell {
+      min-height: 2.6rem;
+      padding: 0.24rem 0.52rem;
+      gap: 0.46rem;
+    }
+
+    .concert-pagination-pages {
+      min-height: 1.95rem;
+      padding: 0 0.72rem;
+    }
+
+    .concert-pagination-page,
+    .concert-pagination-ellipsis {
+      font-size: 0.86rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sb-header-shell,
+    .sb-header-shell::before,
+    .sb-header-shell::after,
+    .sb-header-tab::after,
+    .sb-header-icon-pop,
+    .sb-header-search-pixel::before,
+    .sb-header-profile-icon-btn::before,
+    .sb-header-cart-icon-btn::before,
+    .sb-header-logo-slot,
+    .sb-header-logo-image,
+    .sb-header-cart-badge,
+    .concert-top-controls .retro-folder-button,
+    .concert-pagination-shell,
+    .concert-pagination-shell::after,
+    .concert-pagination-arrow,
+    .concert-pagination-page.is-active,
+    .retro-concert-card,
+    .retro-concert-card::before,
+    .retro-concert-card::after {
+      animation: none !important;
+      transition-duration: 0s !important;
+    }
   }
 
   .win-window {
@@ -901,57 +1896,825 @@ p {
   }
 
   .retro-concert-card {
-    border: 2px solid #3d55d4;
-    background: #d0d0d0;
+    position: relative;
+    isolation: isolate;
+    border: 2px solid #4f62ec;
+    background: linear-gradient(180deg, #dedede 0%, #cfcfcf 100%);
+    color: #101010;
+    min-height: 26rem;
+    box-shadow:
+      3px 3px 0 rgb(0 0 0 / 42%),
+      0 0 16px rgb(120 92 255 / 34%),
+      0 0 28px rgb(255 84 214 / 18%);
+    transition:
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.22s ease,
+      border-color 0.22s ease,
+      filter 0.22s ease;
+    animation: sb-concert-neon-breathe 4.8s ease-in-out infinite;
+  }
+
+  .retro-concert-card::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    pointer-events: none;
+    background: linear-gradient(
+      120deg,
+      rgb(95 226 255 / 62%) 0%,
+      rgb(120 95 255 / 55%) 44%,
+      rgb(255 97 223 / 60%) 100%
+    );
+    filter: blur(11px);
+    opacity: 0.32;
+    animation: sb-concert-neon-orbit 6.8s linear infinite;
+    z-index: 1;
+  }
+
+  .retro-concert-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 1px solid rgb(168 136 255 / 62%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 9%);
+    opacity: 0.78;
+    animation: sb-concert-frame-pulse 3.4s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  .retro-concert-card > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .retro-concert-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-color: #68d6ff;
+    box-shadow:
+      5px 5px 0 rgb(0 0 0 / 46%),
+      0 0 26px rgb(111 223 255 / 46%),
+      0 0 44px rgb(255 100 223 / 30%);
+    filter: saturate(1.05);
+  }
+
+  .retro-music-card-trigger {
+    display: block;
+  }
+
+  .retro-music-card-trigger:focus-visible {
+    outline: none;
+  }
+
+  .retro-music-card-trigger:focus-visible .retro-concert-card {
+    border-color: #5fe2ff;
+    box-shadow:
+      0 0 0 2px rgb(95 226 255 / 52%),
+      0 0 20px rgb(95 226 255 / 40%),
+      0 0 30px rgb(255 98 222 / 26%);
+  }
+
+  .retro-music-modal-body {
+    background:
+      linear-gradient(180deg, rgb(214 210 236 / 96%), rgb(196 191 225 / 96%)),
+      radial-gradient(circle at 15% 0%, rgb(82 164 255 / 10%), transparent 42%),
+      radial-gradient(circle at 85% 0%, rgb(255 98 224 / 10%), transparent 40%);
+    color: #131313;
+  }
+
+  .retro-music-modal-shell {
+    display: grid;
+    gap: 0.8rem;
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #d9d4ec 0%, #c8c2e0 100%);
+    box-shadow:
+      inset -2px -2px 0 #8a85a5,
+      inset 2px 2px 0 #f7f4ff,
+      0 0 16px rgb(106 214 255 / 20%);
+    padding: 0.62rem;
+  }
+
+  .retro-music-modal-meta {
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #dcd8ef 0%, #ccc6e3 100%);
+    box-shadow:
+      inset -2px -2px 0 #8e8aab,
+      inset 2px 2px 0 #f4f2ff,
+      0 0 14px rgb(104 213 255 / 18%);
+    padding: 0.62rem 0.75rem;
+    display: grid;
+    gap: 0.24rem;
+  }
+
+  .retro-music-modal-kind {
+    margin: 0;
+    color: #2f48c8;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgb(111 223 255 / 26%);
+  }
+
+  .retro-music-modal-release {
+    margin: 0;
+    color: #151515;
+    font-family: var(--font-retronoid);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .retro-music-modal-subline {
+    margin: 0;
+    color: #2f2f3b;
+    font-family: var(--font-retro-ui);
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .retro-music-modal-layout {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .retro-music-modal-cover {
+    border: 2px solid #000;
+    box-shadow:
+      inset -2px -2px 0 #8e8aab,
+      inset 2px 2px 0 #f4f2ff,
+      0 0 14px rgb(255 108 228 / 16%);
+  }
+
+  .retro-music-modal-sections {
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .retro-music-modal-section {
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #dddaf0 0%, #cdc7e4 100%);
+    box-shadow:
+      inset -2px -2px 0 #8e8aab,
+      inset 2px 2px 0 #f4f2ff;
+    padding: 0.64rem 0.72rem;
+  }
+
+  .retro-music-modal-heading {
+    margin: 0 0 0.4rem;
+    color: #1f45cb;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgb(124 223 255 / 24%);
+  }
+
+  .retro-music-modal-text {
+    margin: 0;
+    color: #171717;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.46;
+    font-family: var(--font-retro-ui);
+  }
+
+  .retro-music-modal-list {
+    margin: 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 0.26rem;
+    color: #171717;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: var(--font-retro-ui);
+  }
+
+  .retro-music-modal-muted {
+    color: #3f3f50;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: var(--font-retro-ui);
+  }
+
+  .retro-music-modal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .retro-music-modal-icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.48rem;
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #dbdbdb 0%, #cfcfcf 100%);
+    box-shadow:
+      inset -1px -1px 0 #9c9c9c,
+      inset 1px 1px 0 #ffffff,
+      0 0 10px rgb(104 215 255 / 18%);
+    color: #141414;
+    text-decoration: none;
+    padding: 0.36rem 0.52rem;
+    min-height: 2.2rem;
+    max-width: 100%;
+    transition: box-shadow 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+  }
+
+  .retro-music-modal-icon-wrap {
+    display: inline-grid;
+    place-items: center;
+    width: 1.45rem;
+    height: 1.45rem;
+    border: 1px solid #787878;
+    background: linear-gradient(180deg, #efefef 0%, #d9d9d9 100%);
+    box-shadow:
+      inset -1px -1px 0 #b8b8b8,
+      inset 1px 1px 0 #ffffff;
+    color: #1839b3;
+    flex-shrink: 0;
+  }
+
+  .retro-music-link-svg {
+    width: 1rem;
+    height: 1rem;
+    display: block;
+  }
+
+  .retro-music-modal-icon-label {
+    display: block;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #1e1e1e;
+    overflow-wrap: anywhere;
+  }
+
+  .retro-music-modal-icon-link:hover {
+    border-color: #2438ac;
+    color: #0f2b94;
+    box-shadow:
+      inset -1px -1px 0 #a1a1a1,
+      inset 1px 1px 0 #ffffff,
+      0 0 14px rgb(255 103 228 / 26%),
+      0 0 18px rgb(104 215 255 / 22%);
+  }
+
+  .retro-music-modal-icon-link:hover .retro-music-modal-icon-wrap {
+    color: #0f2b94;
+    border-color: #4f5fd5;
+    box-shadow:
+      inset -1px -1px 0 #b9b9b9,
+      inset 1px 1px 0 #ffffff,
+      0 0 11px rgb(115 226 255 / 28%);
+  }
+
+  .retro-music-modal-icon-link:focus-visible {
+    outline: 2px solid #1f70ff;
+    outline-offset: 2px;
+  }
+
+  .retro-music-modal-tracklist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .retro-music-modal-track {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #dcdcdc 0%, #cecece 100%);
     color: #111;
-    box-shadow: 2px 2px 0 rgb(0 0 0 / 35%);
+    padding: 0.44rem 0.56rem;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 900;
+    box-shadow:
+      inset -2px -2px 0 #8d8d8d,
+      inset 2px 2px 0 #f8f8f8;
+  }
+
+  .retro-music-modal-track:hover {
+    border-color: #2433a7;
+    color: #0f2a93;
+    box-shadow:
+      inset -2px -2px 0 #909090,
+      inset 2px 2px 0 #ffffff,
+      0 0 10px rgb(107 220 255 / 30%);
+  }
+
+  .retro-music-modal-track:focus-visible {
+    outline: 2px solid #1f70ff;
+    outline-offset: 2px;
+  }
+
+  .retro-video-track-active {
+    border-color: #2433a7;
+    color: #0f2a93;
+    box-shadow:
+      inset -2px -2px 0 #8f8f8f,
+      inset 2px 2px 0 #ffffff,
+      0 0 10px rgb(107 220 255 / 30%),
+      0 0 16px rgb(255 103 228 / 24%);
+  }
+
+  .retro-video-track-title {
+    display: block;
+    font-weight: 900;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .retro-video-detail-toolbar {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.56rem;
+  }
+
+  .retro-video-detail-action {
+    width: auto;
+    min-width: 11.2rem;
+    max-width: 100%;
+  }
+
+  .retro-concert-header.retro-video-collection-header {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    font-size: 0.9rem;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+  }
+
+  .retro-music-modal-link:hover {
+    border-color: #2a42c1;
+    color: #102b98 !important;
+    box-shadow:
+      inset 1px 1px 0 #ffffff,
+      inset -1px -1px 0 #b9b9b9,
+      0 0 12px rgb(100 222 255 / 24%);
+  }
+
+  .retro-music-modal-link:focus-visible {
+    outline: 2px solid #1f70ff;
+    outline-offset: 2px;
+  }
+
+  .retro-bio-read-modal-body {
+    background:
+      linear-gradient(180deg, #c8c8c8 0%, #bdbdbd 100%),
+      radial-gradient(circle at 12% 0%, rgb(60 166 255 / 12%), transparent 44%),
+      radial-gradient(circle at 88% 0%, rgb(255 92 218 / 10%), transparent 42%);
+    color: #000;
+  }
+
+  .retro-bio-read-modal-shell {
+    width: 100%;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+    color: #000;
+  }
+
+  .retro-bio-read-modal-hero {
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #d7d7d7 0%, #cdcdcd 100%);
+    box-shadow:
+      inset -2px -2px 0 #808080,
+      inset 2px 2px 0 #ffffff;
+    display: grid;
+    gap: 0.34rem;
+    padding: 0.58rem 0.66rem;
+  }
+
+  .retro-bio-read-modal-kicker {
+    margin: 0;
+    color: #404040;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .retro-bio-read-modal-title {
+    margin: 0;
+    color: #111;
+    font-family: var(--font-retro-ui);
+    font-size: clamp(1.36rem, 2.3vw, 1.74rem);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .retro-bio-read-modal-subline {
+    margin: 0;
+    color: #242424;
+    font-family: var(--font-retro-ui);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.36;
+  }
+
+  .retro-bio-read-modal-content {
+    display: grid;
+    gap: 0.52rem;
+  }
+
+  .retro-bio-read-modal-block {
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #d7d7d7 0%, #cfcfcf 100%);
+    box-shadow:
+      inset -2px -2px 0 #808080,
+      inset 2px 2px 0 #ffffff,
+      0 0 12px rgb(110 90 255 / 8%);
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.56rem 0.62rem;
+  }
+
+  .retro-bio-read-modal-label {
+    margin: 0;
+    color: #404040;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.56rem;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .retro-bio-read-modal-text {
+    margin: 0;
+    color: #141414;
+    font-family: var(--font-retro-ui);
+    font-size: 0.96rem;
+    font-weight: 700;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .retro-bio-members-modal-body {
+    background:
+      linear-gradient(180deg, #c8c8c8 0%, #bdbdbd 100%),
+      radial-gradient(circle at 12% 0%, rgb(60 166 255 / 12%), transparent 44%),
+      radial-gradient(circle at 88% 0%, rgb(255 92 218 / 10%), transparent 42%);
+    color: #000;
+  }
+
+  .retro-bio-members-modal-shell {
+    width: 100%;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+    color: #000;
+  }
+
+  .retro-bio-members-modal-hero {
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #d7d7d7 0%, #cdcdcd 100%);
+    box-shadow:
+      inset -2px -2px 0 #808080,
+      inset 2px 2px 0 #ffffff;
+    display: grid;
+    gap: 0.34rem;
+    padding: 0.58rem 0.66rem;
+  }
+
+  .retro-bio-members-modal-kicker {
+    margin: 0;
+    color: #404040;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .retro-bio-members-modal-title {
+    margin: 0;
+    color: #111;
+    font-family: var(--font-retro-ui);
+    font-size: clamp(1.3rem, 2.2vw, 1.66rem);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .retro-bio-members-modal-subline {
+    margin: 0;
+    color: #242424;
+    font-family: var(--font-retro-ui);
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.36;
+  }
+
+  .retro-bio-members-modal-content {
+    display: grid;
+    gap: 0.52rem;
+  }
+
+  .retro-bio-members-modal-block {
+    border: 2px solid #000;
+    background: linear-gradient(180deg, #d7d7d7 0%, #cfcfcf 100%);
+    box-shadow:
+      inset -2px -2px 0 #808080,
+      inset 2px 2px 0 #ffffff,
+      0 0 12px rgb(110 90 255 / 8%);
+    display: grid;
+    gap: 0.44rem;
+    padding: 0.56rem 0.62rem;
+    align-content: start;
+  }
+
+  .retro-bio-members-modal-label {
+    margin: 0;
+    color: #404040;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.56rem;
+    font-weight: 900;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .retro-bio-members-modal-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.34rem;
+  }
+
+  .retro-bio-members-modal-item {
+    border: 1px solid #9f9f9f;
+    background: linear-gradient(180deg, #dedede 0%, #d2d2d2 100%);
+    box-shadow:
+      inset 1px 1px 0 #f3f3f3,
+      inset -1px -1px 0 #b1b1b1;
+    padding: 0.42rem 0.5rem;
+    color: #131313;
+    font-family: var(--font-retro-ui);
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+
+  @media (min-width: 640px) {
+    .retro-bio-members-modal-content {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 639px) {
+    .retro-music-modal-shell {
+      padding: 0.5rem;
+      gap: 0.65rem;
+    }
+
+    .retro-music-modal-meta,
+    .retro-music-modal-section {
+      padding: 0.56rem 0.62rem;
+    }
+
+    .retro-music-modal-release {
+      font-size: 0.98rem;
+    }
+
+    .retro-music-modal-icon-link {
+      min-height: 2rem;
+      padding: 0.3rem 0.46rem;
+      gap: 0.4rem;
+    }
+
+    .retro-music-modal-icon-wrap {
+      width: 1.28rem;
+      height: 1.28rem;
+    }
+
+    .retro-music-link-svg {
+      width: 0.9rem;
+      height: 0.9rem;
+    }
+
+    .retro-music-modal-icon-label {
+      font-size: 0.62rem;
+    }
+
+    .retro-video-detail-toolbar {
+      margin-bottom: 0.85rem;
+      gap: 0.48rem;
+    }
+
+    .retro-video-detail-action {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .retro-photo-thumbs-scroll {
+      max-height: 18rem;
+    }
+
+    .retro-photo-nav {
+      grid-template-columns: 1fr;
+      gap: 0.46rem;
+    }
+
+    .retro-photo-counter {
+      font-size: 0.72rem;
+    }
+
+    .retro-concert-header.retro-video-collection-header {
+      font-size: 0.82rem;
+      line-height: 1.2;
+    }
+
+    .retro-bio-read-modal-shell {
+      gap: 0.46rem;
+    }
+
+    .retro-bio-read-modal-hero {
+      padding: 0.5rem 0.54rem;
+      gap: 0.3rem;
+    }
+
+    .retro-bio-read-modal-kicker {
+      font-size: 0.56rem;
+    }
+
+    .retro-bio-read-modal-title {
+      font-size: 1.15rem;
+      line-height: 1.14;
+    }
+
+    .retro-bio-read-modal-subline {
+      font-size: 0.9rem;
+      line-height: 1.34;
+    }
+
+    .retro-bio-read-modal-block {
+      padding: 0.46rem 0.52rem;
+      gap: 0.3rem;
+    }
+
+    .retro-bio-read-modal-label {
+      font-size: 0.53rem;
+    }
+
+    .retro-bio-read-modal-text {
+      font-size: 0.9rem;
+      line-height: 1.38;
+    }
+
+    .retro-bio-members-modal-shell {
+      gap: 0.46rem;
+    }
+
+    .retro-bio-members-modal-hero {
+      padding: 0.5rem 0.54rem;
+      gap: 0.3rem;
+    }
+
+    .retro-bio-members-modal-kicker {
+      font-size: 0.56rem;
+    }
+
+    .retro-bio-members-modal-title {
+      font-size: 1.12rem;
+      line-height: 1.14;
+    }
+
+    .retro-bio-members-modal-subline {
+      font-size: 0.88rem;
+      line-height: 1.34;
+    }
+
+    .retro-bio-members-modal-block {
+      padding: 0.46rem 0.52rem;
+      gap: 0.32rem;
+    }
+
+    .retro-bio-members-modal-label {
+      font-size: 0.53rem;
+    }
+
+    .retro-bio-members-modal-item {
+      font-size: 0.92rem;
+      padding: 0.4rem 0.46rem;
+    }
+
+  }
+
+  @media (min-width: 1024px) {
+    .retro-music-modal-layout {
+      grid-template-columns: 220px minmax(0, 1fr);
+      align-items: start;
+      gap: 1.05rem;
+    }
   }
 
   .retro-concert-header {
-    background: linear-gradient(180deg, #2b41d4 0%, #1f35c8 100%);
+    background: linear-gradient(90deg, #2840d8 0%, #4a4de0 46%, #8f4fe8 100%);
     color: #fff;
-    padding: 7px 10px 6px;
+    padding: 9px 12px 8px;
     font-family: var(--font-retro-pixel);
-    font-size: 0.92rem;
+    font-size: 1rem;
     font-weight: 900;
     line-height: 1.1;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.025em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow:
+      0 0 8px rgb(255 255 255 / 28%),
+      0 1px 1px rgb(0 0 0 / 45%);
+    border-bottom: 1px solid #9ca4ff;
   }
 
   .retro-concert-body {
     display: flex;
     flex-direction: column;
-    gap: 0.62rem;
-    padding: 12px 12px 14px;
+    gap: 1.1rem;
+    padding: 16px 16px 19px;
     color: #111;
+  }
+
+  .retro-concert-title-block {
+    padding: 0.22rem 0.3rem 0.72rem;
+    border-bottom: 1px solid #aab0d2;
   }
 
   .retro-concert-title {
     margin: 0;
-    color: #1b1b1b;
+    color: #171717;
     text-align: center;
     font-family: var(--font-retro-ui);
-    font-size: 0.74rem;
+    font-size: 1.16rem;
     font-weight: 900;
-    line-height: 1.2;
+    line-height: 1.18;
+    letter-spacing: 0.01em;
+    text-shadow:
+      0 0 8px rgb(111 223 255 / 24%),
+      0 0 10px rgb(255 100 223 / 14%);
     text-transform: none;
+  }
+
+  .retro-concert-meta {
+    display: grid;
+    gap: 0.66rem;
+    padding-bottom: 0.18rem;
+  }
+
+  .retro-concert-meta-item {
+    display: grid;
+    gap: 0.4rem;
+    border: 1px solid #b4b4b4;
+    background: linear-gradient(180deg, #e2e2e2 0%, #d7d7d7 100%);
+    padding: 0.48rem 0.54rem;
+    box-shadow:
+      inset 1px 1px 0 #f5f5f5,
+      inset -1px -1px 0 #bdbdbd;
+  }
+
+  .retro-concert-meta-label {
+    margin: 0;
+    color: #404040;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.58rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .retro-concert-row {
     display: flex;
     width: 100%;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.55rem;
     text-align: left;
     color: #111;
     font-family: var(--font-retro-pixel);
-    font-size: 0.95rem;
+    font-size: 0.96rem;
     font-weight: 900;
-    line-height: 1.1;
+    line-height: 1.16;
   }
 
   .retro-concert-link {
@@ -961,68 +2724,196 @@ p {
 
   .retro-concert-link:hover {
     text-decoration: none;
+    color: #0d42b7 !important;
+    text-shadow: 0 0 7px rgb(255 122 226 / 28%);
   }
 
   .retro-concert-location {
     display: block;
-    text-align: justify;
-    text-align-last: left;
-    text-justify: inter-word;
+    text-align: left;
     overflow-wrap: break-word;
-    font-size: 0.84rem;
+    font-size: 0.9rem;
+    line-height: 1.24;
+  }
+
+  .retro-concert-copy {
+    border-top: 1px solid #a4a4a4;
+    padding-top: 0.7rem;
   }
 
   .retro-concert-description {
     margin: 0;
-    color: #2b2b2b;
-    border-top: 1px solid #b9b9b9;
-    padding-top: 0.36rem;
+    color: #262626;
     text-align: justify;
     text-align-last: left;
     text-justify: inter-word;
     font-family: var(--font-retro-ui);
-    font-size: 0.72rem;
+    font-size: 0.86rem;
     font-weight: 700;
-    line-height: 1.25;
+    line-height: 1.34;
   }
 
   .retro-concert-icon {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
     color: #000;
   }
 
+  .retro-photo-thumbs-scroll {
+    max-height: 38rem;
+    overflow: auto;
+    padding-right: 0.15rem;
+  }
+
+  .retro-photo-detail-card {
+    min-height: 0;
+  }
+
+  .retro-photo-thumbs-grid {
+    display: grid;
+    gap: 0.62rem;
+  }
+
+  .retro-photo-thumb-btn {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border: 2px solid #6f6f6f;
+    background: #d6d6d6;
+    box-shadow:
+      inset 1px 1px 0 #f6f6f6,
+      inset -1px -1px 0 #a2a2a2;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  }
+
+  .retro-photo-thumb-btn:hover {
+    border-color: #3551d1;
+    box-shadow:
+      inset 1px 1px 0 #f8f8f8,
+      inset -1px -1px 0 #a6a6a6,
+      0 0 10px rgb(109 220 255 / 28%);
+  }
+
+  .retro-photo-thumb-btn:focus-visible {
+    outline: 2px solid #1f70ff;
+    outline-offset: 2px;
+  }
+
+  .retro-photo-thumb-active {
+    border-color: #2b43bb;
+    box-shadow:
+      inset 1px 1px 0 #f8f8f8,
+      inset -1px -1px 0 #9f9f9f,
+      0 0 10px rgb(106 220 255 / 30%),
+      0 0 16px rgb(255 100 223 / 22%);
+  }
+
+  .retro-photo-main-frame {
+    border: 1px solid #8d8d8d;
+    box-shadow:
+      inset 1px 1px 0 #f5f5f5,
+      inset -1px -1px 0 #b2b2b2;
+  }
+
+  .retro-photo-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 0.56rem;
+  }
+
+  .retro-photo-nav-btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .retro-photo-nav-btn:focus-visible {
+    outline: 2px solid #1f70ff;
+    outline-offset: 2px;
+  }
+
+  .retro-photo-nav-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow:
+      inset 1px 1px 0 #e3e3e3,
+      inset -1px -1px 0 #b1b1b1;
+  }
+
+  .retro-photo-counter {
+    margin: 0;
+    border: 1px solid #a3a3a3;
+    background: linear-gradient(180deg, #e4e4e4 0%, #d4d4d4 100%);
+    padding: 0.42rem 0.5rem;
+    text-align: center;
+    color: #1b1b1b;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    box-shadow:
+      inset 1px 1px 0 #f5f5f5,
+      inset -1px -1px 0 #b6b6b6;
+  }
+
   .retro-card-actions {
-    margin-top: 0.18rem;
+    margin-top: auto;
+    width: 100%;
+    padding-top: 0.92rem;
+    border-top: 1px solid #9ea7ca;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.48rem;
+    align-items: stretch;
+    gap: 0.58rem;
+  }
+
+  .retro-card-actions-upcoming .retro-card-action,
+  .retro-card-actions-upcoming .retro-card-action.is-disabled {
+    width: 100%;
+  }
+
+  .retro-card-actions-past {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.56rem;
+  }
+
+  .retro-card-actions-past .retro-card-action:first-child {
+    grid-column: 1 / -1;
   }
 
   .retro-card-action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 92px;
-    border: 2px solid #9f9f9f;
-    background: #d3d3d3;
-    padding: 4px 10px;
+    min-width: 122px;
+    width: 100%;
+    border: 2px solid #8f8f8f;
+    background: linear-gradient(180deg, #dcdcdc 0%, #cecece 100%);
+    padding: 6px 12px;
     color: #000 !important;
     font-family: var(--font-retro-pixel);
-    font-size: 0.92rem;
+    font-size: 0.98rem;
     font-weight: 900;
     line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     text-decoration: none;
     box-shadow:
       inset 1px 1px 0 #efefef,
-      inset -1px -1px 0 #b1b1b1;
+      inset -1px -1px 0 #b1b1b1,
+      0 0 10px rgb(93 205 255 / 20%);
   }
 
   .retro-card-action:hover {
-    background: #dadada;
+    background: linear-gradient(180deg, #e5e5e5 0%, #d6d6d6 100%);
     filter: none;
+    box-shadow:
+      inset 1px 1px 0 #f5f5f5,
+      inset -1px -1px 0 #b8b8b8,
+      0 0 13px rgb(255 90 218 / 24%);
   }
 
   .retro-card-action:active {
@@ -1031,9 +2922,545 @@ p {
       inset 1px 1px 0 #b1b1b1;
   }
 
+  .retro-card-action.is-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .retro-news-concert-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+    align-items: stretch;
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+    justify-items: stretch;
+  }
+
+  .retro-news-concert-card {
+    width: 100%;
+    max-width: none;
+  }
+
+  .retro-news-header {
+    background: linear-gradient(90deg, #2c3fe0 0%, #7a40e0 48%, #ff4fc8 100%);
+    border-bottom-color: #bc92ff;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-shadow:
+      0 0 10px rgb(115 229 255 / 45%),
+      0 1px 1px rgb(0 0 0 / 55%);
+  }
+
+  .retro-news-image-frame {
+    border-color: #9d83ff;
+    box-shadow:
+      inset 1px 1px 0 rgb(255 255 255 / 26%),
+      inset -1px -1px 0 rgb(103 86 173 / 46%),
+      0 0 14px rgb(255 91 214 / 24%);
+  }
+
+  .retro-news-concert-card .retro-concert-title {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: clamp(1.05rem, 1.85vw, 1.36rem);
+  }
+
+  .retro-news-concert-card .retro-concert-description {
+    font-size: 0.9rem;
+    line-height: 1.42;
+  }
+
+  .retro-news-concert-card .retro-card-action {
+    border-color: #8e82d8;
+    box-shadow:
+      inset 1px 1px 0 #f3f0ff,
+      inset -1px -1px 0 #b2a6da,
+      0 0 12px rgb(121 227 255 / 24%);
+  }
+
+  .retro-news-concert-card .retro-card-action:hover {
+    box-shadow:
+      inset 1px 1px 0 #f8f6ff,
+      inset -1px -1px 0 #b7acd8,
+      0 0 14px rgb(255 92 218 / 28%);
+  }
+
+  .retro-news-concert-card .retro-card-action:focus-visible {
+    outline: 3px solid #5fe2ff;
+    outline-offset: 2px;
+    box-shadow:
+      inset 1px 1px 0 #f8f6ff,
+      inset -1px -1px 0 #b7acd8,
+      0 0 16px rgb(95 226 255 / 40%),
+      0 0 22px rgb(255 92 218 / 34%);
+  }
+
+  .retro-news-featured-card {
+    max-width: none;
+  }
+
+  .retro-concert-card.retro-bio-modal-card {
+    min-height: 0;
+  }
+
+  .retro-bio-modal-card .retro-concert-header {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .retro-bio-modal-card .retro-concert-body {
+    gap: 0.9rem;
+    padding: 14px 14px 16px;
+  }
+
+  .retro-bio-modal-card .retro-concert-title-block {
+    padding: 0.18rem 0.26rem 0.56rem;
+  }
+
+  .retro-bio-modal-card .retro-concert-meta {
+    gap: 0.54rem;
+  }
+
+  .retro-bio-modal-card .retro-concert-copy {
+    padding-top: 0.6rem;
+  }
+
+  .retro-bio-modal-card .retro-card-actions {
+    margin-top: 0.08rem;
+  }
+
+  .retro-bio-modal-card .retro-card-action {
+    min-height: 2.15rem;
+  }
+
+  @media (min-width: 640px) {
+    .retro-news-concert-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
+    .retro-news-concert-card {
+      max-width: none;
+    }
+  }
+
   @media (min-width: 1024px) {
+    .retro-news-concert-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+
+  .retro-news-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .retro-news-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    border-color: #5e4ca1;
+    box-shadow:
+      0 16px 32px rgb(7 4 19 / 35%),
+      0 0 16px rgb(132 91 255 / 18%);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+
+  .retro-news-card:hover {
+    transform: translateY(-2px);
+    border-color: #7f68c7;
+    box-shadow:
+      0 18px 34px rgb(7 4 19 / 40%),
+      0 0 20px rgb(100 228 255 / 22%);
+  }
+
+  .retro-news-media {
+    border: 1px solid #8f7ec4;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 8%);
+  }
+
+  .retro-news-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .retro-news-meta {
+    margin: 0;
+    color: #6b5b9f;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.58rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .retro-news-title {
+    margin: 0;
+    color: #f5f2ff;
+    font-family: var(--font-retronoid);
+    font-size: clamp(1.3rem, 2.1vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.08;
+    text-shadow:
+      0 0 10px rgb(122 202 255 / 24%),
+      0 0 12px rgb(255 102 226 / 18%);
+  }
+
+  .retro-news-summary {
+    margin: 0;
+    color: #d7cfee;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .retro-news-toggle {
+    align-self: flex-start;
+    margin-top: 0.2rem;
+  }
+
+  .retro-news-expanded {
+    margin-top: 0.3rem;
+    border-top: 1px solid #5f508f;
+    padding-top: 0.72rem;
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .retro-news-expanded.hidden {
+    display: none;
+  }
+
+  .retro-news-content {
+    margin: 0;
+    color: #dfd8f3;
+    font-size: 0.92rem;
+    line-height: 1.56;
+  }
+
+  .retro-news-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .retro-news-tag {
+    border: 1px solid #64569b;
+    background: linear-gradient(180deg, #221a43 0%, #191336 100%);
+    color: #ece7ff;
+    padding: 0.28rem 0.52rem;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.56rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+  }
+
+  .retro-news-links {
+    display: grid;
+    gap: 0.48rem;
+  }
+
+  .retro-news-links-label {
+    margin: 0;
+    color: #8778b8;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.54rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .retro-news-links-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .retro-fanclub-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .retro-fanclub-main-card {
+    min-height: 27rem;
+    border-color: #6552a9;
+    box-shadow:
+      0 18px 34px rgb(8 4 20 / 44%),
+      0 0 18px rgb(126 94 255 / 22%),
+      0 0 24px rgb(255 103 224 / 14%);
+  }
+
+  .retro-fanclub-main-card .retro-concert-body {
+    gap: 0.92rem;
+  }
+
+  .retro-fanclub-main-card .retro-concert-title {
+    font-size: clamp(1.34rem, 2.4vw, 1.9rem);
+  }
+
+  .retro-fanclub-highlights-block {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .retro-fanclub-highlights-label {
+    margin: 0;
+    color: #7a6ab4;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.56rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .retro-fanclub-highlights {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.62rem;
+  }
+
+  .retro-fanclub-highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.72rem;
+    border: 1px solid #998fd0;
+    background:
+      linear-gradient(180deg, #e6e0f5 0%, #d8d0eb 100%),
+      radial-gradient(circle at 14% 20%, rgb(125 102 255 / 12%), transparent 60%);
+    box-shadow:
+      inset 1px 1px 0 rgb(255 255 255 / 74%),
+      inset -1px -1px 0 rgb(118 106 162 / 42%),
+      0 0 11px rgb(97 209 255 / 15%);
+    padding: 0.72rem 0.78rem;
+  }
+
+  .retro-fanclub-highlight-content {
+    display: grid;
+    gap: 0.22rem;
+  }
+
+  .retro-fanclub-highlight-title {
+    margin: 0;
+    color: #1d1d1d;
+    font-family: var(--font-retro-ui);
+    font-size: 0.97rem;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+  }
+
+  .retro-fanclub-highlight-copy {
+    margin: 0;
+    color: #373747;
+    font-size: 0.86rem;
+    line-height: 1.42;
+  }
+
+  .retro-fanclub-icon {
+    width: 1.16rem;
+    height: 1.16rem;
+    margin-top: 0.08rem;
+    flex-shrink: 0;
+    color: #2a4dc7;
+    filter: drop-shadow(0 0 6px rgb(120 73 255 / 20%));
+  }
+
+  .retro-bio-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+    align-items: stretch;
+    justify-items: stretch;
+  }
+
+  .retro-bio-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 14rem;
+    border-color: #5e4ca1;
+    box-shadow:
+      0 16px 30px rgb(7 4 19 / 35%),
+      0 0 16px rgb(132 91 255 / 16%);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+
+  .retro-bio-card:hover {
+    transform: translateY(-2px);
+    border-color: #7f68c7;
+    box-shadow:
+      0 18px 34px rgb(7 4 19 / 40%),
+      0 0 20px rgb(255 113 220 / 20%);
+  }
+
+  .retro-bio-eyebrow {
+    margin: 0;
+    color: #7b6cb1;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.56rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .retro-bio-title {
+    margin: 0;
+    color: #f5f2ff;
+    font-family: var(--font-retronoid);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.04;
+    text-shadow:
+      0 0 10px rgb(122 202 255 / 22%),
+      0 0 12px rgb(255 102 226 / 16%);
+  }
+
+  .retro-bio-copy {
+    margin: 0;
+    color: #d7cfee;
+    font-size: 0.95rem;
+    line-height: 1.48;
+  }
+
+  .retro-bio-cta {
+    margin-top: auto;
+    border-top: 1px solid #5f508f;
+    padding-top: 0.66rem;
+    width: 100%;
+    color: #9ce8ff;
+    font-family: var(--font-retro-pixel);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  .retro-bio-card:focus-visible {
+    outline: 3px solid #5fe2ff;
+    outline-offset: 2px;
+    box-shadow:
+      0 0 0 1px rgb(95 226 255 / 55%),
+      0 0 18px rgb(95 226 255 / 38%),
+      0 0 26px rgb(255 95 225 / 26%);
+  }
+
+  @media (min-width: 640px) {
+    .retro-bio-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.1rem;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .retro-concert-card {
+      min-height: 24.6rem;
+    }
+
+    .retro-news-grid,
+    .retro-bio-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 639px) {
+    .retro-fanclub-main-card {
+      min-height: 24.8rem;
+    }
+
+    .retro-fanclub-highlight-title,
+    .retro-fanclub-highlight-copy {
+      font-size: 0.86rem;
+    }
+
+    .retro-concert-card {
+      min-height: 23.6rem;
+    }
+
+    .retro-concert-header {
+      font-size: 0.92rem;
+    }
+
+    .retro-concert-title {
+      font-size: 1rem;
+    }
+
+    .retro-concert-meta-item {
+      padding: 0.44rem 0.48rem;
+    }
+
+    .retro-concert-meta-label {
+      font-size: 0.52rem;
+    }
+
+    .retro-concert-row {
+      font-size: 0.9rem;
+    }
+
+    .retro-card-action {
+      font-size: 0.9rem;
+    }
+
+    .retro-card-actions-past {
+      grid-template-columns: 1fr;
+    }
+
+    .retro-card-actions-past .retro-card-action:first-child {
+      grid-column: auto;
+    }
+
+    .retro-news-grid,
+    .retro-bio-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-content-wrapper.store-catalog-content {
+      margin-right: auto;
+      margin-left: 0;
+      padding-left: 0.5rem;
+      padding-right: 1rem;
+    }
+
+    .store-catalog-layout {
+      gap: 1.2rem;
+    }
+
+    .retro-fanclub-main-card {
+      min-height: 29rem;
+    }
+
+    .retro-bio-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
     .page-content-wrapper {
       padding: 2rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .page-content-wrapper.store-catalog-content {
+      padding-left: 0.25rem;
+      padding-right: 1.25rem;
     }
   }
 }
@@ -1079,5 +3506,290 @@ p {
 
   100% {
     background-position: -20% 0;
+  }
+}
+
+@keyframes sb-folder-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes sb-pager-pulse {
+  0%,
+  100% {
+    box-shadow:
+      inset -1px -1px 0 #808080,
+      inset 1px 1px 0 #ffffff,
+      0 0 12px rgb(229 71 255 / 30%),
+      0 0 20px rgb(74 221 255 / 20%);
+  }
+
+  50% {
+    box-shadow:
+      inset -1px -1px 0 #808080,
+      inset 1px 1px 0 #ffffff,
+      0 0 22px rgb(229 71 255 / 30%),
+      0 0 34px rgb(87 220 255 / 35%);
+  }
+}
+
+@keyframes sb-pager-sheen {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.55;
+  }
+
+  52% {
+    opacity: 0.55;
+  }
+
+  100% {
+    transform: translateX(360%);
+    opacity: 0;
+  }
+}
+
+@keyframes sb-arrow-throb {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes sb-active-glow {
+  0%,
+  100% {
+    text-shadow:
+      0 0 8px rgb(38 90 255 / 36%),
+      0 0 12px rgb(255 103 229 / 24%);
+  }
+
+  50% {
+    text-shadow:
+      0 0 12px rgb(38 90 255 / 42%),
+      0 0 18px rgb(231 91 255 / 46%);
+  }
+}
+
+@keyframes sb-concert-neon-breathe {
+  0%,
+  100% {
+    box-shadow:
+      3px 3px 0 rgb(0 0 0 / 42%),
+      0 0 16px rgb(120 92 255 / 34%),
+      0 0 28px rgb(255 84 214 / 18%);
+  }
+
+  50% {
+    box-shadow:
+      3px 3px 0 rgb(0 0 0 / 42%),
+      0 0 20px rgb(97 209 255 / 34%),
+      0 0 36px rgb(255 84 214 / 24%);
+  }
+}
+
+@keyframes sb-concert-neon-orbit {
+  0% {
+    transform: translateX(-6%) rotate(0deg);
+    opacity: 0.26;
+  }
+
+  50% {
+    transform: translateX(5%) rotate(180deg);
+    opacity: 0.38;
+  }
+
+  100% {
+    transform: translateX(-6%) rotate(360deg);
+    opacity: 0.26;
+  }
+}
+
+@keyframes sb-concert-frame-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    border-color: rgb(168 136 255 / 58%);
+  }
+
+  50% {
+    opacity: 0.95;
+    border-color: rgb(100 218 255 / 68%);
+  }
+}
+
+@keyframes sb-header-shell-neon {
+  0%,
+  100% {
+    background-position: 0% 50%;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 40%),
+      0 0 24px rgb(255 94 218 / 36%),
+      0 0 38px rgb(94 223 255 / 28%);
+  }
+
+  50% {
+    background-position: 100% 50%;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 40%),
+      0 0 30px rgb(255 94 218 / 48%),
+      0 0 46px rgb(94 223 255 / 34%);
+  }
+}
+
+@keyframes sb-header-shell-scan {
+  0% {
+    transform: translateX(-42%);
+    opacity: 0;
+  }
+
+  18% {
+    opacity: 0.8;
+  }
+
+  56% {
+    opacity: 0.75;
+  }
+
+  100% {
+    transform: translateX(62%);
+    opacity: 0;
+  }
+}
+
+@keyframes sb-header-shell-frame {
+  0%,
+  100% {
+    opacity: 0.62;
+    border-color: rgb(255 255 255 / 34%);
+  }
+
+  50% {
+    opacity: 0.98;
+    border-color: rgb(176 240 255 / 72%);
+  }
+}
+
+@keyframes sb-header-tab-sheen {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 0.18;
+  }
+
+  45% {
+    opacity: 0.3;
+  }
+
+  68% {
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(370%);
+    opacity: 0;
+  }
+}
+
+@keyframes sb-header-icon-breathe {
+  0%,
+  100% {
+    filter:
+      drop-shadow(0 0 9px rgb(255 95 224 / 30%))
+      drop-shadow(0 0 14px rgb(100 223 255 / 22%));
+  }
+
+  50% {
+    filter:
+      drop-shadow(0 0 14px rgb(255 95 224 / 40%))
+      drop-shadow(0 0 20px rgb(100 223 255 / 30%));
+  }
+}
+
+@keyframes sb-header-logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2.6px);
+  }
+}
+
+@keyframes sb-header-badge-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgb(11 88 205 / 0%),
+      0 0 11px rgb(103 232 249 / 32%);
+    filter: brightness(1);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 6px rgb(11 88 205 / 0%),
+      0 0 16px rgb(255 96 223 / 34%);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes sb-footer-sheen {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 0.16;
+  }
+
+  42% {
+    opacity: 0.32;
+  }
+
+  64% {
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(380%);
+    opacity: 0;
+  }
+}
+
+@keyframes sb-footer-icon-breathe {
+  0%,
+  100% {
+    filter: brightness(1);
+    box-shadow:
+      inset 1px 1px 0 rgb(176 146 255 / 50%),
+      inset -1px -1px 0 rgb(16 8 52 / 96%),
+      0 0 8px rgb(126 92 255 / 35%);
+  }
+
+  50% {
+    filter: brightness(1.12);
+    box-shadow:
+      inset 1px 1px 0 rgb(176 146 255 / 56%),
+      inset -1px -1px 0 rgb(16 8 52 / 96%),
+      0 0 13px rgb(255 97 217 / 42%);
   }
 }

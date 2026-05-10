@@ -6,6 +6,7 @@ type PageShellProps = {
   eyebrow?: string;
   description?: string;
   actions?: ReactNode;
+  headerImageSrc?: string;
   children: ReactNode;
   contentClassName?: string;
   sectionClassName?: string;
@@ -20,6 +21,7 @@ export default function PageShell({
   eyebrow,
   description,
   actions,
+  headerImageSrc,
   children,
   contentClassName,
   sectionClassName,
@@ -49,7 +51,7 @@ export default function PageShell({
     >
       <div className="page-header-image">
         <Image
-          src={PAGE_HEADER_IMAGE_SRC}
+          src={headerImageSrc ?? PAGE_HEADER_IMAGE_SRC}
           alt={`Cabecera ${title}`}
           width={2400}
           height={760}
