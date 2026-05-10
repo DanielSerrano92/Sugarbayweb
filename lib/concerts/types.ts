@@ -49,6 +49,8 @@ export type ConcertPastDetails = {
   chronicle: string;
   tracklist: string[];
   links: ConcertLink[];
+  photoAlbumSlug: string | null;
+  photoAlbumHref: string | null;
   photos: ConcertMediaItem[];
   videos: ConcertMediaItem[];
 };
@@ -88,5 +90,4 @@ export type ConcertCatalogResult = {
   totalItems: number;
   totalPages: number;
   pageSize: number;
-  availableCountries: ConcertCountryOption[];
 };

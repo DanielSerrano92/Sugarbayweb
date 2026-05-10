@@ -4,6 +4,7 @@ import Link from "next/link";
 import ProductCard from "@/components/shop/product-card";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
+import { TICKETMASTER_SUGARBAY_SEARCH_URL } from "@/lib/concerts/ticketmaster";
 import { getHomeSnapshot } from "@/lib/repositories/site";
 import { formatDate } from "@/lib/utils";
 
@@ -69,9 +70,9 @@ export default async function HomePage() {
                   </p>
                   {concert.ticketUrl ? (
                     <a
-                      href={concert.ticketUrl}
+                      href={TICKETMASTER_SUGARBAY_SEARCH_URL}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="sb-btn-secondary mt-4 inline-block px-3 py-2 text-sm font-semibold text-zinc-200"
                     >
                       Entradas

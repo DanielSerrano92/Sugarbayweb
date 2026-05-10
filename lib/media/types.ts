@@ -110,6 +110,8 @@ export type VideoEmbedItem = {
   id: string;
   slug: string;
   title: string;
+  youtubeId: string | null;
+  type: "normal" | "short";
   description: string | null;
   platform: VideoPlatform;
   videoUrl: string;
@@ -161,4 +163,3 @@ export type MediaOverviewStats = {
   videoCollections: number;
   videoItems: number;
 };
-

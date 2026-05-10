@@ -87,7 +87,7 @@ const headerIconLargeClass =
   "sb-header-icon-pop inline-grid h-auto w-auto place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0 [&>svg]:!h-[3.25rem] [&>svg]:!w-[3.25rem] sm:[&>svg]:!h-[3.6rem] sm:[&>svg]:!w-[3.6rem] xl:[&>svg]:!h-[4rem] xl:[&>svg]:!w-[4rem]";
 
 const LEFT_NAVIGATION_HREFS = ["/concerts", "/band/news", "/musica"];
-const RIGHT_NAVIGATION_HREFS = ["/media", "/fanclub", "/store"];
+const RIGHT_NAVIGATION_HREFS = ["/media/photos", "/fanclub", "/store"];
 const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
 
 function sortNavigationByOrder(items: NavItem[], order: string[]): NavItem[] {

@@ -1,25 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import Link from "next/link";
 
-import { continentOptions } from "@/lib/concerts/locations";
-import type { ConcertCountryOption, ConcertFilters } from "@/lib/concerts/types";
+import {
+  continentOptions,
+  getCountriesForContinent,
+  isCountryInContinent,
+} from "@/lib/concerts/locations";
+import type { ConcertContinent, ConcertFilters } from "@/lib/concerts/types";
 
 type ConcertFiltersProps = {
   basePath: string;
   filters: ConcertFilters;
-  availableCountries: ConcertCountryOption[];
   mode?: "panel" | "icon-modal";
 };
+
+function getValidSelectedCountry(filters: ConcertFilters): string {
+  if (!filters.country) return "";
+  return isCountryInContinent(filters.country, filters.continent)
+    ? filters.country
+    : "";
+}
 
 export default function ConcertFilters({
   basePath,
   filters,
-  availableCountries,
   mode = "panel",
 }: ConcertFiltersProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedContinent, setSelectedContinent] =
+    useState<ConcertContinent>(filters.continent);
+  const [selectedCountry, setSelectedCountry] = useState(() =>
+    getValidSelectedCountry(filters),
+  );
   const isIconMode = mode === "icon-modal";
   const formClassName = isIconMode ? "space-y-4 p-4 text-black" : "mt-4 space-y-4";
   const labelClassName = isIconMode
@@ -33,6 +47,20 @@ export default function ConcertFilters({
   const resetButtonClassName = isIconMode
     ? "win-button"
     : "sb-btn-secondary inline-flex px-4 py-2 text-sm font-semibold text-zinc-200";
+  const availableCountries = getCountriesForContinent(selectedContinent);
+
+  const handleContinentChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const nextContinent = event.target.value as ConcertContinent;
+
+    setSelectedContinent(nextContinent);
+
+    if (
+      selectedCountry &&
+      !isCountryInContinent(selectedCountry, nextContinent)
+    ) {
+      setSelectedCountry("");
+    }
+  };
 
   useEffect(() => {
     if (!isIconMode || !isModalOpen) return;
@@ -89,7 +117,8 @@ export default function ConcertFilters({
         <select
           id="concert-continent"
           name="continent"
-          defaultValue={filters.continent}
+          value={selectedContinent}
+          onChange={handleContinentChange}
           className={selectClassName}
         >
           {continentOptions.map((option) => (
@@ -107,7 +136,8 @@ export default function ConcertFilters({
         <select
           id="concert-country"
           name="country"
-          defaultValue={filters.country ?? ""}
+          value={selectedCountry}
+          onChange={(event) => setSelectedCountry(event.target.value)}
           className={selectClassName}
         >
           <option value="">Todos los paises</option>

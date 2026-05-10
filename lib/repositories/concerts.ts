@@ -9,7 +9,6 @@ import {
 import type {
   ConcertCardView,
   ConcertCatalogResult,
-  ConcertCountryOption,
   ConcertFilters,
   ConcertPeriod,
   ConcertQueryParams,
@@ -159,7 +158,7 @@ function getLocalFallbackConcertRecords(): ConcertRecord[] {
       country: "ES",
       venueName: "Sala Riviera",
       venueAddress: "Paseo Bajo de la Virgen del Puerto S/N",
-      ticketUrl: "https://tickets.sugarbaymusic.com/madrid-2026",
+      ticketUrl: "https://www.ticketmaster.es/search?q=Sugarbay",
       externalEventUrl: "https://www.salariviera.com",
     },
     {
@@ -233,8 +232,12 @@ function pickMediaForConcert(params: {
   photoAlbums: PhotoAlbumRecord[];
   videoCollections: VideoCollectionRecord[];
 }) {
+  const detail = getConcertExtraContent(params.concert.slug);
   const cityKey = normalizeForMatch(params.concert.city);
   const slugKey = normalizeForMatch(params.concert.slug);
+  const linkedPhotoAlbum = detail?.photoAlbumSlug
+    ? params.photoAlbums.find((album) => album.slug === detail.photoAlbumSlug)
+    : null;
 
   const matchedAlbums = params.photoAlbums
     .filter((album) => {
@@ -273,6 +276,10 @@ function pickMediaForConcert(params: {
   return {
     photos,
     videos,
+    photoAlbumSlug: linkedPhotoAlbum?.slug ?? null,
+    photoAlbumHref: linkedPhotoAlbum
+      ? `/media/photos/${linkedPhotoAlbum.slug}`
+      : null,
     venuePhotoUrl: matchedAlbums[0]?.coverImageUrl ?? null,
   };
 }
@@ -354,6 +361,8 @@ function mapConcert(
               "Concierto completado con gran respuesta del publico.",
             tracklist: detail?.tracklist ?? [],
             links: [...(detail?.extraLinks ?? []), ...commonLinks],
+            photoAlbumSlug: media.photoAlbumSlug,
+            photoAlbumHref: media.photoAlbumHref,
             photos,
             videos,
           }
@@ -371,24 +380,6 @@ function normalizePage(totalPages: number, requestedPage: number): number {
   return Math.min(Math.max(1, requestedPage), totalPages);
 }
 
-function buildCountryOptions(records: ConcertRecord[]): ConcertCountryOption[] {
-  const byCountry = new Map<string, ConcertCountryOption>();
-
-  for (const concert of records) {
-    if (byCountry.has(concert.country)) continue;
-
-    byCountry.set(concert.country, {
-      code: concert.country,
-      label: getCountryLabel(concert.country),
-      continent: getContinentForCountry(concert.country),
-    });
-  }
-
-  return Array.from(byCountry.values()).sort((left, right) =>
-    left.label.localeCompare(right.label, "es", { sensitivity: "base" }),
-  );
-}
-
 export async function getConcertCatalog(
   period: ConcertPeriod,
   params: ConcertQueryParams,
@@ -403,37 +394,13 @@ export async function getConcertCatalog(
     usedDatabaseFallback = true;
   };
 
-  const [rawConcerts, filterConcerts, photoAlbums, videoCollections] =
+  const [rawConcerts, photoAlbums, videoCollections] =
     await Promise.all([
       withDatabaseFallback(
         () =>
           prisma.concert.findMany({
             where: whereForList,
             orderBy: [{ startsAt: orderDirection }, { city: "asc" }],
-            select: {
-              id: true,
-              slug: true,
-              title: true,
-              description: true,
-              startsAt: true,
-              city: true,
-              country: true,
-              venueName: true,
-              venueAddress: true,
-              ticketUrl: true,
-              externalEventUrl: true,
-            },
-          }),
-        [] as ConcertRecord[],
-        { onFallback: onDatabaseFallback },
-      ),
-      withDatabaseFallback(
-        () =>
-          prisma.concert.findMany({
-            where: buildBaseWhere(period, {
-              ...requestedFilters,
-              country: undefined,
-            }),
             select: {
               id: true,
               slug: true,
@@ -522,14 +489,6 @@ export async function getConcertCatalog(
         )
       : rawConcerts;
 
-  const sourceFilterConcerts =
-    localFallbackRecords.length > 0
-      ? filterLocalConcertRecordsForBase(localFallbackRecords, period, {
-          ...requestedFilters,
-          country: undefined,
-        })
-      : filterConcerts;
-
   const continentFilteredConcerts =
     requestedFilters.continent === "all"
       ? sourceConcerts
@@ -555,13 +514,6 @@ export async function getConcertCatalog(
   const page = normalizePage(totalPages, requestedFilters.page);
   const concerts = paginate(mappedConcerts, page, PAGE_SIZE);
 
-  const availableCountries = buildCountryOptions(sourceFilterConcerts).filter(
-    (option) =>
-      requestedFilters.continent === "all"
-        ? true
-        : option.continent === requestedFilters.continent,
-  );
-
   return {
     period,
     filters: {
@@ -572,6 +524,5 @@ export async function getConcertCatalog(
     totalItems,
     totalPages,
     pageSize: PAGE_SIZE,
-    availableCountries,
   };
 }

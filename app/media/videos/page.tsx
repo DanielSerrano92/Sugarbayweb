@@ -2,57 +2,45 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import VideoFilters from "@/components/media/video-filters";
-import VideoPagination from "@/components/media/video-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
-import type { MediaVideoQueryParams } from "@/lib/media/types";
 import { getVideoCatalog } from "@/lib/repositories/media";
 import { resolveImageUrl } from "@/lib/services/imagekit";
-import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Media Videos",
-  description: "Colecciones y videos unicos de Sugarbay con detalle embebido.",
+  description: "Colecciones de videos oficiales de Sugarbay.",
 };
 
-type MediaVideosPageProps = {
-  searchParams: Promise<MediaVideoQueryParams>;
-};
-
-export default async function MediaVideosPage({ searchParams }: MediaVideosPageProps) {
-  const params = await searchParams;
-  const catalog = await getVideoCatalog(params);
+export default async function MediaVideosPage() {
+  const catalog = await getVideoCatalog();
 
   return (
     <PageShell
       eyebrow="Media / Videos"
-      title="Colecciones y videos unicos"
-      description="Explora los videos oficiales de Sugarbay con filtros por fecha, tipo y orden."
+      title="Colecciones de videos"
+      description="Explora colecciones oficiales de Sugarbay y abre cada una para ver sus videos."
     >
       <section>
-        <div className="mb-5 flex justify-end">
-          <VideoFilters basePath="/media/videos" filters={catalog.filters} />
-        </div>
-
         <p className="mb-4 text-sm text-zinc-600">
-          Mostrando {catalog.items.length} de {catalog.totalItems} resultados.
+          Mostrando {catalog.items.length} colecciones.
         </p>
 
         {catalog.items.length === 0 ? (
           <EmptyState
-            title="No hay videos con esos filtros"
-            description="Prueba ajustando tipo, fechas o criterio de orden."
+            title="No hay colecciones de videos publicadas"
+            description="Publica al menos una coleccion para mostrar tarjetas en esta seccion."
           />
         ) : (
-          <>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {catalog.items.map((item) => (
-                <article
-                  key={`${item.kind}-${item.id}`}
-                  className="sb-panel overflow-hidden rounded-2xl"
-                >
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {catalog.items.map((item) => (
+              <Link
+                key={item.id}
+                href={`/media/videos/${item.slug}`}
+                className="group block"
+              >
+                <article className="sb-panel h-full overflow-hidden rounded-2xl border border-transparent transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:border-pink-400">
                   <div className="relative h-48 bg-zinc-100">
                     <Image
                       src={resolveImageUrl(item.coverImageUrl)}
@@ -63,31 +51,15 @@ export default async function MediaVideosPage({ searchParams }: MediaVideosPageP
                     />
                   </div>
                   <div className="space-y-2 p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                      {item.kind === "collection" ? "Coleccion" : "Video unico"}
-                    </p>
                     <h2 className="text-lg font-bold text-zinc-900">{item.title}</h2>
-                    <p className="text-sm text-zinc-600">{formatDate(item.dateIso)}</p>
                     <p className="text-sm text-zinc-600">
                       {item.videoCount} {item.videoCount === 1 ? "video" : "videos"}
                     </p>
-                    <Link
-                      href={`/media/videos/${item.slug}`}
-                      className="sb-btn-secondary inline-flex px-3 py-2 text-sm font-semibold text-zinc-200"
-                    >
-                      Ver detalle
-                    </Link>
                   </div>
                 </article>
-              ))}
-            </div>
-
-            <VideoPagination
-              basePath="/media/videos"
-              filters={catalog.filters}
-              totalPages={catalog.totalPages}
-            />
-          </>
+              </Link>
+            ))}
+          </div>
         )}
 
         <IconNavigationLink href="/media/photos" label="Fotos" />

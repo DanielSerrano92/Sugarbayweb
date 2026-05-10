@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+import { TICKETMASTER_SUGARBAY_SEARCH_URL } from "@/lib/concerts/ticketmaster";
 import type { ConcertCardView, ConcertPeriod } from "@/lib/concerts/types";
 import { formatDate } from "@/lib/utils";
 
@@ -129,24 +131,23 @@ export default function ConcertCardsClient({
                 </button>
 
                 {period === "upcoming" ? (
-                  concert.actionUrl ? (
-                    <a
-                      href={concert.actionUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="retro-card-action"
-                    >
-                      {concert.actionLabel}
-                    </a>
-                  ) : (
-                    <span className="retro-card-action opacity-60">
-                      {concert.actionLabel}
-                    </span>
-                  )
+                  <a
+                    href={TICKETMASTER_SUGARBAY_SEARCH_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="retro-card-action"
+                  >
+                    Comprar
+                  </a>
                 ) : (
                   <>
-                    {concert.pastDetails?.photos[0] ? (
-                      <ExternalLink href={concert.pastDetails.photos[0].url} label="Fotos" />
+                    {concert.pastDetails?.photoAlbumHref ? (
+                      <Link
+                        href={concert.pastDetails.photoAlbumHref}
+                        className="retro-card-action"
+                      >
+                        Fotos
+                      </Link>
                     ) : (
                       <span className="retro-card-action opacity-60">
                         Fotos
