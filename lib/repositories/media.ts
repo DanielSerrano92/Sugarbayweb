@@ -17,6 +17,8 @@ import type {
   VideoEmbedItem,
 } from "@/lib/media/types";
 import {
+  extractYouTubeVideoId,
+  inferYouTubeVideoType,
   resolveVideoDurationSeconds,
   resolveVideoEmbedUrl,
   resolveVideoPreviewImageUrl,
@@ -79,6 +81,7 @@ type VideoCollectionRecord = Prisma.VideoCollectionGetPayload<{
     title: true;
     description: true;
     coverImageUrl: true;
+    sortOrder: true;
     createdAt: true;
     videos: {
       select: {
@@ -203,6 +206,8 @@ async function mapVideoEmbedItem(video: VideoCollectionRecord["videos"][number])
     id: video.id,
     slug: video.slug,
     title: video.title,
+    youtubeId: extractYouTubeVideoId(video.videoUrl),
+    type: inferYouTubeVideoType(video.videoUrl),
     description: video.description,
     platform: video.platform,
     videoUrl: video.videoUrl,
@@ -407,10 +412,9 @@ export async function getPhotoAlbumDetailBySlug(
 }
 
 export async function getVideoCatalog(
-  params: MediaVideoQueryParams,
+  params: MediaVideoQueryParams = {},
 ): Promise<VideoCatalogResult> {
   const filters = parseVideoFilters(params);
-  const dateRange = toDateRange({ from: filters.from, to: filters.to });
 
   const collections = await withDatabaseFallback(
     () =>
@@ -418,12 +422,14 @@ export async function getVideoCatalog(
         where: {
           isPublished: true,
         },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
         select: {
           id: true,
           slug: true,
           title: true,
           description: true,
           coverImageUrl: true,
+          sortOrder: true,
           createdAt: true,
           videos: {
             select: {
@@ -447,63 +453,29 @@ export async function getVideoCatalog(
   );
 
   const collectionCards: SortableItem<VideoCatalogCard>[] = [];
-  const singleCards: SortableItem<VideoCatalogCard>[] = [];
 
   for (const collection of collections) {
     const collectionDate = resolveCollectionDate(collection);
     const videosCount = collection.videos.length;
 
-    if (videosCount > 1) {
-      collectionCards.push({
-        date: collectionDate,
-        title: collection.title,
-        item: {
-          id: collection.id,
-          kind: "collection",
-          slug: collection.slug,
-          title: collection.title,
-          description: collection.description,
-          coverImageUrl: collection.coverImageUrl ?? collection.videos[0]?.thumbnailUrl ?? null,
-          dateIso: collectionDate.toISOString(),
-          videoCount: videosCount,
-          platform: null,
-        },
-      });
-      continue;
-    }
-
-    const video = collection.videos[0];
-    if (!video) continue;
-    const videoDate = video.publishedAt ?? video.createdAt;
-    singleCards.push({
-      date: videoDate,
-      title: video.title,
+    collectionCards.push({
+      date: collectionDate,
+      title: collection.title,
       item: {
-        id: video.id,
-        kind: "single",
-        slug: video.slug,
-        title: video.title,
-        description: video.description ?? collection.description,
-        coverImageUrl: video.thumbnailUrl ?? collection.coverImageUrl ?? null,
-        dateIso: videoDate.toISOString(),
-        videoCount: 1,
-        platform: video.platform,
+        id: collection.id,
+        kind: "collection",
+        slug: collection.slug,
+        title: collection.title,
+        description: collection.description,
+        coverImageUrl: collection.coverImageUrl ?? collection.videos[0]?.thumbnailUrl ?? null,
+        dateIso: collectionDate.toISOString(),
+        videoCount: videosCount,
+        platform: null,
       },
     });
   }
 
-  const source =
-    filters.type === "collection"
-      ? collectionCards
-      : filters.type === "single"
-      ? singleCards
-      : [...collectionCards, ...singleCards];
-
-  const filteredByDate = source.filter((entry) =>
-    inDateRange(entry.date, dateRange.from, dateRange.to),
-  );
-  filteredByDate.sort((left, right) => compareBySort(left, right, filters.sort));
-
+  const filteredByDate = collectionCards;
   const totalItems = filteredByDate.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / VIDEO_PAGE_SIZE));
   const page = Math.min(Math.max(1, filters.page), totalPages);
@@ -602,6 +574,7 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
           title: true,
           description: true,
           coverImageUrl: true,
+          sortOrder: true,
           createdAt: true,
           videos: {
             select: {
@@ -695,6 +668,8 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
       id: single.id,
       slug: single.slug,
       title: single.title,
+      youtubeId: extractYouTubeVideoId(single.videoUrl),
+      type: inferYouTubeVideoType(single.videoUrl),
       description: single.description,
       platform: single.platform,
       videoUrl: single.videoUrl,
@@ -709,4 +684,3 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
     },
   };
 }
-

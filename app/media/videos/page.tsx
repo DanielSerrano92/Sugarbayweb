@@ -2,18 +2,26 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import VideoFilters from "@/components/media/video-filters";
-import VideoPagination from "@/components/media/video-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
-import type { MediaVideoQueryParams } from "@/lib/media/types";
+import VideoFilters from "@/components/media/video-filters";
+import VideoPagination from "@/components/media/video-pagination";
 import { getVideoCatalog } from "@/lib/repositories/media";
 import { resolveImageUrl } from "@/lib/services/imagekit";
-import { formatDate } from "@/lib/utils";
 
 const MEDIA_VIDEOS_PAGE_HEADER_IMAGE_SRC =
   "https://ik.imagekit.io/gq1enkszp/fotos/videos.png?tr=w-2400,h-760,cm-extract,fo-top";
+
+function formatDate(dateIso: string | null): string {
+  if (!dateIso) return "No disponible";
+
+  return new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(dateIso));
+}
 
 function RetroCalendarIcon() {
   return (
@@ -39,16 +47,11 @@ function RetroVideoIcon() {
 
 export const metadata: Metadata = {
   title: "Media Videos",
-  description: "Colecciones y videos unicos de Sugarbay con detalle embebido.",
+  description: "Colecciones de videos oficiales de Sugarbay.",
 };
 
-type MediaVideosPageProps = {
-  searchParams: Promise<MediaVideoQueryParams>;
-};
-
-export default async function MediaVideosPage({ searchParams }: MediaVideosPageProps) {
-  const params = await searchParams;
-  const catalog = await getVideoCatalog(params);
+export default async function MediaVideosPage() {
+  const catalog = await getVideoCatalog();
 
   return (
     <PageShell
@@ -73,12 +76,16 @@ export default async function MediaVideosPage({ searchParams }: MediaVideosPageP
           <p className="mb-4 text-sm text-zinc-600">
             Mostrando {catalog.items.length} de {catalog.totalItems} resultados.
           </p>
-        ) : null}
+        ) : (
+          <p className="mb-4 text-sm text-zinc-600">
+            Mostrando {catalog.items.length} resultados.
+          </p>
+        )}
 
         {catalog.items.length === 0 ? (
           <EmptyState
-            title="No hay videos con esos filtros"
-            description="Prueba ajustando tipo, fechas o criterio de orden."
+            title="No hay colecciones de videos publicadas"
+            description="Publica al menos una coleccion o video para mostrar tarjetas en esta seccion."
           />
         ) : (
           <div className="grid grid-cols-1 justify-items-center gap-6 sm:gap-7 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-4">
@@ -122,7 +129,8 @@ export default async function MediaVideosPage({ searchParams }: MediaVideosPageP
                       <div className="retro-concert-row">
                         <RetroVideoIcon />
                         <span>
-                          {item.videoCount} {item.videoCount === 1 ? "video" : "videos"}
+                          {item.videoCount}{" "}
+                          {item.videoCount === 1 ? "video" : "videos"}
                         </span>
                       </div>
                     </div>
@@ -135,7 +143,10 @@ export default async function MediaVideosPage({ searchParams }: MediaVideosPageP
                   </div>
 
                   <div className="retro-card-actions retro-card-actions-upcoming">
-                    <Link href={`/media/videos/${item.slug}`} className="retro-card-action">
+                    <Link
+                      href={`/media/videos/${item.slug}`}
+                      className="retro-card-action"
+                    >
                       Ver detalle
                     </Link>
                   </div>
@@ -150,5 +161,3 @@ export default async function MediaVideosPage({ searchParams }: MediaVideosPageP
     </PageShell>
   );
 }
-
-

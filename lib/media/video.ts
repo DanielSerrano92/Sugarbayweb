@@ -6,6 +6,12 @@ const VIDEO_REQUEST_TIMEOUT_MS = 3500;
 
 const youtubeDurationCache = new Map<string, number | null>();
 
+function normalizeYouTubeId(rawValue: string): string | null {
+  const candidate = rawValue.trim();
+  if (!/^[A-Za-z0-9_-]{11}$/.test(candidate)) return null;
+  return candidate;
+}
+
 async function fetchWithTimeout(
   input: string,
   init: RequestInit,
@@ -21,36 +27,60 @@ async function fetchWithTimeout(
   }
 }
 
-function parseYouTubeVideoId(url: string): string | null {
+export function extractYouTubeVideoId(videoUrl: string): string | null {
+  const directId = normalizeYouTubeId(videoUrl);
+  if (directId) return directId;
+
   try {
-    const parsed = new URL(url);
+    const parsed = new URL(videoUrl);
 
     if (parsed.hostname.includes("youtu.be")) {
-      const videoId = parsed.pathname.replace("/", "").trim();
-      return videoId || null;
+      return normalizeYouTubeId(parsed.pathname.replace("/", ""));
     }
 
     if (!parsed.hostname.includes("youtube.com")) return null;
 
     if (parsed.pathname.startsWith("/shorts/")) {
-      const videoId = parsed.pathname.split("/shorts/")[1]?.split("/")[0]?.trim();
-      return videoId || null;
+      const videoId =
+        parsed.pathname.split("/shorts/")[1]?.split("/")[0] ?? "";
+      return normalizeYouTubeId(videoId);
     }
 
     if (parsed.pathname.startsWith("/embed/")) {
-      const videoId = parsed.pathname.split("/embed/")[1]?.split("/")[0]?.trim();
-      return videoId || null;
+      const videoId =
+        parsed.pathname.split("/embed/")[1]?.split("/")[0] ?? "";
+      return normalizeYouTubeId(videoId);
     }
 
-    const queryVideoId = parsed.searchParams.get("v")?.trim();
-    return queryVideoId || null;
+    const queryVideoId = parsed.searchParams.get("v") ?? "";
+    return normalizeYouTubeId(queryVideoId);
   } catch {
     return null;
   }
 }
 
+function parseYouTubeVideoId(videoUrl: string): string | null {
+  return extractYouTubeVideoId(videoUrl);
+}
+
+export function inferYouTubeVideoType(videoUrl: string): "normal" | "short" {
+  try {
+    const parsed = new URL(videoUrl);
+    if (
+      parsed.hostname.includes("youtube.com") &&
+      parsed.pathname.startsWith("/shorts/")
+    ) {
+      return "short";
+    }
+  } catch {
+    // Ignore parsing failures. Values can be a plain YouTube ID.
+  }
+
+  return "normal";
+}
+
 function toYouTubeEmbed(url: string): string | null {
-  const videoId = parseYouTubeVideoId(url);
+  const videoId = extractYouTubeVideoId(url);
   return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
 }
 
@@ -58,6 +88,7 @@ function toVimeoEmbed(url: string): string | null {
   try {
     const parsed = new URL(url);
     if (!parsed.hostname.includes("vimeo.com")) return null;
+
     const videoId = parsed.pathname.replaceAll("/", "").trim();
     return videoId ? `https://player.vimeo.com/video/${videoId}` : null;
   } catch {
@@ -65,7 +96,10 @@ function toVimeoEmbed(url: string): string | null {
   }
 }
 
-export function resolveVideoEmbedUrl(platform: VideoPlatform, videoUrl: string): string {
+export function resolveVideoEmbedUrl(
+  platform: VideoPlatform,
+  videoUrl: string,
+): string {
   if (platform === "YOUTUBE") {
     return toYouTubeEmbed(videoUrl) ?? videoUrl;
   }
@@ -77,7 +111,9 @@ export function resolveVideoEmbedUrl(platform: VideoPlatform, videoUrl: string):
   return videoUrl;
 }
 
-async function fetchYouTubeDurationFromPlayerApi(videoId: string): Promise<number | null> {
+async function fetchYouTubeDurationFromPlayerApi(
+  videoId: string,
+): Promise<number | null> {
   const response = await fetchWithTimeout(
     YOUTUBE_I_ENDPOINT,
     {
@@ -102,22 +138,24 @@ async function fetchYouTubeDurationFromPlayerApi(videoId: string): Promise<numbe
   );
 
   if (!response.ok) return null;
-  const payload = (await response.json()) as unknown;
 
-  const raw = (payload as { videoDetails?: { lengthSeconds?: unknown } })?.videoDetails
-    ?.lengthSeconds;
+  const payload = (await response.json()) as unknown;
+  const raw = (payload as { videoDetails?: { lengthSeconds?: unknown } })
+    ?.videoDetails?.lengthSeconds;
 
   const seconds =
     typeof raw === "number"
       ? raw
       : typeof raw === "string"
-      ? Number.parseInt(raw, 10)
-      : Number.NaN;
+        ? Number.parseInt(raw, 10)
+        : Number.NaN;
 
   return Number.isFinite(seconds) && seconds > 0 ? seconds : null;
 }
 
-async function fetchYouTubeDurationFromWatchPage(videoId: string): Promise<number | null> {
+async function fetchYouTubeDurationFromWatchPage(
+  videoId: string,
+): Promise<number | null> {
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
   const response = await fetchWithTimeout(
     watchUrl,
@@ -134,6 +172,7 @@ async function fetchYouTubeDurationFromWatchPage(videoId: string): Promise<numbe
   );
 
   if (!response.ok) return null;
+
   const html = await response.text();
 
   const match =
@@ -151,7 +190,9 @@ async function fetchYouTubeDurationFromWatchPage(videoId: string): Promise<numbe
   return Number.isFinite(seconds) && seconds > 0 ? seconds : null;
 }
 
-async function resolveYouTubeDurationSeconds(videoId: string): Promise<number | null> {
+async function resolveYouTubeDurationSeconds(
+  videoId: string,
+): Promise<number | null> {
   if (youtubeDurationCache.has(videoId)) {
     return youtubeDurationCache.get(videoId) ?? null;
   }
@@ -181,13 +222,17 @@ export async function resolveVideoDurationSeconds(
   videoUrl: string,
   durationSeconds: number | null,
 ): Promise<number | null> {
-  if (typeof durationSeconds === "number" && Number.isFinite(durationSeconds) && durationSeconds > 0) {
+  if (
+    typeof durationSeconds === "number" &&
+    Number.isFinite(durationSeconds) &&
+    durationSeconds > 0
+  ) {
     return durationSeconds;
   }
 
   if (platform !== "YOUTUBE") return durationSeconds;
 
-  const videoId = parseYouTubeVideoId(videoUrl);
+  const videoId = extractYouTubeVideoId(videoUrl);
   if (!videoId) return durationSeconds;
 
   return await resolveYouTubeDurationSeconds(videoId);
@@ -201,11 +246,11 @@ export function resolveVideoPreviewImageUrl(
   if (thumbnailUrl) return thumbnailUrl;
 
   if (platform === "YOUTUBE") {
-    const videoId = parseYouTubeVideoId(videoUrl);
+    const videoId = extractYouTubeVideoId(videoUrl);
     if (!videoId) return null;
+
     return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
   }
 
   return null;
 }
-

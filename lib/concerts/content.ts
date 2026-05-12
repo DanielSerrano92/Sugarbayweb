@@ -9,6 +9,7 @@ type ConcertExtraContent = {
   chronicle?: string;
   tracklist?: string[];
   extraLinks?: ConcertLink[];
+  photoAlbumSlug?: string;
   photos?: ConcertMediaItem[];
   videos?: ConcertMediaItem[];
 };
@@ -57,6 +58,7 @@ const concertContentRegistry: Record<string, ConcertExtraContent> = {
       { label: "Cronica completa", url: "https://sugarbaymusic.com/news/closing-night" },
       { label: "Resena prensa", url: "https://musicpress.example.com/sugarbay-barcelona" },
     ],
+    photoAlbumSlug: "sugarbay-sunset-session-barcelona-gallery",
     photos: [
       {
         title: "Opening lights",

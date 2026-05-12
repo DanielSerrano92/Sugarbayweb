@@ -1,18 +1,76 @@
-import { addToCartAction } from "@/lib/cart/actions";
-import {
-  getSizeOptions,
-  shouldShowSizeSelector,
-} from "@/lib/repositories/store";
+"use client";
+
+import { useActionState, useEffect, useMemo } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useFormStatus } from "react-dom";
+
+import { dispatchAuthModalOpen } from "@/lib/auth/events";
+import { addToCartAction, type AddToCartActionState } from "@/lib/cart/actions";
 import type { StoreProductDetail } from "@/lib/store/types";
 
 type StoreProductPurchaseFormProps = {
   product: StoreProductDetail;
 };
 
+const initialState: AddToCartActionState = { status: "idle" };
+
+function shouldShowSizeSelector(product: StoreProductDetail): boolean {
+  if (product.productType !== "APPAREL") return false;
+  return product.variants.some((variant) => variant.size !== "OS");
+}
+
+function getSizeOptions(
+  product: StoreProductDetail,
+): StoreProductDetail["variants"][number]["size"][] {
+  const uniqueSizes = new Set<StoreProductDetail["variants"][number]["size"]>();
+
+  for (const variant of product.variants) {
+    if (variant.size !== "OS") {
+      uniqueSizes.add(variant.size);
+    }
+  }
+
+  return Array.from(uniqueSizes.values());
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="retro-card-action inline-flex w-full items-center justify-center disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      {pending ? "Anadiendo..." : "Anadir al carrito"}
+    </button>
+  );
+}
+
 export default function StoreProductPurchaseForm({
   product,
 }: StoreProductPurchaseFormProps) {
-  const inStockVariants = product.variants.filter((variant) => variant.stock > 0);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [state, formAction] = useActionState(addToCartAction, initialState);
+
+  const authRedirectTo = useMemo(() => {
+    const currentSearch = searchParams.toString();
+    return currentSearch ? `${pathname}?${currentSearch}` : pathname;
+  }, [pathname, searchParams]);
+
+  const inStockVariants = product.variants.filter(
+    (variant) => variant.stock > 0,
+  );
+
+  useEffect(() => {
+    if (state.status !== "auth_required") return;
+
+    dispatchAuthModalOpen({
+      mode: "login",
+      redirectTo: state.redirectTo ?? authRedirectTo,
+    });
+  }, [authRedirectTo, state.redirectTo, state.status]);
 
   if (product.variants.length === 0) {
     return (
@@ -39,12 +97,15 @@ export default function StoreProductPurchaseForm({
   const defaultVariant = inStockVariants[0];
   const defaultSizeVariant = sizeOptions
     .map((size) => sizeToVariant.get(size))
-    .find((variant): variant is NonNullable<typeof variant> => Boolean(variant));
+    .find((variant): variant is NonNullable<typeof variant> =>
+      Boolean(variant),
+    );
 
   return (
-    <form action={addToCartAction} className="retro-concert-meta-item space-y-3">
+    <form action={formAction} className="retro-concert-meta-item space-y-3">
       <input type="hidden" name="productId" value={product.id} />
       <input type="hidden" name="redirectTo" value="/carrito" />
+      <input type="hidden" name="authRedirectTo" value={authRedirectTo} />
 
       {showSizeSelector ? (
         <div>
@@ -95,12 +156,11 @@ export default function StoreProductPurchaseForm({
         />
       </div>
 
-      <button
-        type="submit"
-        className="retro-card-action"
-      >
-        Anadir al carrito
-      </button>
+      <SubmitButton />
+
+      {state.status === "auth_required" ? (
+        <p className="text-xs text-zinc-600">Abriendo login...</p>
+      ) : null}
     </form>
   );
 }

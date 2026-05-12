@@ -47,8 +47,8 @@ const SEARCH_PAGES: SearchPageEntry[] = [
   {
     id: "media",
     title: "Media",
-    href: "/media",
-    description: "Seccion multimedia con fotos y videos.",
+    href: "/media/photos",
+    description: "Seccion multimedia con acceso a fotos y videos.",
     keywords: ["media", "fotos", "videos", "galeria"],
   },
   {
@@ -151,4 +151,3 @@ export function searchSitePages(rawQuery: string, limit: number): SearchPageResu
       description: entry.description,
     }));
 }
-

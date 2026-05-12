@@ -34,7 +34,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       title="Crea tu cuenta Sugarbay"
       description="Registrate para comprar en tienda, guardar tu carrito y completar checkout."
     >
-      <section className="mx-auto w-full max-w-lg sb-window rounded-2xl p-6">
+      <section className="mx-auto w-full max-w-2xl sb-window rounded-2xl p-6">
         <RegisterForm redirectTo={redirectTo} />
         <p className="mt-4 text-sm text-zinc-600">
           Ya tienes cuenta?{" "}

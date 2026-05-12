@@ -3,10 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import VideoCollectionViewer from "@/components/media/video-collection-viewer";
+import EmptyState from "@/components/ui/empty-state";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
 import { getVideoDetailBySlug } from "@/lib/repositories/media";
-import { formatDate } from "@/lib/utils";
 
 type VideoDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -26,16 +26,33 @@ export async function generateMetadata({
   }
 
   return {
-    title: `Video: ${detail.title}`,
+    title:
+      detail.kind === "collection"
+        ? `Videos: ${detail.title}`
+        : `Video: ${detail.title}`,
     description:
       detail.description ?? "Detalle de coleccion o video oficial de Sugarbay.",
   };
 }
 
+function formatDate(dateIso: string | null): string {
+  if (!dateIso) return "No disponible";
+
+  return new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(dateIso));
+}
+
 function formatDuration(seconds: number | null): string {
-  if (!seconds || !Number.isFinite(seconds) || seconds <= 0) return "No disponible";
+  if (!seconds || !Number.isFinite(seconds) || seconds <= 0) {
+    return "No disponible";
+  }
+
   const minutes = Math.floor(seconds / 60);
   const remaining = seconds % 60;
+
   return `${minutes}:${String(remaining).padStart(2, "0")}`;
 }
 
@@ -61,7 +78,9 @@ function RetroVideoIcon() {
   );
 }
 
-export default async function MediaVideoDetailPage({ params }: VideoDetailPageProps) {
+export default async function MediaVideoDetailPage({
+  params,
+}: VideoDetailPageProps) {
   const { slug } = await params;
   const detail = await getVideoDetailBySlug(slug);
 
@@ -69,14 +88,37 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
     notFound();
   }
 
+  const detailDescription =
+    detail.description ??
+    (detail.kind === "collection"
+      ? "Coleccion de videos oficiales de Sugarbay."
+      : "Video oficial de Sugarbay.");
+
   if (detail.kind === "collection") {
     return (
       <PageShell
         eyebrow="Media / Videos"
         title={detail.title}
-        description={detail.description ?? "Coleccion de videos oficiales de Sugarbay."}
+        description={detailDescription}
       >
-        <VideoCollectionViewer videos={detail.videos} />
+        <div className="flex flex-wrap gap-2">
+          <Link href="/media/videos" className="retro-pixel-back-link">
+            <span aria-hidden="true" className="retro-pixel-back-arrow">
+              ◀
+            </span>
+            <span>Volver a videos</span>
+          </Link>
+        </div>
+
+        {detail.videos.length > 0 ? (
+          <VideoCollectionViewer videos={detail.videos} />
+        ) : (
+          <EmptyState
+            title="Esta coleccion no tiene videos publicados"
+            description="Publica videos en esta coleccion para mostrar su detalle."
+          />
+        )}
+
         <IconNavigationLink href="/media/videos" label="Videos" />
       </PageShell>
     );
@@ -86,10 +128,16 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
     <PageShell
       eyebrow="Media / Videos"
       title={detail.title}
-      description={detail.description ?? "Video oficial de Sugarbay."}
+      description={detailDescription}
     >
-
       <div className="retro-video-detail-toolbar">
+        <Link href="/media/videos" className="retro-pixel-back-link">
+          <span aria-hidden="true" className="retro-pixel-back-arrow">
+            ◀
+          </span>
+          <span>Volver a videos</span>
+        </Link>
+
         {detail.collection ? (
           <Link
             href={`/media/videos/${detail.collection.slug}`}
@@ -102,6 +150,7 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
 
       <article className="retro-concert-card w-full overflow-hidden">
         <div className="retro-concert-header">Video unico</div>
+
         <div className="retro-concert-body">
           <div className="retro-concert-meta-item !p-0 overflow-hidden">
             <div className="relative bg-black pt-[56.25%]">
@@ -147,11 +196,14 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
 
           {detail.description ? (
             <div className="retro-concert-copy">
-              <p className="retro-concert-description">{detail.description}</p>
+              <p className="retro-concert-description">
+                {detail.description}
+              </p>
             </div>
           ) : null}
         </div>
       </article>
+
       <IconNavigationLink href="/media/videos" label="Videos" />
     </PageShell>
   );

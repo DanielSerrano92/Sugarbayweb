@@ -35,7 +35,7 @@ export const mainNavigation: NavItem[] = [
   },
   {
     label: "Media",
-    href: "/media",
+    href: "/media/photos",
     children: [
       { label: "Fotos", href: "/media/photos" },
       { label: "Videos", href: "/media/videos" },

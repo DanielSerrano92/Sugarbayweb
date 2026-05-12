@@ -1,4 +1,7 @@
-import type { ConcertContinent } from "@/lib/concerts/types";
+import type {
+  ConcertContinent,
+  ConcertCountryOption,
+} from "@/lib/concerts/types";
 
 export const continentOptions: Array<{
   value: ConcertContinent;
@@ -19,68 +22,85 @@ type CountryMeta = {
   continent: Exclude<ConcertContinent, "all">;
 };
 
-const countryDirectory: Record<string, CountryMeta> = {
-  ES: { label: "Espana", continent: "europe" },
-  SPAIN: { label: "Espana", continent: "europe" },
-  ESPANA: { label: "Espana", continent: "europe" },
-  FR: { label: "Francia", continent: "europe" },
-  FRANCE: { label: "Francia", continent: "europe" },
-  PT: { label: "Portugal", continent: "europe" },
-  PORTUGAL: { label: "Portugal", continent: "europe" },
-  IT: { label: "Italia", continent: "europe" },
-  ITALY: { label: "Italia", continent: "europe" },
-  DE: { label: "Alemania", continent: "europe" },
-  GERMANY: { label: "Alemania", continent: "europe" },
-  GB: { label: "Reino Unido", continent: "europe" },
-  UK: { label: "Reino Unido", continent: "europe" },
-  UNITEDKINGDOM: { label: "Reino Unido", continent: "europe" },
-  IE: { label: "Irlanda", continent: "europe" },
-  IRELAND: { label: "Irlanda", continent: "europe" },
-  CH: { label: "Suiza", continent: "europe" },
-  SWITZERLAND: { label: "Suiza", continent: "europe" },
-  NL: { label: "Paises Bajos", continent: "europe" },
-  NETHERLANDS: { label: "Paises Bajos", continent: "europe" },
-  BE: { label: "Belgica", continent: "europe" },
-  BELGIUM: { label: "Belgica", continent: "europe" },
-  NO: { label: "Noruega", continent: "europe" },
-  NORWAY: { label: "Noruega", continent: "europe" },
-  SE: { label: "Suecia", continent: "europe" },
-  SWEDEN: { label: "Suecia", continent: "europe" },
-  DK: { label: "Dinamarca", continent: "europe" },
-  DENMARK: { label: "Dinamarca", continent: "europe" },
-  US: { label: "Estados Unidos", continent: "north-america" },
-  USA: { label: "Estados Unidos", continent: "north-america" },
-  UNITEDSTATES: { label: "Estados Unidos", continent: "north-america" },
-  CA: { label: "Canada", continent: "north-america" },
-  CANADA: { label: "Canada", continent: "north-america" },
-  MX: { label: "Mexico", continent: "north-america" },
-  MEXICO: { label: "Mexico", continent: "north-america" },
-  BR: { label: "Brasil", continent: "south-america" },
-  BRAZIL: { label: "Brasil", continent: "south-america" },
-  AR: { label: "Argentina", continent: "south-america" },
-  ARGENTINA: { label: "Argentina", continent: "south-america" },
-  CL: { label: "Chile", continent: "south-america" },
-  CHILE: { label: "Chile", continent: "south-america" },
-  CO: { label: "Colombia", continent: "south-america" },
-  COLOMBIA: { label: "Colombia", continent: "south-america" },
-  PE: { label: "Peru", continent: "south-america" },
-  PERU: { label: "Peru", continent: "south-america" },
-  JP: { label: "Japon", continent: "asia" },
-  JAPAN: { label: "Japon", continent: "asia" },
-  KR: { label: "Corea del Sur", continent: "asia" },
-  SOUTHKOREA: { label: "Corea del Sur", continent: "asia" },
-  CN: { label: "China", continent: "asia" },
-  CHINA: { label: "China", continent: "asia" },
-  SG: { label: "Singapur", continent: "asia" },
-  SINGAPORE: { label: "Singapur", continent: "asia" },
-  AU: { label: "Australia", continent: "oceania" },
-  AUSTRALIA: { label: "Australia", continent: "oceania" },
-  NZ: { label: "Nueva Zelanda", continent: "oceania" },
-  NEWZEALAND: { label: "Nueva Zelanda", continent: "oceania" },
-  ZA: { label: "Sudafrica", continent: "africa" },
-  SOUTHAFRICA: { label: "Sudafrica", continent: "africa" },
-  MA: { label: "Marruecos", continent: "africa" },
-  MOROCCO: { label: "Marruecos", continent: "africa" },
+type ListedContinent = Exclude<ConcertContinent, "all" | "other">;
+
+export const COUNTRIES_BY_CONTINENT: Record<
+  ListedContinent,
+  ConcertCountryOption[]
+> = {
+  europe: [
+    { code: "ES", label: "Espana", continent: "europe" },
+    { code: "FR", label: "Francia", continent: "europe" },
+    { code: "DE", label: "Alemania", continent: "europe" },
+    { code: "GB", label: "Reino Unido", continent: "europe" },
+    { code: "IT", label: "Italia", continent: "europe" },
+    { code: "PT", label: "Portugal", continent: "europe" },
+    { code: "NL", label: "Paises Bajos", continent: "europe" },
+    { code: "BE", label: "Belgica", continent: "europe" },
+    { code: "IE", label: "Irlanda", continent: "europe" },
+    { code: "SE", label: "Suecia", continent: "europe" },
+  ],
+  "north-america": [
+    { code: "US", label: "Estados Unidos", continent: "north-america" },
+    { code: "CA", label: "Canada", continent: "north-america" },
+    { code: "MX", label: "Mexico", continent: "north-america" },
+  ],
+  "south-america": [
+    { code: "AR", label: "Argentina", continent: "south-america" },
+    { code: "CL", label: "Chile", continent: "south-america" },
+    { code: "CO", label: "Colombia", continent: "south-america" },
+    { code: "BR", label: "Brasil", continent: "south-america" },
+    { code: "PE", label: "Peru", continent: "south-america" },
+  ],
+  asia: [
+    { code: "JP", label: "Japon", continent: "asia" },
+    { code: "KR", label: "Corea del Sur", continent: "asia" },
+    { code: "CN", label: "China", continent: "asia" },
+    { code: "IN", label: "India", continent: "asia" },
+    { code: "TH", label: "Tailandia", continent: "asia" },
+    { code: "SG", label: "Singapur", continent: "asia" },
+  ],
+  oceania: [
+    { code: "AU", label: "Australia", continent: "oceania" },
+    { code: "NZ", label: "Nueva Zelanda", continent: "oceania" },
+  ],
+  africa: [
+    { code: "ZA", label: "Sudafrica", continent: "africa" },
+    { code: "MA", label: "Marruecos", continent: "africa" },
+    { code: "EG", label: "Egipto", continent: "africa" },
+  ],
+};
+
+const countryAliases: Record<string, string[]> = {
+  AR: ["ARGENTINA"],
+  AU: ["AUSTRALIA"],
+  BE: ["BELGIUM", "BELGICA"],
+  BR: ["BRAZIL", "BRASIL"],
+  CA: ["CANADA"],
+  CL: ["CHILE"],
+  CN: ["CHINA"],
+  CO: ["COLOMBIA"],
+  DE: ["GERMANY", "ALEMANIA"],
+  EG: ["EGYPT", "EGIPTO"],
+  ES: ["SPAIN", "ESPANA"],
+  FR: ["FRANCE", "FRANCIA"],
+  GB: ["UK", "UNITED KINGDOM", "UNITEDKINGDOM", "REINO UNIDO", "REINOUNIDO"],
+  IE: ["IRELAND", "IRLANDA"],
+  IN: ["INDIA"],
+  IT: ["ITALY", "ITALIA"],
+  JP: ["JAPAN", "JAPON"],
+  KR: ["SOUTH KOREA", "SOUTHKOREA", "COREA DEL SUR", "COREADELSUR"],
+  MA: ["MOROCCO", "MARRUECOS"],
+  MX: ["MEXICO"],
+  NL: ["NETHERLANDS", "PAISES BAJOS", "PAISESBAJOS"],
+  NZ: ["NEW ZEALAND", "NEWZEALAND", "NUEVA ZELANDA", "NUEVAZELANDA"],
+  PE: ["PERU"],
+  PT: ["PORTUGAL"],
+  SE: ["SWEDEN", "SUECIA"],
+  SG: ["SINGAPORE", "SINGAPUR"],
+  TH: ["THAILAND", "TAILANDIA"],
+  US: ["USA", "UNITED STATES", "UNITEDSTATES", "ESTADOS UNIDOS", "ESTADOSUNIDOS"],
+  ZA: ["SOUTH AFRICA", "SOUTHAFRICA", "SUDAFRICA"],
 };
 
 function normalizeCountryKey(value: string): string {
@@ -90,6 +110,54 @@ function normalizeCountryKey(value: string): string {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^A-Z0-9]/g, "");
+}
+
+function getAllConcertCountries(): ConcertCountryOption[] {
+  return Object.values(COUNTRIES_BY_CONTINENT).flat();
+}
+
+function buildCountryDirectory(): Record<string, CountryMeta> {
+  const directory: Record<string, CountryMeta> = {};
+
+  for (const country of getAllConcertCountries()) {
+    const meta: CountryMeta = {
+      label: country.label,
+      continent: country.continent,
+    };
+
+    directory[normalizeCountryKey(country.code)] = meta;
+
+    for (const alias of countryAliases[country.code] ?? []) {
+      directory[normalizeCountryKey(alias)] = meta;
+    }
+  }
+
+  return directory;
+}
+
+const countryDirectory = buildCountryDirectory();
+
+export function getCountriesForContinent(
+  continent: ConcertContinent,
+): ConcertCountryOption[] {
+  if (continent === "all") {
+    return getAllConcertCountries();
+  }
+
+  if (continent === "other") {
+    return [];
+  }
+
+  return COUNTRIES_BY_CONTINENT[continent];
+}
+
+export function isCountryInContinent(
+  countryCode: string,
+  continent: ConcertContinent,
+): boolean {
+  return getCountriesForContinent(continent).some(
+    (country) => country.code === countryCode,
+  );
 }
 
 export function getCountryMeta(rawCountry: string): CountryMeta {

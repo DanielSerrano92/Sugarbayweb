@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
+import { dispatchAuthModalOpen } from "@/lib/auth/events";
 import { removeCartItemAction } from "@/lib/cart/actions";
 import { resolveImageUrl } from "@/lib/services/imagekit";
 import { formatCurrency } from "@/lib/utils";
@@ -143,13 +144,19 @@ export default function CartDrawer({
               >
                 Volver
               </button>
-              <Link
-                href="/login?redirect=/checkout"
-                onClick={onClose}
-                className="win-button cart-modal-action-btn cart-modal-login-btn inline-flex w-full items-center justify-center"
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  dispatchAuthModalOpen({
+                    mode: "login",
+                    redirectTo: "/checkout",
+                  });
+                }}
+                className="sb-btn-primary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold"
               >
                 Login
-              </Link>
+              </button>
             </div>
           </div>
         ) : (

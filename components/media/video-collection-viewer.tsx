@@ -32,20 +32,29 @@ function RetroVideoIcon() {
 }
 
 function formatDuration(seconds: number | null): string {
-  if (!seconds || !Number.isFinite(seconds) || seconds <= 0) return "No disponible";
+  if (!seconds || !Number.isFinite(seconds) || seconds <= 0) {
+    return "No disponible";
+  }
+
   const minutes = Math.floor(seconds / 60);
   const remaining = seconds % 60;
+
   return `${minutes}:${String(remaining).padStart(2, "0")}`;
 }
 
-export default function VideoCollectionViewer({ videos }: VideoCollectionViewerProps) {
-  const [selectedSlug, setSelectedSlug] = useState(videos[0]?.slug ?? null);
+export default function VideoCollectionViewer({
+  videos,
+}: VideoCollectionViewerProps) {
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(
+    videos[0]?.slug ?? null,
+  );
+
   const selectedVideo = useMemo(
-    () => videos.find((video) => video.slug === selectedSlug) ?? videos[0] ?? null,
+    () => videos.find((video) => video.slug === selectedSlug) ?? videos[0],
     [selectedSlug, videos],
   );
 
-  if (!selectedVideo) return null;
+  if (videos.length === 0 || !selectedVideo) return null;
 
   return (
     <section className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr] lg:gap-5">
@@ -53,6 +62,7 @@ export default function VideoCollectionViewer({ videos }: VideoCollectionViewerP
         <div className="retro-concert-header retro-video-collection-header">
           Videos de la coleccion
         </div>
+
         <div className="retro-concert-body">
           <div className="retro-music-modal-tracklist">
             {videos.map((video) => (
@@ -61,7 +71,9 @@ export default function VideoCollectionViewer({ videos }: VideoCollectionViewerP
                 type="button"
                 onClick={() => setSelectedSlug(video.slug)}
                 className={`retro-music-modal-track ${
-                  video.slug === selectedVideo.slug ? "retro-video-track-active" : ""
+                  video.slug === selectedVideo.slug
+                    ? "retro-video-track-active"
+                    : ""
                 }`}
               >
                 <span className="retro-video-track-title">{video.title}</span>
@@ -80,14 +92,23 @@ export default function VideoCollectionViewer({ videos }: VideoCollectionViewerP
 
       <article className="retro-concert-card w-full overflow-hidden">
         <div className="retro-concert-header">Reproductor</div>
+
         <div className="retro-concert-body">
           <div className="retro-concert-meta-item !p-0 overflow-hidden">
-            <div className="relative bg-black pt-[56.25%]">
+            <div
+              className={`relative bg-black ${
+                selectedVideo.type === "short"
+                  ? "mx-auto aspect-[9/16] w-full max-w-[360px]"
+                  : "pt-[56.25%]"
+              }`}
+            >
               <iframe
                 src={selectedVideo.embedUrl}
                 title={selectedVideo.title}
                 className="absolute inset-0 h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
             </div>
@@ -121,7 +142,9 @@ export default function VideoCollectionViewer({ videos }: VideoCollectionViewerP
 
           {selectedVideo.description ? (
             <div className="retro-concert-copy">
-              <p className="retro-concert-description">{selectedVideo.description}</p>
+              <p className="retro-concert-description">
+                {selectedVideo.description}
+              </p>
             </div>
           ) : null}
         </div>

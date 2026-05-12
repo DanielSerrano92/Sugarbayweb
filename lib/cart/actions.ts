@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-import { requireSession } from "@/lib/auth/dal";
+import { getSessionUser, requireSession } from "@/lib/auth/dal";
 import {
   addItemToCart,
   clearCartForUser,
@@ -17,6 +17,7 @@ const addToCartSchema = z.object({
   productVariantId: z.string().min(1).optional(),
   quantity: z.coerce.number().int().min(1).max(20).default(1),
   redirectTo: z.string().optional(),
+  authRedirectTo: z.string().optional(),
 });
 
 const updateQuantitySchema = z.object({
@@ -41,18 +42,42 @@ function revalidateCartSurfaces() {
   revalidatePath("/checkout");
 }
 
-export async function addToCartAction(formData: FormData) {
+export type AddToCartActionState = {
+  status?: "idle" | "success" | "auth_required" | "error";
+  message?: string;
+  redirectTo?: string;
+};
+
+export async function addToCartAction(
+  _previousState: AddToCartActionState,
+  formData: FormData,
+): Promise<AddToCartActionState> {
   const parsed = addToCartSchema.safeParse({
     productId: formData.get("productId"),
     productVariantId: formData.get("productVariantId") || undefined,
     quantity: formData.get("quantity"),
     redirectTo: formData.get("redirectTo"),
+    authRedirectTo: formData.get("authRedirectTo"),
   });
 
-  if (!parsed.success) return;
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: "No se pudo anadir el producto al carrito.",
+    };
+  }
 
   const nextPath = normalizeRedirect(parsed.data.redirectTo);
-  const session = await requireSession(nextPath ?? "/carrito");
+  const authRedirectTo = normalizeRedirect(parsed.data.authRedirectTo);
+  const session = await getSessionUser();
+
+  if (!session) {
+    return {
+      status: "auth_required",
+      message: "Inicia sesion para anadir productos al carrito.",
+      redirectTo: authRedirectTo ?? nextPath ?? "/store",
+    };
+  }
 
   await addItemToCart({
     userId: session.userId,
@@ -63,6 +88,11 @@ export async function addToCartAction(formData: FormData) {
   revalidateCartSurfaces();
 
   if (nextPath) redirect(nextPath);
+
+  return {
+    status: "success",
+    message: "Producto anadido al carrito.",
+  };
 }
 
 export async function updateCartItemAction(formData: FormData) {

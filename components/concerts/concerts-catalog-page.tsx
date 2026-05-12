@@ -44,6 +44,12 @@ export default async function ConcertsCatalogPage({
   const params = await searchParams;
   const pageMeta = resolvePageMeta(period);
   const catalog = await getConcertCatalog(period, params);
+  const filtersKey = [
+    catalog.filters.from ?? "",
+    catalog.filters.to ?? "",
+    catalog.filters.continent,
+    catalog.filters.country ?? "",
+  ].join("-");
   const navigationLink =
     period === "upcoming"
       ? { href: "/concerts/past", label: "Anteriores" }
@@ -64,9 +70,9 @@ export default async function ConcertsCatalogPage({
         <div className="mb-5 flex justify-end">
           <div className="concert-top-controls concert-top-controls-right">
             <ConcertFilters
+              key={filtersKey}
               basePath={pageMeta.basePath}
               filters={catalog.filters}
-              availableCountries={catalog.availableCountries}
               mode="icon-modal"
             />
             <ConcertPagination

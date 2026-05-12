@@ -2,12 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import AuthModalPanel, { type AuthMode } from "@/components/auth/auth-modal-panel";
 import CartDrawer from "@/components/cart/cart-drawer";
 import GlobalSearch from "@/components/layout/global-search";
 import { logoutAction } from "@/lib/auth/actions";
+import {
+  AUTH_MODAL_OPEN_EVENT,
+  type AuthModalOpenEventDetail,
+} from "@/lib/auth/events";
 import { CART_CLEARED_EVENT } from "@/lib/cart/events";
 import { mainNavigation, type NavItem } from "@/lib/services/navigation";
 
@@ -87,7 +91,7 @@ const profileMenuItemClass =
   "win-button sb-header-profile-menu-item";
 
 const LEFT_NAVIGATION_HREFS = ["/concerts", "/band/news", "/musica"];
-const RIGHT_NAVIGATION_HREFS = ["/media", "/fanclub", "/store"];
+const RIGHT_NAVIGATION_HREFS = ["/media/photos", "/fanclub", "/store"];
 const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
 
 function sortNavigationByOrder(items: NavItem[], order: string[]): NavItem[] {
@@ -122,6 +126,7 @@ export default function HeaderClient({
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("login");
+  const [authRedirectTo, setAuthRedirectTo] = useState<string | undefined>();
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const profileMenuId = "header-profile-menu";
@@ -174,10 +179,33 @@ export default function HeaderClient({
     return () => window.removeEventListener("pointerdown", onPointerDown);
   }, [profileMenuOpen]);
 
-  function openAuthModal(mode: AuthMode) {
+  const resolveCurrentPath = useCallback((): string => {
+    if (typeof window === "undefined") return "/";
+
+    return `${window.location.pathname}${window.location.search}`;
+  }, []);
+
+  const openAuthModal = useCallback((mode: AuthMode, redirectTo?: string) => {
     setAuthMode(mode);
+    setAuthRedirectTo(redirectTo ?? resolveCurrentPath());
     setAuthModalOpen(true);
-  }
+  }, [resolveCurrentPath]);
+
+  useEffect(() => {
+    const handleAuthModalOpen = (event: Event) => {
+      const customEvent = event as CustomEvent<AuthModalOpenEventDetail>;
+      const requestedMode = customEvent.detail?.mode ?? "login";
+      const requestedRedirect = customEvent.detail?.redirectTo;
+
+      setProfileMenuOpen(false);
+      setCartDrawerOpen(false);
+      openAuthModal(requestedMode, requestedRedirect);
+    };
+
+    window.addEventListener(AUTH_MODAL_OPEN_EVENT, handleAuthModalOpen);
+    return () =>
+      window.removeEventListener(AUTH_MODAL_OPEN_EVENT, handleAuthModalOpen);
+  }, [openAuthModal]);
 
   function renderDesktopNavItem(item: NavItem) {
     const isBandTab = item.href === "/band/news";
@@ -348,8 +376,12 @@ export default function HeaderClient({
         <AuthModalPanel
           open={authModalOpen}
           mode={authMode}
+          redirectTo={authRedirectTo}
           onModeChange={setAuthMode}
-          onClose={() => setAuthModalOpen(false)}
+          onClose={() => {
+            setAuthModalOpen(false);
+            setAuthRedirectTo(undefined);
+          }}
         />
       </header>
 

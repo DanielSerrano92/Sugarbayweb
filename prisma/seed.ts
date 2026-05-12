@@ -322,7 +322,7 @@ async function main() {
         city: "Madrid",
         region: "Madrid",
         country: "ES",
-        ticketUrl: "https://tickets.sugarbaymusic.com/madrid-2026",
+        ticketUrl: "https://www.ticketmaster.es/search?q=Sugarbay",
         externalEventUrl: "https://www.salariviera.com",
         description:
           "Concierto principal del tramo espanol de la gira Summer Lights 2026.",
@@ -459,7 +459,7 @@ async function main() {
 
   await prisma.photoAlbum.create({
     data: {
-      title: "Sugarbay Sunset Session Barcelona - Galeria",
+      title: "Sugarbay Sunset Session Barcelona",
       slug: "sugarbay-sunset-session-barcelona-gallery",
       description:
         "Galeria oficial del concierto Sunset Session con una seleccion de tomas de escenario.",
@@ -481,6 +481,175 @@ async function main() {
         ],
       },
     },
+  });
+
+  await prisma.videoCollection.createMany({
+    data: [
+      {
+        title: "Mitch Bucano and Johnny Funk",
+        slug: "mitch-bucano-and-johnny-funk",
+        description:
+          "Los mejores policias de Crime City tambien patrullan la pista de baile a ritmo de disco, funk y hip hop. Un homenaje musical al mejor cine policiaco de los 80.",
+        coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/Tarjetas/cops.png",
+        isPublished: true,
+        sortOrder: 1,
+      },
+      {
+        title: "Miscelanea",
+        slug: "miscelanea",
+        description:
+          "Videoclips que exploran todas las facetas de Sugarbay: funk, hip hop, disco y nuevos sonidos por descubrir.",
+        coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/Tarjetas/miscelanea.png",
+        isPublished: true,
+        sortOrder: 2,
+      },
+      {
+        title: "Colaboraciones",
+        slug: "colaboraciones",
+        description:
+          "Colaboraciones de Sugarbay con otras figuras de la escena musical, fusionando estilos para crear una experiencia sonora unica.",
+        coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/Tarjetas/colabs.png",
+        isPublished: true,
+        sortOrder: 3,
+      },
+      {
+        title: "Social",
+        slug: "social",
+        description:
+          "Clips cortos, momentos sueltos y pequenas dosis de Sugarbay para redes sociales. Videos rapidos para seguir el ritmo de la banda entre cancion y cancion.",
+        coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/Tarjetas/social.png",
+        isPublished: true,
+        sortOrder: 4,
+      },
+    ],
+  });
+
+  const videoCollections = await prisma.videoCollection.findMany({
+    where: {
+      slug: {
+        in: [
+          "mitch-bucano-and-johnny-funk",
+          "miscelanea",
+          "colaboraciones",
+          "social",
+        ],
+      },
+    },
+    select: {
+      id: true,
+      slug: true,
+    },
+  });
+
+  const collectionBySlug = new Map(videoCollections.map((item) => [item.slug, item.id]));
+
+  await prisma.videoItem.createMany({
+    data: [
+      {
+        videoCollectionId: collectionBySlug.get("mitch-bucano-and-johnny-funk")!,
+        title: "Video 1",
+        slug: "mitch-bucano-and-johnny-funk-video-1",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=F6yjN9jayLE",
+        sortOrder: 1,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("mitch-bucano-and-johnny-funk")!,
+        title: "Video 2",
+        slug: "mitch-bucano-and-johnny-funk-video-2",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=gF6VhzT3DxQ",
+        sortOrder: 2,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("mitch-bucano-and-johnny-funk")!,
+        title: "Video 3",
+        slug: "mitch-bucano-and-johnny-funk-video-3",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=rVa1pYE8W2g",
+        sortOrder: 3,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("miscelanea")!,
+        title: "Video 1",
+        slug: "miscelanea-video-1",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=0AulJXgZSQM",
+        sortOrder: 1,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("miscelanea")!,
+        title: "Video 2",
+        slug: "miscelanea-video-2",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=lSODxFDdUow",
+        sortOrder: 2,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("miscelanea")!,
+        title: "Video 3",
+        slug: "miscelanea-video-3",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=YdUJrRBB3F8",
+        sortOrder: 3,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("miscelanea")!,
+        title: "Video 4",
+        slug: "miscelanea-video-4",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=-dHxKmd00CY",
+        sortOrder: 4,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("miscelanea")!,
+        title: "Video 5",
+        slug: "miscelanea-video-5",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=_tiiEzYHeGc",
+        sortOrder: 5,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("colaboraciones")!,
+        title: "Video 1",
+        slug: "colaboraciones-video-1",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=tnNrKcXmKM8",
+        sortOrder: 1,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("colaboraciones")!,
+        title: "Video 2",
+        slug: "colaboraciones-video-2",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=1Db7ZAQC7LQ",
+        sortOrder: 2,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("social")!,
+        title: "Video 1",
+        slug: "social-video-1",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/watch?v=RPKINeZww8c",
+        sortOrder: 1,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("social")!,
+        title: "YouTube Short 1",
+        slug: "social-short-1",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/shorts/TneUdef23Qc",
+        sortOrder: 2,
+      },
+      {
+        videoCollectionId: collectionBySlug.get("social")!,
+        title: "YouTube Short 2",
+        slug: "social-short-2",
+        platform: "YOUTUBE",
+        videoUrl: "https://www.youtube.com/shorts/NAzl5nh5nkg",
+        sortOrder: 3,
+      },
+    ],
   });
 
   console.log("Seed completado con datos demo minimos y funcionales.");

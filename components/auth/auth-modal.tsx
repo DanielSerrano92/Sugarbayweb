@@ -25,16 +25,26 @@ export default function AuthModal({
 
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const focusableElements = Array.from(
-      dialogRef.current?.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      ) ?? [],
-    );
+
+    const getFocusableElements = () =>
+      Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+
+    const hasNestedModal = () =>
+      Boolean(document.querySelector("[data-auth-nested-modal='true']"));
+
+    const focusableElements = getFocusableElements();
     focusableElements[0]?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
+      if (hasNestedModal()) return;
+
       if (event.key === "Escape") onClose();
 
+      const focusableElements = getFocusableElements();
       if (event.key === "Tab" && focusableElements.length > 0) {
         const first = focusableElements[0];
         const last = focusableElements[focusableElements.length - 1];

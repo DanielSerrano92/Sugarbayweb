@@ -53,7 +53,10 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${retroPixelFont.variable} ${byteBounceFont.variable} ${retronoidFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-bg-canvas text-zinc-900">
+      <body
+        className="min-h-full bg-bg-canvas text-zinc-900"
+        suppressHydrationWarning
+      >
         <div className="relative flex min-h-full flex-col">
           <SiteHeader />
           <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 lg:px-8">
