@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   description: "Finaliza tu compra con envio, facturacion y pago seguro.",
 };
 
+const CHECKOUT_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/checkout.png?tr=w-2400,h-760,cm-extract,fo-top";
+
 type CheckoutPageProps = {
   searchParams: Promise<{ payment?: string | string[] }>;
 };
@@ -39,9 +42,10 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       eyebrow="Checkout"
       title="Finalizar compra"
       description="Valida envio y facturacion antes de pasar al pago seguro con Stripe."
+      headerImageSrc={CHECKOUT_PAGE_HEADER_IMAGE_SRC}
     >
       {paymentErrorMessage ? (
-        <p className="sb-panel-soft rounded-2xl border border-amber-200 px-4 py-3 text-sm text-amber-900">
+        <p className="checkout-retro-alert checkout-retro-alert-warn text-sm">
           {paymentErrorMessage}
         </p>
       ) : null}

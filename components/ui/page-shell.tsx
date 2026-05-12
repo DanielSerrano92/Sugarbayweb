@@ -7,6 +7,7 @@ type PageShellProps = {
   description?: string;
   actions?: ReactNode;
   headerImageSrc?: string;
+  headerOverlay?: ReactNode;
   children: ReactNode;
   contentClassName?: string;
   sectionClassName?: string;
@@ -22,6 +23,7 @@ export default function PageShell({
   description,
   actions,
   headerImageSrc,
+  headerOverlay,
   children,
   contentClassName,
   sectionClassName,
@@ -60,6 +62,9 @@ export default function PageShell({
           unoptimized
           className="page-header-img"
         />
+        {headerOverlay ? (
+          <div className="page-header-overlay">{headerOverlay}</div>
+        ) : null}
       </div>
       <h1 className="sr-only">{title}</h1>
       {eyebrow || description || actions ? (

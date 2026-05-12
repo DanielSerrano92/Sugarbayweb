@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description: "Revisa tus productos y prepara el checkout seguro.",
 };
 
+const CARRITO_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/carrito.png?tr=w-2400,h-760,cm-extract,fo-top";
+
 export default async function CarritoPage() {
   const session = await requireSession("/carrito");
   const cart = await getCartForUser(session.userId);
@@ -23,6 +26,7 @@ export default async function CarritoPage() {
       eyebrow="Carrito"
       title="Tu seleccion"
       description="Revisa cantidades, ajusta productos y contina al checkout seguro con Stripe."
+      headerImageSrc={CARRITO_PAGE_HEADER_IMAGE_SRC}
     >
       {cart.items.length === 0 ? (
         <EmptyState
@@ -31,42 +35,44 @@ export default async function CarritoPage() {
         />
       ) : (
         <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-          <div className="space-y-3">
+          <div className="space-y-4">
             {cart.items.map((item) => (
               <CartLineItem key={item.id} item={item} />
             ))}
           </div>
 
-          <aside className="sb-panel h-fit rounded-2xl p-5">
-            <h2 className="text-lg font-bold text-zinc-900">Resumen</h2>
-            <dl className="mt-3 space-y-2 text-sm">
-              <div className="flex justify-between gap-3">
-                <dt className="text-zinc-600">Productos</dt>
-                <dd className="font-medium text-zinc-900">{cart.totalItems}</dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-zinc-600">Subtotal</dt>
-                <dd className="text-base font-black text-zinc-900">
-                  {formatCurrency(cart.subtotal, cart.currency)}
-                </dd>
-              </div>
-            </dl>
+          <aside className="retro-concert-card h-fit min-h-0 overflow-hidden">
+            <div className="retro-concert-header">Resumen</div>
+            <div className="retro-concert-body">
+              <dl className="cart-modal-total-row space-y-2 text-sm">
+                <div className="flex justify-between gap-3">
+                  <dt className="cart-modal-total-label">Productos</dt>
+                  <dd className="cart-modal-total-value">{cart.totalItems}</dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="cart-modal-total-label">Subtotal</dt>
+                  <dd className="cart-modal-total-value text-base font-black">
+                    {formatCurrency(cart.subtotal, cart.currency)}
+                  </dd>
+                </div>
+              </dl>
 
-            <div className="mt-4 space-y-2">
-              <Link
-                href="/checkout"
-                className="sb-btn-primary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold"
-              >
-                Ir al checkout
-              </Link>
-              <form action={clearCartAction}>
-                <button
-                  type="submit"
-                  className="sb-btn-secondary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-medium text-zinc-200"
+              <div className="retro-card-actions retro-card-actions-upcoming">
+                <Link
+                  href="/checkout"
+                  className="retro-card-action"
                 >
-                  Vaciar carrito
-                </button>
-              </form>
+                  Ir al checkout
+                </Link>
+                <form action={clearCartAction} className="w-full">
+                  <button
+                    type="submit"
+                    className="retro-card-action"
+                  >
+                    Vaciar carrito
+                  </button>
+                </form>
+              </div>
             </div>
           </aside>
         </section>

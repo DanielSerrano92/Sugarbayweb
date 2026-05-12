@@ -311,12 +311,12 @@ export default function GlobalSearch({ className }: GlobalSearchProps) {
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-[60] flex items-start justify-center bg-black/70 px-4 py-12">
+        <div className="fixed inset-0 z-[60] flex items-start justify-center px-2 py-2 sm:items-center sm:px-4 sm:py-6">
           <button
             type="button"
             onClick={closeSearch}
             aria-label="Cerrar buscador"
-            className="absolute inset-0"
+            className="global-search-overlay absolute inset-0"
           />
 
           <section
@@ -324,127 +324,126 @@ export default function GlobalSearch({ className }: GlobalSearchProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="global-search-title"
-            className="sb-window relative z-10 w-full max-w-3xl overflow-hidden rounded-2xl p-0"
+            className="win-window global-search-window relative z-10 flex w-full max-w-4xl min-h-0 flex-col overflow-hidden p-0"
           >
-            <div className="sb-titlebar flex items-center justify-between gap-3 px-4 py-2">
-              <h2 id="global-search-title" className="text-sm font-bold">
+            <div className="win-titlebar flex items-center justify-between gap-3">
+              <h2 id="global-search-title" className="min-w-0 truncate pr-2">
                 Busqueda rapida
               </h2>
               <button
                 type="button"
                 onClick={closeSearch}
-                className="sb-btn-secondary px-3 py-1.5 text-xs font-semibold text-white"
+                aria-label="Cerrar busqueda rapida"
+                className="win-button retro-win-close"
               >
-                Cerrar
+                X
               </button>
             </div>
 
-            <div className="px-4 py-4">
-              <div className="sb-panel-soft rounded-xl px-3 py-2">
-              <label htmlFor="global-search-input" className="sr-only">
-                Buscar paginas y productos
-              </label>
-              <input
-                ref={inputRef}
-                id="global-search-input"
-                role="combobox"
-                aria-controls="global-search-results"
-                aria-expanded={flattenedItems.length > 0}
-                aria-activedescendant={activeOptionId}
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                onKeyDown={handleInputKeyDown}
-                placeholder="Buscar paginas y productos..."
-                className="sb-input w-full border-0 bg-transparent px-0 py-0 text-sm"
-              />
+            <div className="global-search-modal-body flex min-h-0 flex-1 flex-col gap-3 overflow-x-hidden p-3 sm:p-4">
+              <div className="global-search-input-shell p-2">
+                <label htmlFor="global-search-input" className="sr-only">
+                  Buscar paginas y productos
+                </label>
+                <input
+                  ref={inputRef}
+                  id="global-search-input"
+                  role="combobox"
+                  aria-controls="global-search-results"
+                  aria-expanded={flattenedItems.length > 0}
+                  aria-activedescendant={activeOptionId}
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={handleInputKeyDown}
+                  placeholder="Buscar paginas y productos..."
+                  className="win-input global-search-input text-sm"
+                />
               </div>
-            </div>
 
-            <div className="space-y-3 px-4 pb-4">
-              {loading ? (
-                <p className="text-sm text-zinc-600">Buscando resultados...</p>
-              ) : error ? (
-                <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                  {error}
-                </p>
-              ) : flattenedItems.length === 0 ? (
-                <p className="sb-panel-soft rounded-xl px-3 py-2 text-sm text-zinc-600">
-                  No encontramos resultados rapidos para esta busqueda.
-                </p>
-              ) : (
-                <ul
-                  id="global-search-results"
-                  role="listbox"
-                  aria-label="Resultados rapidos"
-                  className="space-y-2"
-                >
-                  {flattenedItems.map((item, index) => {
-                    const isActive = index === normalizedActiveIndex;
+              <div className="global-search-results-frame min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1">
+                {loading ? (
+                  <p className="global-search-status">Buscando resultados...</p>
+                ) : error ? (
+                  <p className="global-search-error">
+                    {error}
+                  </p>
+                ) : flattenedItems.length === 0 ? (
+                  <p className="global-search-empty">
+                    No encontramos resultados rapidos para esta busqueda.
+                  </p>
+                ) : (
+                  <ul
+                    id="global-search-results"
+                    role="listbox"
+                    aria-label="Resultados rapidos"
+                    className="space-y-2"
+                  >
+                    {flattenedItems.map((item, index) => {
+                      const isActive = index === normalizedActiveIndex;
 
-                    return (
-                      <li key={item.key} role="presentation">
-                        <button
-                          id={`global-search-option-${index}`}
-                          role="option"
-                          aria-selected={isActive}
-                          type="button"
-                          onMouseEnter={() => setActiveIndex(index)}
-                          onClick={() => goToResult(item)}
-                          className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition ${
-                            isActive
-                              ? "border-emerald-500 bg-zinc-100"
-                              : "border-zinc-300 bg-zinc-50 hover:border-emerald-300 hover:bg-zinc-100"
-                          }`}
-                        >
-                          {item.type === "product" ? (
-                            <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-zinc-200">
-                              <Image
-                                src={resolveImageUrl(item.imageUrl)}
-                                alt={item.title}
-                                fill
-                                className="object-cover"
-                                sizes="40px"
-                              />
+                      return (
+                        <li key={item.key} role="presentation">
+                          <button
+                            id={`global-search-option-${index}`}
+                            role="option"
+                            aria-selected={isActive}
+                            type="button"
+                            onMouseEnter={() => setActiveIndex(index)}
+                            onClick={() => goToResult(item)}
+                            className={`global-search-result ${isActive ? "global-search-result-active" : ""}`}
+                          >
+                            {item.type === "product" ? (
+                              <div className="global-search-result-thumb relative h-11 w-11 shrink-0 overflow-hidden">
+                                <Image
+                                  src={resolveImageUrl(item.imageUrl)}
+                                  alt={item.title}
+                                  fill
+                                  className="object-cover object-center"
+                                  sizes="44px"
+                                />
+                              </div>
+                            ) : (
+                              <div className="global-search-page-icon">
+                                <SearchIcon />
+                              </div>
+                            )}
+
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-black uppercase tracking-[0.04em] text-[#16161a]">
+                                {item.title}
+                              </p>
+                              <p className="truncate text-xs text-[#2c2940]">{item.subtitle}</p>
                             </div>
-                          ) : (
-                            <div className="grid h-10 w-10 place-items-center rounded-lg border border-zinc-300 text-zinc-500">
-                              <SearchIcon />
+
+                            <div className="shrink-0 text-right">
+                              {item.price ? (
+                                <p className="text-xs font-bold text-[#1f2458]">{item.price}</p>
+                              ) : null}
+                              <p className="global-search-result-kind">
+                                {item.type === "page" ? "Pagina" : "Producto"}
+                              </p>
                             </div>
-                          )}
-
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold text-zinc-900">
-                              {item.title}
-                            </p>
-                            <p className="truncate text-xs text-zinc-500">{item.subtitle}</p>
-                          </div>
-
-                          <div className="text-right">
-                            {item.price ? (
-                              <p className="text-xs font-semibold text-zinc-700">{item.price}</p>
-                            ) : null}
-                            <p className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">
-                              {item.type === "page" ? "Pagina" : "Producto"}
-                            </p>
-                          </div>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
 
               {query.trim() ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    router.push(`/buscar?q=${encodeURIComponent(query.trim())}`);
-                    closeSearch();
-                  }}
-                  className="text-sm font-semibold text-emerald-600 hover:text-emerald-500"
-                >
-                  Ver resultados completos
-                </button>
+                <div className="global-search-actions">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      router.push(`/buscar?q=${encodeURIComponent(query.trim())}`);
+                      closeSearch();
+                    }}
+                    className="win-button global-search-view-all"
+                  >
+                    Ver resultados completos
+                  </button>
+                </div>
               ) : null}
             </div>
           </section>

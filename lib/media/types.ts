@@ -155,6 +155,15 @@ export type VideoCatalogResult = {
   pageSize: number;
 };
 
+export type HomeVideoBandItem = {
+  id: string;
+  slug: string;
+  title: string;
+  collectionTitle: string;
+  previewImageUrl: string | null;
+  publishedAtIso: string;
+};
+
 export type MediaOverviewStats = {
   photoAlbums: number;
   photoItems: number;

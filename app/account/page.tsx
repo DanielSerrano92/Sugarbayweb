@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: "Gestiona tus datos de perfil, carrito y accesos rapidos.",
 };
 
+const ACCOUNT_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/mi-cuenta.png?tr=w-2400,h-760,cm-extract,fo-top";
+
 export default async function AccountPage() {
   await requireSession("/account");
   const user = await getCurrentUser();
@@ -19,64 +22,75 @@ export default async function AccountPage() {
       eyebrow="Mi cuenta"
       title={`Hola, ${user?.firstName ?? "Fan"}`}
       description="Revisa tus datos de perfil y continua tu experiencia Sugarbay."
+      headerImageSrc={ACCOUNT_PAGE_HEADER_IMAGE_SRC}
     >
-      <section className="grid gap-4 md:grid-cols-2">
-        <article className="sb-panel rounded-2xl p-5">
-          <h2 className="text-lg font-bold text-zinc-900">Perfil</h2>
-          <dl className="mt-3 space-y-2 text-sm">
-            <div className="flex justify-between gap-3">
-              <dt className="text-zinc-500">Nombre</dt>
-              <dd className="font-medium text-zinc-900">
-                {user ? `${user.firstName} ${user.lastName}` : "-"}
-              </dd>
+      <section className="grid items-start gap-4 md:grid-cols-2">
+        <article className="retro-concert-card h-full min-h-0 overflow-hidden">
+          <div className="retro-concert-header">Perfil</div>
+          <div className="retro-concert-body">
+            <div className="retro-concert-title-block">
+              <h2 className="retro-concert-title">Datos de tu cuenta</h2>
             </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-zinc-500">Usuario</dt>
-              <dd className="font-medium text-zinc-900">
-                {user?.username ?? "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-zinc-500">Email</dt>
-              <dd className="font-medium text-zinc-900">{user?.email ?? "-"}</dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-zinc-500">Pais</dt>
-              <dd className="font-medium text-zinc-900">{user?.country ?? "-"}</dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-zinc-500">Nacimiento</dt>
-              <dd className="font-medium text-zinc-900">
-                {user ? formatDate(user.birthDate) : "-"}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-zinc-500">Miembro desde</dt>
-              <dd className="font-medium text-zinc-900">
-                {user ? formatDate(user.createdAt) : "-"}
-              </dd>
-            </div>
-          </dl>
+            <dl className="retro-concert-meta">
+              <div className="retro-concert-meta-item">
+                <dt className="retro-concert-meta-label">Nombre</dt>
+                <dd className="font-retro-ui break-words text-sm font-bold text-[#171717]">
+                  {user ? `${user.firstName} ${user.lastName}` : "-"}
+                </dd>
+              </div>
+              <div className="retro-concert-meta-item">
+                <dt className="retro-concert-meta-label">Usuario</dt>
+                <dd className="font-retro-ui break-words text-sm font-bold text-[#171717]">
+                  {user?.username ?? "-"}
+                </dd>
+              </div>
+              <div className="retro-concert-meta-item">
+                <dt className="retro-concert-meta-label">Email</dt>
+                <dd className="font-retro-ui break-words text-sm font-bold text-[#171717]">
+                  {user?.email ?? "-"}
+                </dd>
+              </div>
+              <div className="retro-concert-meta-item">
+                <dt className="retro-concert-meta-label">Pais</dt>
+                <dd className="font-retro-ui break-words text-sm font-bold text-[#171717]">
+                  {user?.country ?? "-"}
+                </dd>
+              </div>
+              <div className="retro-concert-meta-item">
+                <dt className="retro-concert-meta-label">Nacimiento</dt>
+                <dd className="font-retro-ui break-words text-sm font-bold text-[#171717]">
+                  {user ? formatDate(user.birthDate) : "-"}
+                </dd>
+              </div>
+              <div className="retro-concert-meta-item">
+                <dt className="retro-concert-meta-label">Miembro desde</dt>
+                <dd className="font-retro-ui break-words text-sm font-bold text-[#171717]">
+                  {user ? formatDate(user.createdAt) : "-"}
+                </dd>
+              </div>
+            </dl>
+          </div>
         </article>
 
-        <article className="sb-panel rounded-2xl p-5">
-          <h2 className="text-lg font-bold text-zinc-900">Acciones rapidas</h2>
-          <p className="mt-2 text-sm text-zinc-600">
-            Puedes continuar tu compra o explorar la tienda oficial.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Link
-              href="/carrito"
-              className="sb-btn-primary px-3 py-2 text-sm font-semibold"
-            >
-              Ir al carrito
-            </Link>
-            <Link
-              href="/store"
-              className="sb-btn-secondary px-3 py-2 text-sm font-semibold text-zinc-200"
-            >
-              Ver tienda
-            </Link>
+        <article className="retro-concert-card h-full min-h-0 overflow-hidden">
+          <div className="retro-concert-header">Panel rapido</div>
+          <div className="retro-concert-body">
+            <div className="retro-concert-title-block">
+              <h2 className="retro-concert-title">Acciones rapidas</h2>
+            </div>
+            <div className="retro-concert-copy">
+              <p className="retro-concert-description">
+                Puedes continuar tu compra o explorar la tienda oficial.
+              </p>
+            </div>
+            <div className="retro-card-actions retro-card-actions-upcoming">
+              <Link href="/carrito" className="retro-card-action">
+                Ir al carrito
+              </Link>
+              <Link href="/store" className="retro-card-action">
+                Ver tienda
+              </Link>
+            </div>
           </div>
         </article>
       </section>

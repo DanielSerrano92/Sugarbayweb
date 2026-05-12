@@ -2,6 +2,7 @@ import type { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { parsePhotoFilters, parseVideoFilters, toDateRange } from "@/lib/media/filters";
 import type {
+  HomeVideoBandItem,
   MediaOverviewStats,
   MediaPhotoQueryParams,
   MediaSortOption,
@@ -15,7 +16,11 @@ import type {
   VideoDetailResult,
   VideoEmbedItem,
 } from "@/lib/media/types";
-import { resolveVideoDurationSeconds, resolveVideoEmbedUrl } from "@/lib/media/video";
+import {
+  resolveVideoDurationSeconds,
+  resolveVideoEmbedUrl,
+  resolveVideoPreviewImageUrl,
+} from "@/lib/media/video";
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
 
 const PHOTO_PAGE_SIZE = 9;
@@ -114,6 +119,26 @@ type VideoSingleRecord = Prisma.VideoItemGetPayload<{
         coverImageUrl: true;
         isPublished: true;
       };
+    };
+  };
+}>;
+
+type HomeVideoCollectionRecord = Prisma.VideoCollectionGetPayload<{
+  select: {
+    id: true;
+    title: true;
+    videos: {
+      select: {
+        id: true;
+        slug: true;
+        title: true;
+        platform: true;
+        videoUrl: true;
+        thumbnailUrl: true;
+        publishedAt: true;
+        createdAt: true;
+      };
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }];
     };
   };
 }>;
@@ -495,6 +520,72 @@ export async function getVideoCatalog(
     totalPages,
     pageSize: VIDEO_PAGE_SIZE,
   };
+}
+
+export async function getHomeVideoBandItems(limit?: number): Promise<HomeVideoBandItem[]> {
+  const records = await withDatabaseFallback(
+    () =>
+      prisma.videoCollection.findMany({
+        where: {
+          isPublished: true,
+        },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: {
+          id: true,
+          title: true,
+          videos: {
+            select: {
+              id: true,
+              slug: true,
+              title: true,
+              platform: true,
+              videoUrl: true,
+              thumbnailUrl: true,
+              publishedAt: true,
+              createdAt: true,
+            },
+            orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+          },
+        },
+      }),
+    [] as HomeVideoCollectionRecord[],
+  );
+
+  const sortedItems = records
+    .flatMap((collection) =>
+      collection.videos.map((video) => ({
+        id: video.id,
+        slug: video.slug,
+        title: video.title,
+        collectionTitle: collection.title,
+        previewImageUrl: resolveVideoPreviewImageUrl(
+          video.platform,
+          video.videoUrl,
+          video.thumbnailUrl,
+        ),
+        publishedAt: video.publishedAt ?? video.createdAt,
+      })),
+    )
+    .sort(
+      (left, right) =>
+        right.publishedAt.getTime() - left.publishedAt.getTime() ||
+        left.title.localeCompare(right.title, "es", { sensitivity: "base" }),
+    );
+
+  const items =
+    typeof limit === "number"
+      ? sortedItems.slice(0, Math.max(1, limit))
+      : sortedItems;
+
+  return items
+    .map((item) => ({
+      id: item.id,
+      slug: item.slug,
+      title: item.title,
+      collectionTitle: item.collectionTitle,
+      previewImageUrl: item.previewImageUrl,
+      publishedAtIso: item.publishedAt.toISOString(),
+    }));
 }
 
 export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailResult | null> {
