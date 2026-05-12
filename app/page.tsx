@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import ProductCard from "@/components/shop/product-card";
-import EmptyState from "@/components/ui/empty-state";
+import HomeHeaderCarousel, {
+  type HomeHeaderCarouselSlide,
+} from "@/components/home/home-header-carousel";
+import HomeVideosBand from "@/components/home/home-videos-band";
+import { getConcertExtraContent } from "@/lib/concerts/content";
+import { getHomeVideoBandItems } from "@/lib/repositories/media";
 import PageShell from "@/components/ui/page-shell";
 import { getHomeSnapshot } from "@/lib/repositories/site";
-import { formatDate } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/services/imagekit";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Inicio",
@@ -13,14 +18,116 @@ export const metadata: Metadata = {
     "Web oficial de Sugarbay con conciertos, noticias, musica y tienda oficial.",
 };
 
+const HOME_CAROUSEL_CONCERT_IMAGE =
+  "https://ik.imagekit.io/gq1enkszp/fotos/proximos-conciertos.png?tr=w-1200,h-760,cm-extract,fo-center&updatedAt=1778369713978";
+const HOME_CAROUSEL_STORE_IMAGE =
+  "https://ik.imagekit.io/gq1enkszp/fotos/tienda.png?tr=w-1200,h-760,cm-extract,fo-center";
+const HOME_CAROUSEL_NEWS_IMAGE =
+  "https://ik.imagekit.io/gq1enkszp/fotos/noticias.png?tr=w-1200,h-760,cm-extract,fo-center";
+const HOME_CAROUSEL_NEWS_OVERRIDES: Record<string, string> = {
+  "sugarbay-anuncia-single-y-fecha-madrid":
+    "https://ik.imagekit.io/gq1enkszp/fotos/noticia.png",
+};
+const HOME_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/home.png?tr=w-2400,h-760,cm-extract,fo-top&updatedAt=1778553331693";
+
+function truncateText(value: string, maxLength: number) {
+  const compactValue = value.replace(/\s+/g, " ").trim();
+
+  if (compactValue.length <= maxLength) return compactValue;
+
+  return `${compactValue.slice(0, maxLength - 3).trimEnd()}...`;
+}
+
 export default async function HomePage() {
-  const { upcomingConcerts, news, featuredProducts } = await getHomeSnapshot();
+  const [{ upcomingConcerts, news, featuredProducts }, homeVideoBandItems] =
+    await Promise.all([getHomeSnapshot(), getHomeVideoBandItems()]);
+  const heroSlides: HomeHeaderCarouselSlide[] = [];
+
+  const nextConcert = upcomingConcerts[0];
+  if (nextConcert) {
+    const concertDetail = getConcertExtraContent(nextConcert.slug);
+
+    heroSlides.push({
+      id: `home-concert-${nextConcert.id}`,
+      kind: "concert",
+      windowLabel: "Proximo show",
+      meta: `${formatDate(nextConcert.startsAt)} - ${nextConcert.city}`,
+      title: nextConcert.title,
+      description: `${nextConcert.venueName}. Reserva tu sitio para el siguiente directo de Sugarbay.`,
+      href: "/concerts/upcoming",
+      ctaLabel: "Ver conciertos",
+      imageUrl: concertDetail?.venuePhotoUrl ?? HOME_CAROUSEL_CONCERT_IMAGE,
+      imageAlt: `Lugar del evento: ${nextConcert.venueName} (${nextConcert.city})`,
+    });
+  }
+
+  const featuredProduct = featuredProducts[0];
+  if (featuredProduct) {
+    heroSlides.push({
+      id: `home-store-${featuredProduct.id}`,
+      kind: "store",
+      windowLabel: "Drop destacado",
+      meta: `${featuredProduct.category.name} - ${formatCurrency(featuredProduct.price, featuredProduct.currency)}`,
+      title: featuredProduct.name,
+      description:
+        featuredProduct.description
+          ? truncateText(featuredProduct.description, 130)
+          : "Merch oficial con estetica Sugarbay para directo, calle y coleccion.",
+      href: `/store/${featuredProduct.slug}`,
+      ctaLabel: "Ir al producto",
+      imageUrl: featuredProduct.coverImageUrl
+        ? resolveImageUrl(featuredProduct.coverImageUrl)
+        : HOME_CAROUSEL_STORE_IMAGE,
+      imageAlt: `Producto destacado: ${featuredProduct.name}`,
+    });
+  }
+
+  const latestNews = news[0];
+  if (latestNews) {
+    const latestNewsImage =
+      HOME_CAROUSEL_NEWS_OVERRIDES[latestNews.slug] ??
+      (latestNews.coverImageUrl
+        ? resolveImageUrl(latestNews.coverImageUrl)
+        : HOME_CAROUSEL_NEWS_IMAGE);
+
+    heroSlides.push({
+      id: `home-news-${latestNews.id}`,
+      kind: "news",
+      windowLabel: "Ultima noticia",
+      meta: latestNews.publishedAt
+        ? formatDate(latestNews.publishedAt)
+        : formatDate(latestNews.createdAt),
+      title: latestNews.title,
+      description: truncateText(latestNews.summary ?? latestNews.content, 140),
+      href: "/band/news",
+      ctaLabel: "Leer noticias",
+      imageUrl: latestNewsImage,
+      imageAlt: `Noticia destacada: ${latestNews.title}`,
+    });
+  }
+
+  if (heroSlides.length === 0) {
+    heroSlides.push({
+      id: "home-fallback-slide",
+      kind: "news",
+      windowLabel: "Sugarbay",
+      meta: "Web oficial",
+      title: "Bienvenido al universo Sugarbay",
+      description: "Explora conciertos, novedades y la tienda oficial con la nueva identidad retro vaporwave.",
+      href: "/store",
+      ctaLabel: "Explorar tienda",
+      imageUrl: HOME_CAROUSEL_STORE_IMAGE,
+      imageAlt: "Vista destacada de la tienda oficial de Sugarbay",
+    });
+  }
 
   return (
     <PageShell
       eyebrow="Web oficial"
       title="Sugarbay en directo, en streaming y en tu armario"
       description="Bienvenido al nuevo espacio de Sugarbay. Descubre conciertos, escucha la msica ms reciente y visita la tienda oficial con drops exclusivos."
+      headerImageSrc={HOME_PAGE_HEADER_IMAGE_SRC}
       actions={
         <>
           <Link
@@ -39,108 +146,8 @@ export default async function HomePage() {
       }
       contentClassName="space-y-8"
     >
-          <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-4xl tracking-wide text-zinc-900">
-              Proximos Shows
-            </h2>
-            <Link href="/concerts/upcoming" className="text-sm font-semibold text-emerald-700">
-              Ver todos
-            </Link>
-          </div>
-          {upcomingConcerts.length === 0 ? (
-            <EmptyState
-              title="Aun no hay conciertos publicados"
-              description="Estamos cerrando nuevas fechas. Vuelve pronto para ver el calendario."
-            />
-          ) : (
-            <div className="grid gap-4 lg:grid-cols-3">
-              {upcomingConcerts.map((concert) => (
-                <article
-                  key={concert.id}
-                  className="sb-panel rounded-2xl p-4"
-                >
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                    {formatDate(concert.startsAt)}
-                  </p>
-                  <h3 className="mt-2 text-xl font-bold">{concert.title}</h3>
-                  <p className="mt-1 text-sm text-zinc-600">
-                    {concert.venueName} - {concert.city}
-                  </p>
-                  {concert.ticketUrl ? (
-                    <a
-                      href={concert.ticketUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="sb-btn-secondary mt-4 inline-block px-3 py-2 text-sm font-semibold text-zinc-200"
-                    >
-                      Entradas
-                    </a>
-                  ) : null}
-                </article>
-              ))}
-            </div>
-          )}
-          </section>
-
-          <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-4xl tracking-wide text-zinc-900">
-              Tienda Oficial
-            </h2>
-            <Link href="/store" className="text-sm font-semibold text-emerald-700">
-              Ver catalogo
-            </Link>
-          </div>
-          {featuredProducts.length === 0 ? (
-            <EmptyState
-              title="Sin productos por ahora"
-              description="Estamos preparando nueva merch para la proxima gira."
-            />
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
-          </section>
-
-          <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-4xl tracking-wide text-zinc-900">
-              ltimas Noticias
-            </h2>
-            <Link href="/band/news" className="text-sm font-semibold text-emerald-700">
-              Ir a banda
-            </Link>
-          </div>
-          {news.length === 0 ? (
-            <EmptyState
-              title="Sin noticias publicadas"
-              description="Cuando haya novedades oficiales de Sugarbay apareceran aqui."
-            />
-          ) : (
-            <div className="grid gap-4 lg:grid-cols-3">
-              {news.map((article) => (
-                <article
-                  key={article.id}
-                  className="sb-panel rounded-2xl p-4"
-                >
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                    {article.publishedAt
-                      ? formatDate(article.publishedAt)
-                      : formatDate(article.createdAt)}
-                  </p>
-                  <h3 className="mt-2 text-lg font-bold text-zinc-900">{article.title}</h3>
-                  <p className="mt-2 line-clamp-3 text-sm text-zinc-600">
-                    {article.summary ?? article.content}
-                  </p>
-                </article>
-              ))}
-            </div>
-          )}
-          </section>
+      <HomeVideosBand items={homeVideoBandItems} />
+      <HomeHeaderCarousel slides={heroSlides} />
     </PageShell>
   );
 }

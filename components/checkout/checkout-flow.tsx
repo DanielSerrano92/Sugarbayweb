@@ -251,22 +251,25 @@ export default function CheckoutFlow({
           }
         />
 
-        <div className="sb-panel rounded-2xl p-4">
-          <label className="flex items-start gap-3 text-sm text-zinc-700">
-            <input
-              type="checkbox"
-              checked={useSameAddress}
-              onChange={(event) => setUseSameAddress(event.target.checked)}
-              className="sb-checkbox mt-0.5 h-4 w-4 rounded border-zinc-300"
-            />
-            <span>
-              Usar la misma direccion para facturacion.
-            </span>
-          </label>
-        </div>
+        <article className="retro-concert-card checkout-retro-mini-card min-h-0 overflow-hidden">
+          <div className="retro-concert-header">Facturacion</div>
+          <div className="retro-concert-body">
+            <label className="checkout-retro-checkbox flex items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                checked={useSameAddress}
+                onChange={(event) => setUseSameAddress(event.target.checked)}
+                className="sb-checkbox mt-0.5 h-4 w-4 rounded border-zinc-300"
+              />
+              <span>
+                Usar la misma direccion para facturacion.
+              </span>
+            </label>
+          </div>
+        </article>
 
         {useSameAddress ? (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          <div className="checkout-retro-note text-sm">
             Facturacion usara exactamente la misma direccion de envio.
           </div>
         ) : (
@@ -283,113 +286,113 @@ export default function CheckoutFlow({
         )}
       </div>
 
-      <aside className="sb-panel h-fit space-y-4 rounded-2xl p-5">
-        <h2 className="text-lg font-bold text-zinc-900">Resumen del pedido</h2>
+      <aside className="retro-concert-card checkout-retro-summary h-fit min-h-0 overflow-hidden">
+        <div className="retro-concert-header">Resumen del pedido</div>
+        <div className="retro-concert-body">
 
-        <div className="space-y-3">
-          {cart.items.map((item) => (
-            <article
-              key={item.id}
-              className="sb-panel-soft flex items-center gap-3 rounded-xl p-2"
+          <div className="space-y-3">
+            {cart.items.map((item) => (
+              <article
+                key={item.id}
+                className="retro-concert-meta-item checkout-retro-item flex items-center gap-3"
+              >
+                <div className="checkout-retro-item-image relative h-16 w-16 shrink-0 overflow-hidden">
+                  <Image
+                    src={resolveImageUrl(item.product.coverImage)}
+                    alt={item.product.name}
+                    fill
+                    className="object-cover object-center"
+                    sizes="64px"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-black uppercase tracking-[0.03em] text-[#171717]">
+                    {item.product.name}
+                  </p>
+                  <p className="checkout-retro-item-meta text-xs">
+                    {item.variant.title ?? item.variant.size}
+                  </p>
+                  <p className="checkout-retro-item-meta text-xs">
+                    {item.quantity} x {formatCurrency(item.unitPrice, item.product.currency)}
+                  </p>
+                </div>
+                <p className="checkout-retro-item-price text-sm font-black">
+                  {formatCurrency(item.lineTotal, item.product.currency)}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <dl className="checkout-retro-totals space-y-2 text-sm">
+            <div className="flex justify-between gap-3">
+              <dt className="checkout-retro-total-label">Items</dt>
+              <dd className="checkout-retro-total-value">{cart.totalItems}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="checkout-retro-total-label">Total</dt>
+              <dd className="checkout-retro-total-value checkout-retro-total-amount text-xl">
+                {formatCurrency(cart.subtotal, cart.currency)}
+              </dd>
+            </div>
+          </dl>
+
+          <fieldset className="checkout-retro-payment space-y-2">
+            <legend className="checkout-retro-payment-title">Metodo de pago</legend>
+            <label className="checkout-retro-payment-option flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="payment-method"
+                checked={paymentMethod === "card"}
+                onChange={() => setPaymentMethod("card")}
+                className="sb-radio h-4 w-4 border-zinc-300"
+              />
+              Tarjeta (Stripe)
+            </label>
+            <label className="checkout-retro-payment-option checkout-retro-payment-option-muted flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="payment-method"
+                checked={paymentMethod === "paypal"}
+                onChange={() => setPaymentMethod("paypal")}
+                className="h-4 w-4 border-zinc-300 text-zinc-400"
+              />
+              PayPal (proximamente)
+            </label>
+          </fieldset>
+
+          <div className="retro-card-actions retro-card-actions-upcoming">
+            <button
+              type="submit"
+              disabled={!canContinue}
+              className={`retro-card-action w-full ${!canContinue ? "is-disabled" : ""}`}
             >
-              <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-zinc-100">
-                <Image
-                  src={resolveImageUrl(item.product.coverImage)}
-                  alt={item.product.name}
-                  fill
-                  className="object-cover"
-                  sizes="64px"
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-zinc-900">
-                  {item.product.name}
-                </p>
-                <p className="text-xs text-zinc-500">
-                  {item.variant.title ?? item.variant.size}
-                </p>
-                <p className="text-xs text-zinc-500">
-                  {item.quantity} x {formatCurrency(item.unitPrice, item.product.currency)}
-                </p>
-              </div>
-              <p className="text-sm font-bold text-zinc-900">
-                {formatCurrency(item.lineTotal, item.product.currency)}
-              </p>
-            </article>
-          ))}
-        </div>
+              {isSubmitting ? "Redirigiendo a Stripe..." : "Continuar a pago seguro"}
+            </button>
 
-        <dl className="space-y-2 text-sm">
-          <div className="flex justify-between gap-3">
-            <dt className="text-zinc-600">Items</dt>
-            <dd className="font-medium text-zinc-900">{cart.totalItems}</dd>
+            <Link href="/carrito" className="retro-card-action w-full">
+              Volver al carrito
+            </Link>
           </div>
-          <div className="flex justify-between gap-3">
-            <dt className="text-zinc-600">Total</dt>
-            <dd className="text-xl font-black text-zinc-900">
-              {formatCurrency(cart.subtotal, cart.currency)}
-            </dd>
-          </div>
-        </dl>
-
-        <fieldset className="space-y-2 rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-          <legend className="text-sm font-semibold text-zinc-800">Metodo de pago</legend>
-          <label className="flex items-center gap-2 text-sm text-zinc-700">
-            <input
-              type="radio"
-              name="payment-method"
-              checked={paymentMethod === "card"}
-              onChange={() => setPaymentMethod("card")}
-              className="sb-radio h-4 w-4 border-zinc-300"
-            />
-            Tarjeta (Stripe)
-          </label>
-          <label className="flex items-center gap-2 text-sm text-zinc-500">
-            <input
-              type="radio"
-              name="payment-method"
-              checked={paymentMethod === "paypal"}
-              onChange={() => setPaymentMethod("paypal")}
-              className="h-4 w-4 border-zinc-300 text-zinc-400"
-            />
-            PayPal (proximamente)
-          </label>
-        </fieldset>
-
-        <div className="space-y-2">
-          <button
-            type="submit"
-            disabled={!canContinue}
-            className="sb-btn-primary inline-flex w-full items-center justify-center px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isSubmitting ? "Redirigiendo a Stripe..." : "Continuar a pago seguro"}
-          </button>
 
           {paymentMethod === "paypal" ? (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            <p className="checkout-retro-alert checkout-retro-alert-warn text-xs">
               PayPal esta preparado a nivel de interfaz, pero aun no integrado.
             </p>
           ) : null}
+
+          {!canContinue ? (
+            <p className="checkout-retro-alert checkout-retro-alert-note text-xs">
+              Completa correctamente los formularios de envio y facturacion para continuar.
+            </p>
+          ) : null}
+
+          {apiError ? (
+            <p className="checkout-retro-alert checkout-retro-alert-error text-xs">
+              {apiError}
+            </p>
+          ) : null}
+
         </div>
-
-        {!canContinue ? (
-          <p className="text-xs text-amber-700">
-            Completa correctamente los formularios de envio y facturacion para continuar.
-          </p>
-        ) : null}
-
-        {apiError ? (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">
-            {apiError}
-          </p>
-        ) : null}
-
-        <Link
-          href="/carrito"
-          className="inline-flex text-sm font-semibold text-emerald-600 hover:text-emerald-500"
-        >
-          Volver al carrito
-        </Link>
       </aside>
     </form>
   );

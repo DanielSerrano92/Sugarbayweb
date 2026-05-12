@@ -193,3 +193,19 @@ export async function resolveVideoDurationSeconds(
   return await resolveYouTubeDurationSeconds(videoId);
 }
 
+export function resolveVideoPreviewImageUrl(
+  platform: VideoPlatform,
+  videoUrl: string,
+  thumbnailUrl: string | null,
+): string | null {
+  if (thumbnailUrl) return thumbnailUrl;
+
+  if (platform === "YOUTUBE") {
+    const videoId = parseYouTubeVideoId(videoUrl);
+    if (!videoId) return null;
+    return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  }
+
+  return null;
+}
+
