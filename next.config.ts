@@ -1,6 +1,10 @@
 ﻿import type { NextConfig } from "next";
 
-const imageKitHostnames = new Set<string>(["ik.imagekit.io"]);
+const imageKitHostnames = new Set<string>([
+  "ik.imagekit.io",
+  "i.ytimg.com",
+  "img.youtube.com",
+]);
 
 const configuredImageKitEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT;
 if (configuredImageKitEndpoint) {

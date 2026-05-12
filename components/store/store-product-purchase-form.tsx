@@ -19,10 +19,15 @@ function shouldShowSizeSelector(product: StoreProductDetail): boolean {
   return product.variants.some((variant) => variant.size !== "OS");
 }
 
-function getSizeOptions(product: StoreProductDetail): StoreProductDetail["variants"][number]["size"][] {
+function getSizeOptions(
+  product: StoreProductDetail,
+): StoreProductDetail["variants"][number]["size"][] {
   const uniqueSizes = new Set<StoreProductDetail["variants"][number]["size"]>();
+
   for (const variant of product.variants) {
-    if (variant.size !== "OS") uniqueSizes.add(variant.size);
+    if (variant.size !== "OS") {
+      uniqueSizes.add(variant.size);
+    }
   }
 
   return Array.from(uniqueSizes.values());
@@ -35,7 +40,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="sb-btn-primary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+      className="retro-card-action inline-flex w-full items-center justify-center disabled:cursor-not-allowed disabled:opacity-60"
     >
       {pending ? "Anadiendo..." : "Anadir al carrito"}
     </button>
@@ -48,11 +53,15 @@ export default function StoreProductPurchaseForm({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [state, formAction] = useActionState(addToCartAction, initialState);
+
   const authRedirectTo = useMemo(() => {
     const currentSearch = searchParams.toString();
     return currentSearch ? `${pathname}?${currentSearch}` : pathname;
   }, [pathname, searchParams]);
-  const inStockVariants = product.variants.filter((variant) => variant.stock > 0);
+
+  const inStockVariants = product.variants.filter(
+    (variant) => variant.stock > 0,
+  );
 
   useEffect(() => {
     if (state.status !== "auth_required") return;
@@ -65,7 +74,7 @@ export default function StoreProductPurchaseForm({
 
   if (product.variants.length === 0) {
     return (
-      <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <p className="retro-concert-meta-item text-sm font-semibold text-zinc-800">
         Este producto no tiene variantes disponibles en este momento.
       </p>
     );
@@ -73,7 +82,7 @@ export default function StoreProductPurchaseForm({
 
   if (inStockVariants.length === 0) {
     return (
-      <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+      <p className="retro-concert-meta-item text-sm font-semibold text-zinc-800">
         Temporalmente sin stock.
       </p>
     );
@@ -88,10 +97,12 @@ export default function StoreProductPurchaseForm({
   const defaultVariant = inStockVariants[0];
   const defaultSizeVariant = sizeOptions
     .map((size) => sizeToVariant.get(size))
-    .find((variant): variant is NonNullable<typeof variant> => Boolean(variant));
+    .find((variant): variant is NonNullable<typeof variant> =>
+      Boolean(variant),
+    );
 
   return (
-    <form action={formAction} className="sb-panel-soft space-y-4 rounded-2xl p-4">
+    <form action={formAction} className="retro-concert-meta-item space-y-3">
       <input type="hidden" name="productId" value={product.id} />
       <input type="hidden" name="redirectTo" value="/carrito" />
       <input type="hidden" name="authRedirectTo" value={authRedirectTo} />
@@ -100,7 +111,7 @@ export default function StoreProductPurchaseForm({
         <div>
           <label
             htmlFor="product-variant-id"
-            className="mb-1.5 block text-sm font-semibold text-zinc-800"
+            className="retro-concert-meta-label mb-1.5 block"
           >
             Talla
           </label>
@@ -109,7 +120,7 @@ export default function StoreProductPurchaseForm({
             name="productVariantId"
             required
             defaultValue={defaultSizeVariant?.id ?? defaultVariant.id}
-            className="sb-select"
+            className="win-input"
           >
             {sizeOptions.map((size) => {
               const variant = sizeToVariant.get(size);
@@ -130,7 +141,7 @@ export default function StoreProductPurchaseForm({
       <div>
         <label
           htmlFor="product-quantity"
-          className="mb-1.5 block text-sm font-semibold text-zinc-800"
+          className="retro-concert-meta-label mb-1.5 block"
         >
           Cantidad
         </label>
@@ -141,11 +152,12 @@ export default function StoreProductPurchaseForm({
           min={1}
           max={20}
           defaultValue={1}
-          className="sb-input"
+          className="win-input"
         />
       </div>
 
       <SubmitButton />
+
       {state.status === "auth_required" ? (
         <p className="text-xs text-zinc-600">Abriendo login...</p>
       ) : null}

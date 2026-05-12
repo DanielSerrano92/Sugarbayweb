@@ -15,68 +15,73 @@ type CartLineItemProps = {
 
 export default function CartLineItem({ item }: CartLineItemProps) {
   return (
-    <article className="sb-panel grid gap-4 rounded-2xl p-4 sm:grid-cols-[120px_1fr]">
-      <div className="relative h-28 w-full overflow-hidden rounded-xl bg-zinc-100 sm:h-24">
-        <Image
-          src={resolveImageUrl(item.product.coverImage)}
-          alt={item.product.name}
-          fill
-          className="object-cover"
-          sizes="120px"
-        />
-      </div>
-
-      <div className="space-y-3">
-        <div className="space-y-1">
-          <Link
-            href={`/store/${item.product.slug}`}
-            className="text-base font-bold text-zinc-900 hover:text-emerald-600"
-          >
-            {item.product.name}
-          </Link>
-          <p className="text-sm text-zinc-600">
-            {formatCurrency(item.unitPrice, item.product.currency)} x {item.quantity}
-          </p>
-          <p className="text-xs text-zinc-500">
-            {item.variant.title ?? item.variant.size}
-          </p>
-          <p className="text-base font-black text-zinc-900">
-            {formatCurrency(item.lineTotal, item.product.currency)}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <form action={updateCartItemAction} className="flex items-center gap-2">
-            <input type="hidden" name="cartItemId" value={item.id} />
-            <label htmlFor={`qty-${item.id}`} className="sr-only">
-              Cantidad de {item.product.name}
-            </label>
-            <input
-              id={`qty-${item.id}`}
-              name="quantity"
-              type="number"
-              min={1}
-              max={Math.max(1, item.variant.stock)}
-              defaultValue={item.quantity}
-              className="sb-input w-20 px-2 py-1.5 text-sm"
+    <article className="retro-concert-card min-h-0 overflow-hidden">
+      <div className="retro-concert-header">Producto</div>
+      <div className="retro-concert-body">
+        <div className="grid gap-4 sm:grid-cols-[120px_1fr]">
+          <div className="cart-modal-item-image relative h-28 w-full overflow-hidden sm:h-24">
+            <Image
+              src={resolveImageUrl(item.product.coverImage)}
+              alt={item.product.name}
+              fill
+              className="object-cover object-center"
+              sizes="120px"
             />
-            <button
-              type="submit"
-              className="sb-btn-secondary rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-200"
-            >
-              Actualizar
-            </button>
-          </form>
+          </div>
 
-          <form action={removeCartItemAction}>
-            <input type="hidden" name="cartItemId" value={item.id} />
-            <button
-              type="submit"
-              className="sb-btn-danger rounded-lg px-3 py-1.5 text-sm font-medium"
-            >
-              Quitar
-            </button>
-          </form>
+          <div className="min-w-0 space-y-3">
+            <div className="retro-concert-meta-item">
+              <Link
+                href={`/store/${item.product.slug}`}
+                className="cart-modal-item-name block truncate text-base font-black uppercase tracking-[0.03em]"
+              >
+                {item.product.name}
+              </Link>
+              <p className="cart-modal-item-meta mt-1 text-xs">
+                {item.variant.title ?? item.variant.size}
+              </p>
+              <p className="cart-modal-item-meta text-xs">
+                {formatCurrency(item.unitPrice, item.product.currency)} x {item.quantity}
+              </p>
+              <p className="cart-modal-item-price mt-1 text-base font-black">
+                {formatCurrency(item.lineTotal, item.product.currency)}
+              </p>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+              <form action={updateCartItemAction} className="flex flex-wrap items-center gap-2">
+                <input type="hidden" name="cartItemId" value={item.id} />
+                <label htmlFor={`qty-${item.id}`} className="sr-only">
+                  Cantidad de {item.product.name}
+                </label>
+                <input
+                  id={`qty-${item.id}`}
+                  name="quantity"
+                  type="number"
+                  min={1}
+                  max={Math.max(1, item.variant.stock)}
+                  defaultValue={item.quantity}
+                  className="win-input h-[2.1rem] w-20 px-2 py-1 text-sm"
+                />
+                <button
+                  type="submit"
+                  className="win-button"
+                >
+                  Actualizar
+                </button>
+              </form>
+
+              <form action={removeCartItemAction} className="sm:justify-self-end">
+                <input type="hidden" name="cartItemId" value={item.id} />
+                <button
+                  type="submit"
+                  className="win-button cart-modal-remove-btn"
+                >
+                  Quitar
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </article>

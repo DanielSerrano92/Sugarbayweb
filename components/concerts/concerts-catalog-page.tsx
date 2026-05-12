@@ -7,6 +7,11 @@ import PageShell from "@/components/ui/page-shell";
 import { getConcertCatalog } from "@/lib/repositories/concerts";
 import type { ConcertPeriod, ConcertQueryParams } from "@/lib/concerts/types";
 
+const UPCOMING_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/proximos-conciertos.png?tr=w-2400,h-760,cm-extract,fo-top&updatedAt=1778369713978";
+const PAST_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/conciertos-anteriores.png?tr=w-2400,h-760,cm-extract,fo-top";
+
 type ConcertsCatalogPageProps = {
   period: ConcertPeriod;
   searchParams: Promise<ConcertQueryParams>;
@@ -55,10 +60,15 @@ export default async function ConcertsCatalogPage({
       eyebrow={pageMeta.eyebrow}
       title={pageMeta.title}
       description={pageMeta.description}
+      headerImageSrc={
+        period === "upcoming"
+          ? UPCOMING_PAGE_HEADER_IMAGE_SRC
+          : PAST_PAGE_HEADER_IMAGE_SRC
+      }
     >
       <section>
         <div className="mb-5 flex justify-end">
-          <div className="concert-top-controls">
+          <div className="concert-top-controls concert-top-controls-right">
             <ConcertFilters
               key={filtersKey}
               basePath={pageMeta.basePath}
@@ -73,9 +83,11 @@ export default async function ConcertsCatalogPage({
           </div>
         </div>
 
-        <p className="mb-4 text-sm text-zinc-600">
-          Mostrando {catalog.concerts.length} de {catalog.totalItems} conciertos.
-        </p>
+        {catalog.totalPages > 1 ? (
+          <p className="mb-4 text-sm text-zinc-600">
+            Mostrando {catalog.concerts.length} de {catalog.totalItems} conciertos.
+          </p>
+        ) : null}
 
         {catalog.concerts.length === 0 ? (
           <EmptyState

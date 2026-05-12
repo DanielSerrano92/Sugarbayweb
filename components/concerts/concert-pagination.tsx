@@ -34,13 +34,13 @@ export default function ConcertPagination({
   totalPages,
   className,
 }: ConcertPaginationProps) {
-  if (totalPages <= 1) return null;
-
   const effectiveTotalPages = Math.max(1, totalPages);
   const currentPage = Math.min(Math.max(1, filters.page), effectiveTotalPages);
   const previousPage = Math.max(1, currentPage - 1);
   const nextPage = Math.min(effectiveTotalPages, currentPage + 1);
   const visiblePages = getVisiblePages(currentPage, effectiveTotalPages);
+  const isPreviousDisabled = currentPage === 1;
+  const isNextDisabled = currentPage === effectiveTotalPages;
 
   return (
     <nav
@@ -50,8 +50,10 @@ export default function ConcertPagination({
       <Link
         href={buildHref(basePath, filters, previousPage)}
         className={`concert-pagination-arrow ${
-          currentPage === 1 ? "pointer-events-none opacity-50" : ""
+          isPreviousDisabled ? "pointer-events-none opacity-50" : ""
         }`}
+        aria-label="Pagina anterior"
+        aria-disabled={isPreviousDisabled}
       >
         <span aria-hidden="true">&lt;</span>
       </Link>
@@ -63,6 +65,7 @@ export default function ConcertPagination({
             <Link
               href={buildHref(basePath, filters, page)}
               className={`concert-pagination-page ${page === currentPage ? "is-active" : ""}`}
+              aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
             </Link>
@@ -79,8 +82,10 @@ export default function ConcertPagination({
       <Link
         href={buildHref(basePath, filters, nextPage)}
         className={`concert-pagination-arrow ${
-          currentPage === effectiveTotalPages ? "pointer-events-none opacity-50" : ""
+          isNextDisabled ? "pointer-events-none opacity-50" : ""
         }`}
+        aria-label="Pagina siguiente"
+        aria-disabled={isNextDisabled}
       >
         <span aria-hidden="true">&gt;</span>
       </Link>

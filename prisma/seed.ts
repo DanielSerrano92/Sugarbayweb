@@ -160,7 +160,7 @@ async function main() {
     },
   });
 
-  await prisma.productCategory.create({
+  const pinsCategory = await prisma.productCategory.create({
     data: {
       name: "Pines",
       slug: "pines",
@@ -169,7 +169,7 @@ async function main() {
     },
   });
 
-  await prisma.productCategory.create({
+  const cdsCategory = await prisma.productCategory.create({
     data: {
       name: "CDs",
       slug: "cds",
@@ -214,6 +214,96 @@ async function main() {
             size: VariantSize.M,
             color: "Black",
             stock: 45,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.product.create({
+    data: {
+      categoryId: pinsCategory.id,
+      name: "Sugarbay Neon Pin Set",
+      slug: "sugarbay-neon-pin-set",
+      description:
+        "Set de pines metalicos con acabado neon inspirado en la era Midnight Frequency.",
+      productType: ProductType.ACCESSORY,
+      basePrice: 14.9,
+      compareAtPrice: 18.9,
+      isPublished: true,
+      isFeatured: true,
+      tags: ["accesorios", "pin", "set", "neon", "coleccion"],
+      metadata: {
+        material: "zinc alloy + enamel",
+        pieces: 3,
+      },
+      images: {
+        create: [
+          {
+            imageUrl: "https://ik.imagekit.io/sugarbay/products/neon-pin-set-main.jpg",
+            altText: "Sugarbay Neon Pin Set",
+            isPrimary: true,
+            sortOrder: 1,
+          },
+        ],
+      },
+      variants: {
+        create: [
+          {
+            sku: "SB-PIN-SET-OS",
+            title: "Set / OS",
+            size: VariantSize.OS,
+            color: "Multicolor",
+            stock: 120,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.product.create({
+    data: {
+      categoryId: cdsCategory.id,
+      name: "Neon Coastline CD Deluxe",
+      slug: "neon-coastline-cd-deluxe",
+      description:
+        "Edicion CD deluxe con libreto de 16 paginas, arte retro y bonus track en directo.",
+      productType: ProductType.MEDIA,
+      basePrice: 22.9,
+      compareAtPrice: 26.9,
+      isPublished: true,
+      isFeatured: true,
+      tags: ["media", "cd", "album", "deluxe", "neon"],
+      metadata: {
+        mediaType: "cd",
+        tracklist: [
+          "Midnight Frequency",
+          "Neon Coastline",
+          "City Lights Radio",
+          "Satellite Hearts",
+          "Midnight Frequency (Live Edit)",
+        ],
+        linerNotes:
+          "Edicion de coleccion con notas de produccion, letras seleccionadas y fotos de estudio.",
+      },
+      images: {
+        create: [
+          {
+            imageUrl: "https://ik.imagekit.io/sugarbay/products/neon-coastline-cd-deluxe-main.jpg",
+            altText: "Neon Coastline CD Deluxe",
+            isPrimary: true,
+            sortOrder: 1,
+          },
+        ],
+      },
+      variants: {
+        create: [
+          {
+            sku: "SB-CD-NC-DELUXE",
+            title: "CD / OS",
+            size: VariantSize.OS,
+            color: "Standard",
+            stock: 80,
           },
         ],
       },
@@ -298,7 +388,7 @@ async function main() {
       releaseType: MusicReleaseType.ALBUM,
       description:
         "Album de estudio con atmosfera nocturna, sintetizadores analogicos y enfoque cinematografico.",
-      coverImageUrl: "https://ik.imagekit.io/sugarbay/music/neon-coastline-cover.jpg",
+      coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/album.png",
       releaseDate,
       labelName: "Sugarbay Records",
       catalogNumber: "SBR-ALB-003",
