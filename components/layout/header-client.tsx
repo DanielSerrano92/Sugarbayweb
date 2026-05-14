@@ -251,7 +251,7 @@ export default function HeaderClient({
 
   return (
     <>
-      <header className="z-40 w-full">
+      <header className="relative z-40 w-full">
         <div className="sb-header-shell w-full max-w-full rounded-none">
           <div className="sb-header-row relative flex w-full min-w-0 items-center">
             <GlobalSearch
