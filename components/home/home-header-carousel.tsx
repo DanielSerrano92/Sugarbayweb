@@ -11,8 +11,9 @@ export type HomeHeaderCarouselSlide = {
   meta: string;
   title: string;
   description: string;
-  href: string;
-  ctaLabel: string;
+  mainHref: string;
+  buttonHref: string;
+  buttonLabel: string;
   imageUrl: string;
   imageAlt: string;
 };
@@ -31,10 +32,8 @@ const KIND_LABEL: Record<HomeHeaderCarouselSlide["kind"], string> = {
 export default function HomeHeaderCarousel({ slides }: HomeHeaderCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const total = slides.length;
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [total]);
+  const normalizedActiveIndex =
+    total === 0 ? 0 : ((activeIndex % total) + total) % total;
 
   useEffect(() => {
     if (total <= 1) return;
@@ -48,9 +47,10 @@ export default function HomeHeaderCarousel({ slides }: HomeHeaderCarouselProps) 
 
   if (total === 0) return null;
 
-  const activeSlide = slides[activeIndex] ?? slides[0];
+  const activeSlide = slides[normalizedActiveIndex] ?? slides[0];
 
   const goTo = (index: number) => {
+    if (total === 0) return;
     setActiveIndex((index + total) % total);
   };
 
@@ -60,7 +60,7 @@ export default function HomeHeaderCarousel({ slides }: HomeHeaderCarouselProps) 
         <div className="win-titlebar home-hero-carousel-titlebar">
           <button
             type="button"
-            onClick={() => goTo(activeIndex - 1)}
+            onClick={() => goTo(normalizedActiveIndex - 1)}
             className="win-button home-hero-carousel-nav"
             aria-label="Ver destacado anterior"
           >
@@ -71,7 +71,7 @@ export default function HomeHeaderCarousel({ slides }: HomeHeaderCarouselProps) 
 
           <button
             type="button"
-            onClick={() => goTo(activeIndex + 1)}
+            onClick={() => goTo(normalizedActiveIndex + 1)}
             className="win-button home-hero-carousel-nav"
             aria-label="Ver siguiente destacado"
           >
@@ -84,16 +84,16 @@ export default function HomeHeaderCarousel({ slides }: HomeHeaderCarouselProps) 
             <div
               className={`home-hero-carousel-media home-hero-carousel-media-${activeSlide.kind}`}
             >
-              <div className="home-hero-carousel-media-frame">
+              <Link href={activeSlide.mainHref} className="home-hero-carousel-media-frame block">
                 <Image
                   src={activeSlide.imageUrl}
                   alt={activeSlide.imageAlt}
                   fill
-                  priority={activeIndex === 0}
+                  priority={normalizedActiveIndex === 0}
                   sizes="(max-width: 767px) 100vw, (max-width: 1279px) 40vw, 420px"
                   className="home-hero-carousel-image"
                 />
-              </div>
+              </Link>
             </div>
 
             <div className="home-hero-carousel-main">
@@ -106,21 +106,25 @@ export default function HomeHeaderCarousel({ slides }: HomeHeaderCarouselProps) 
                   </span>
                 </div>
               </div>
-              <h2 className="home-hero-carousel-heading">{activeSlide.title}</h2>
+              <h2 className="home-hero-carousel-heading">
+                <Link href={activeSlide.mainHref} className="text-inherit no-underline">
+                  {activeSlide.title}
+                </Link>
+              </h2>
               <p className="home-hero-carousel-copy">{activeSlide.description}</p>
             </div>
           </div>
 
           <div className="home-hero-carousel-footer">
-            <Link href={activeSlide.href} className="retro-card-action home-hero-carousel-cta">
-              {activeSlide.ctaLabel}
+            <Link href={activeSlide.buttonHref} className="retro-card-action home-hero-carousel-cta">
+              {activeSlide.buttonLabel}
             </Link>
 
             {total > 1 ? (
               <div className="home-hero-carousel-progress" aria-hidden="true">
                 <span
                   className="home-hero-carousel-progress-fill"
-                  style={{ width: `${((activeIndex + 1) / total) * 100}%` }}
+                  style={{ width: `${((normalizedActiveIndex + 1) / total) * 100}%` }}
                 />
               </div>
             ) : null}
@@ -132,10 +136,10 @@ export default function HomeHeaderCarousel({ slides }: HomeHeaderCarouselProps) 
                     key={slide.id}
                     type="button"
                     role="tab"
-                    aria-selected={index === activeIndex}
+                    aria-selected={index === normalizedActiveIndex}
                     aria-label={`Ver: ${slide.windowLabel}`}
                     onClick={() => goTo(index)}
-                    className={`win-button home-hero-carousel-dot ${index === activeIndex ? "is-active" : ""}`}
+                    className={`win-button home-hero-carousel-dot ${index === normalizedActiveIndex ? "is-active" : ""}`}
                   >
                     {index + 1}
                   </button>

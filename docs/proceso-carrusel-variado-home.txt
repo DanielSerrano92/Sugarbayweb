@@ -1,0 +1,137 @@
+1. Objetivo de la tarea
+Corregir el carrusel variado de la Home (debajo del carrusel de videos) para que cada card navegue segun su tipo:
+- Producto: imagen/titulo al detalle de producto y boton a Tienda.
+- Noticia: imagen/titulo a Noticias con esa noticia expandida y boton a Noticias.
+- Concierto: imagen/titulo a Proximos conciertos con modal abierto del concierto y boton a Conciertos.
+Sin cambiar el diseno visual del carrusel.
+
+2. Estado inicial del carrusel variado
+- El carrusel usaba un unico `href` y un unico `ctaLabel` por slide.
+- Imagen y titulo no eran clicables.
+- Solo el boton inferior era clicable.
+- Noticias no leia query params para expandir una noticia concreta.
+- Conciertos no leia query params para abrir el modal de un concierto concreto.
+
+3. Archivos revisados
+- app/page.tsx
+- components/home/home-header-carousel.tsx
+- app/band/news/page.tsx
+- components/band/news-list-client.tsx
+- app/concerts/upcoming/page.tsx
+- components/concerts/concerts-catalog-page.tsx
+- components/concerts/concert-cards-client.tsx
+- lib/band/types.ts
+- lib/concerts/types.ts
+- lib/band/filters.ts
+- lib/concerts/filters.ts
+
+4. Archivos modificados
+- app/page.tsx
+- components/home/home-header-carousel.tsx
+- app/band/news/page.tsx
+- components/band/news-list-client.tsx
+- components/concerts/concerts-catalog-page.tsx
+- components/concerts/concert-cards-client.tsx
+- lib/band/types.ts
+- lib/concerts/types.ts
+
+5. Cambios realizados paso a paso
+1) Se actualizo el modelo de slide del carrusel variado en `components/home/home-header-carousel.tsx`:
+   - Antes: `href` + `ctaLabel`.
+   - Ahora: `mainHref` (imagen/titulo), `buttonHref` (boton inferior), `buttonLabel`.
+2) Se hizo clicable la imagen y el titulo del slide con `Link` hacia `mainHref`.
+3) Se mantuvo el boton inferior, pero ahora navega a `buttonHref` y muestra `buttonLabel`.
+4) En `app/page.tsx` se redefinio la navegacion por tipo:
+   - Concierto:
+     - `mainHref`: `/concerts/upcoming?concert=<slug>`
+     - `buttonHref`: `/concerts/upcoming`
+     - `buttonLabel`: `Conciertos`
+   - Producto:
+     - `mainHref`: `/store/<slug>`
+     - `buttonHref`: `/store`
+     - `buttonLabel`: `Tienda`
+   - Noticia:
+     - `mainHref`: `/band/news?news=<slug>`
+     - `buttonHref`: `/band/news`
+     - `buttonLabel`: `Noticias`
+5) Se amplio `BandNewsQueryParams` en `lib/band/types.ts` con `news?: string | string[]`.
+6) En `app/band/news/page.tsx` se lee `params.news` y se envia como `selectedNewsSlug` al listado cliente.
+7) En `components/band/news-list-client.tsx`:
+   - Se inicializa expandida la noticia del slug recibido (si existe en los items cargados).
+   - Se hace `scrollIntoView` del elemento `#news-<slug>` para enfocar visualmente la noticia.
+8) Se amplio `ConcertQueryParams` en `lib/concerts/types.ts` con `concert?: string | string[]`.
+9) En `components/concerts/concerts-catalog-page.tsx` se lee `params.concert` y se envia como `selectedConcertSlug`.
+10) En `components/concerts/concert-cards-client.tsx`:
+    - El estado `selectedConcertId` se inicializa desde `selectedConcertSlug`.
+    - Si el slug existe en la coleccion/listado, el modal de ese concierto queda abierto al cargar.
+11) Se ajusto `components/home/home-header-carousel.tsx` para evitar `setState` dentro de efecto al normalizar el indice activo sin cambiar comportamiento visual.
+
+6. Logica final de navegacion por tipo de item
+- Producto (`store`)
+  - Imagen/titulo -> `/store/<slug>`
+  - Boton -> `/store`
+  - Texto boton -> `Tienda`
+- Noticia (`news`)
+  - Imagen/titulo -> `/band/news?news=<slug>`
+  - Boton -> `/band/news`
+  - Texto boton -> `Noticias`
+- Concierto (`concert`)
+  - Imagen/titulo -> `/concerts/upcoming?concert=<slug>`
+  - Boton -> `/concerts/upcoming`
+  - Texto boton -> `Conciertos`
+
+7. Explicacion de como se abre una noticia especifica expandida
+- Se usa query param `news`.
+- En la pagina de noticias se detecta ese valor.
+- En el componente cliente del listado:
+  - Se busca el item por `slug`.
+  - Si existe, arranca expandido.
+  - Se hace scroll al card con `id="news-<slug>"`.
+- Si el slug no existe, la pagina funciona normal sin errores.
+
+8. Explicacion de como se abre el modal de un concierto especifico
+- Se usa query param `concert`.
+- En la pagina de proximos conciertos se detecta ese valor.
+- En el componente cliente de cards:
+  - Se busca el concierto por `slug`.
+  - Si existe, se inicializa `selectedConcertId` con ese concierto.
+  - El modal se abre automaticamente porque `selectedConcert` ya tiene valor.
+- Si el slug no existe, la pagina carga normal sin modal y sin errores.
+
+9. Explicacion de como se navega al detalle de producto
+- El carrusel usa el `slug` del producto destacado para construir `mainHref`:
+  - `/store/<slug>`
+- Imagen y titulo del slide de producto comparten ese destino.
+- El boton inferior no va al detalle: va a `/store` con texto `Tienda`.
+
+10. Errores encontrados y solucion aplicada
+- Error de lint `react-hooks/set-state-in-effect`:
+  - Aparecio en:
+    - `components/band/news-list-client.tsx`
+    - `components/concerts/concert-cards-client.tsx`
+    - `components/home/home-header-carousel.tsx` (logica previa existente)
+  - Solucion:
+    - Se elimino `setState` sincrono dentro de efectos.
+    - Noticias y conciertos ahora inicializan estado desde props al montar.
+    - Carrusel Home ahora normaliza indice activo en lugar de resetear con efecto.
+- Build fallido por descarga de fuente Google (`Press Start 2P`):
+  - Causa: fallo de conexion al pedir `https://fonts.googleapis.com/...`.
+  - No es un error de logica de este cambio; afecta build en este entorno sin acceso correcto a esa fuente.
+
+11. Pruebas realizadas
+- Revision de rutas y enlaces en codigo:
+  - Producto: `mainHref` detalle + boton a tienda.
+  - Noticia: `mainHref` con `?news=<slug>` + boton a noticias.
+  - Concierto: `mainHref` con `?concert=<slug>` + boton a proximos conciertos.
+- Validacion tecnica:
+  - `npm.cmd run lint` -> sin errores (solo 1 warning previo no relacionado en `lib/media/video.ts`).
+  - `npm.cmd run build` -> falla por fetch de Google Fonts en este entorno.
+- Verificacion funcional en implementacion:
+  - Parametro invalido en noticias/conciertos no rompe UI (se ignora al no encontrar match).
+  - No se creo ninguna pagina individual nueva para noticia o concierto.
+
+12. Resultado final
+El carrusel variado mantiene su diseno y ahora navega correctamente segun el tipo de contenido:
+- Producto: imagen/titulo al detalle, boton a Tienda.
+- Noticia: imagen/titulo a Noticias con noticia concreta expandida, boton a Noticias.
+- Concierto: imagen/titulo a Proximos conciertos con modal concreto abierto, boton a Conciertos.

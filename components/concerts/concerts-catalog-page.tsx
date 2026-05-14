@@ -17,6 +17,12 @@ type ConcertsCatalogPageProps = {
   searchParams: Promise<ConcertQueryParams>;
 };
 
+function pickSingleQueryParam(value: string | string[] | undefined): string | undefined {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  const trimmed = candidate?.trim();
+  return trimmed ? trimmed : undefined;
+}
+
 function resolvePageMeta(period: ConcertPeriod) {
   if (period === "upcoming") {
     return {
@@ -42,6 +48,7 @@ export default async function ConcertsCatalogPage({
   searchParams,
 }: ConcertsCatalogPageProps) {
   const params = await searchParams;
+  const selectedConcertSlug = pickSingleQueryParam(params.concert);
   const pageMeta = resolvePageMeta(period);
   const catalog = await getConcertCatalog(period, params);
   const filtersKey = [
@@ -95,7 +102,11 @@ export default async function ConcertsCatalogPage({
             description="Prueba cambiando rango de fechas o ubicacion."
           />
         ) : (
-          <ConcertCardsClient period={period} concerts={catalog.concerts} />
+          <ConcertCardsClient
+            period={period}
+            concerts={catalog.concerts}
+            selectedConcertSlug={selectedConcertSlug}
+          />
         )}
 
         <ConcertsNavigationLink

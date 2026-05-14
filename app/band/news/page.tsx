@@ -20,9 +20,16 @@ type BandNewsPageProps = {
   searchParams: Promise<BandNewsQueryParams>;
 };
 
+function pickSingleQueryParam(value: string | string[] | undefined): string | undefined {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  const trimmed = candidate?.trim();
+  return trimmed ? trimmed : undefined;
+}
+
 export default async function BandNewsPage({ searchParams }: BandNewsPageProps) {
   const params = await searchParams;
   const catalog = await getBandNewsCatalog(params);
+  const selectedNewsSlug = pickSingleQueryParam(params.news);
 
   return (
     <PageShell
@@ -55,7 +62,7 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
             description="Prueba cambiando el rango de fechas o resetear filtros."
           />
         ) : (
-          <BandNewsListClient items={catalog.items} />
+          <BandNewsListClient items={catalog.items} selectedNewsSlug={selectedNewsSlug} />
         )}
       </section>
 
