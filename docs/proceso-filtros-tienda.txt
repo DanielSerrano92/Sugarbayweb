@@ -1,0 +1,147 @@
+1. Objetivo de la tarea
+Implementar filtros dinamicos en la pagina Tienda para que los filtros generales se muestren siempre, los filtros especificos aparezcan solo cuando corresponda a la categoria/subcategoria activa, y todo se aplique automaticamente sin botones de Aplicar ni Limpiar.
+
+2. Estado inicial del sistema de filtros
+- La Tienda usaba query params en /store.
+- El componente principal de filtros era components/store/store-filters-sidebar.tsx.
+- Siempre se mostraban dos bloques especificos (ropa y media), aunque no correspondieran.
+- El filtrado dependia de un boton Aplicar (submit del form) y un boton Limpiar.
+- Si llegaban filtros especificos por URL (size, gender, mediaType), podian seguir aplicandose aunque el contexto de categoria ya no fuera el correcto.
+
+3. Problemas o errores encontrados
+- Problema funcional: filtros especificos visibles fuera de contexto y dependencia de botones.
+- Problema de coherencia: al cambiar de categoria, algunos filtros especificos podian seguir activos por URL.
+- Error en consola de React: "Cannot update a component (Router) while rendering a different component (StoreFiltersSidebar)" al llamar router.replace dentro del flujo de actualizacion de estado del filtro.
+- Problema tecnico al validar: PowerShell bloqueo npm.ps1 por ExecutionPolicy.
+- Lint global del proyecto con un error preexistente no relacionado en components/home/home-header-carousel.tsx (regla react-hooks/set-state-in-effect).
+
+4. Archivos revisados
+- app/store/page.tsx
+- components/store/store-filters-sidebar.tsx
+- lib/store/types.ts
+- lib/store/filters.ts
+- lib/repositories/store.ts
+- components/ui/filter-modal-shell.tsx
+- app/globals.css
+- lib/services/navigation.ts
+- prisma/schema.prisma
+- prisma/seed.ts
+
+5. Archivos modificados
+- lib/store/filter-scope.ts (nuevo)
+- lib/repositories/store.ts
+- components/store/store-filters-sidebar.tsx
+- app/store/page.tsx
+- docs/proceso-filtros-tienda.txt (nuevo)
+
+6. Cambios realizados paso a paso
+Paso 1: Se creo un helper central en lib/store/filter-scope.ts.
+- Se implemento la resolucion de categoria efectiva segun category/subcategory.
+- Se implementaron reglas para saber si mostrar filtros de ropa o media.
+- Se implemento normalizacion de filtros para limpiar filtros no validos por contexto.
+- Se agrego control para rango de precio invalido (minPrice > maxPrice), ignorando temporalmente maxPrice.
+
+Paso 2: Se endurecio la logica de backend en lib/repositories/store.ts.
+- En getStoreCatalog, despues de parsear query params y cargar categorias, se normalizan filtros con normalizeStoreFiltersByScope.
+- Resultado: aunque un usuario fuerce query params incompatibles por URL, no se aplican filtros especificos fuera de contexto.
+
+Paso 3: Se refactorizo components/store/store-filters-sidebar.tsx.
+- Se eliminaron botones Aplicar y Limpiar del formulario.
+- Se implemento autoaplicacion con router.replace al cambiar cualquier input/select.
+- Se mantiene convension de query params actual del proyecto.
+- Se elimina page en cada cambio de filtro para volver a pagina 1.
+- Se conservan filtros generales siempre visibles: category, subcategory, minPrice, maxPrice, sort.
+- Se renderizan filtros especificos solo cuando corresponde:
+  - Ropa: size y gender
+  - Media: mediaType
+  - Accesorios y resto: solo generales
+- Al cambiar de contexto, se limpian automaticamente filtros especificos que ya no corresponden.
+
+Paso 4: Se ajusto app/store/page.tsx para sincronizacion limpia del estado local del filtro.
+- Se agrego un key derivado de los filtros serializados en ambos StoreFiltersSidebar (desktop y movil).
+- Esto fuerza remount del componente cuando cambia el estado de filtros en URL, evitando desincronizaciones.
+
+7. Explicacion de como se soluciono cada error
+- Error de npm en PowerShell:
+  - Problema: npm run lint fallaba por bloqueo de npm.ps1.
+  - Solucion: ejecutar por cmd con "cmd /c npm run lint".
+- Error de lint en mi componente:
+  - Problema inicial: regla react-hooks/set-state-in-effect por setState en useEffect.
+  - Solucion: se elimino ese useEffect y se paso a sincronizacion por remount con key en app/store/page.tsx.
+- Error de consola de Router/StoreFiltersSidebar:
+  - Problema: router.replace se estaba ejecutando dentro del callback funcional de setFormValues, y React lo detectaba como actualizacion durante render.
+  - Solucion: se movio router.replace fuera del updater funcional. Ahora se calcula nextValues, luego se ejecuta setFormValues(nextValues) y despues updateFilters(nextValues).
+  - Verificacion: validacion local con "npx eslint components/store/store-filters-sidebar.tsx" sin errores.
+- Error de lint global no relacionado:
+  - Se mantiene un error preexistente en components/home/home-header-carousel.tsx, fuera del alcance de esta tarea.
+
+8. Decisiones tecnicas tomadas y por que
+- Se mantuvo arquitectura existente basada en query params en /store para no romper rutas ni estructura.
+- Se centralizo la decision de visibilidad/normalizacion en lib/store/filter-scope.ts para evitar duplicacion de reglas.
+- Se aplico limpieza defensiva en backend para garantizar coherencia incluso si se manipula la URL manualmente.
+- Se uso autoaplicacion en cliente con router.replace para actualizar listado sin recarga completa.
+
+9. Como funciona la logica final de filtros
+- Filtros generales siempre visibles:
+  - category
+  - subcategory
+  - minPrice
+  - maxPrice
+  - sort
+- Filtros especificos dinamicos:
+  - scope ropa -> mostrar size y gender
+  - scope media -> mostrar mediaType
+  - scope accesorios u otro -> no mostrar filtros especificos
+- Autoaplicacion:
+  - Cualquier cambio en un filtro actualiza URL y refresca listado automaticamente.
+- Coherencia al cambiar de scope:
+  - Si un filtro especifico no corresponde al nuevo scope, se borra en cliente y tambien se ignora/normaliza en backend.
+- Rango de precio invalido:
+  - Si minPrice > maxPrice, se ignora temporalmente maxPrice para no romper interfaz ni consulta.
+
+10. Casos de prueba realizados
+Caso 1: Pagina principal de tienda
+- Verificados filtros generales visibles.
+- Cambio de filtros generales dispara actualizacion automatica de URL/listado.
+
+Caso 2: Scope ropa
+- Con category=ropa, aparecen size y gender.
+- Cambios en size/gender aplican automaticamente.
+
+Caso 3: Scope media
+- Con category=media, aparece mediaType.
+- Cambio de mediaType aplica automaticamente.
+
+Caso 4: Scope accesorios
+- Con category=accesorios, solo quedan filtros generales.
+- size/gender/mediaType no se muestran.
+
+Caso 5: Cambio entre scopes
+- Al pasar de ropa a accesorios, se limpian size/gender.
+- Al pasar a media, aparece mediaType y no vuelven size/gender.
+
+Caso 6: Precios
+- minPrice y maxPrice actualizan listado al cambiar.
+- minPrice > maxPrice no rompe; maxPrice se ignora temporalmente.
+
+Caso 7: Validacion tecnica
+- Lint ejecutado con cmd /c npm run lint.
+- Resultado: sin errores nuevos en los archivos modificados para Tienda; permanece un error preexistente fuera de alcance en home-header-carousel.
+
+Caso 8: Validacion de consola React
+- Se verifico que al cambiar filtros ya no aparece el warning "Cannot update a component (Router) while rendering a different component (StoreFiltersSidebar)".
+
+11. Resultado final
+- Tienda ahora tiene filtros dinamicos por categoria/subcategoria.
+- Los filtros se aplican automaticamente sin botones Aplicar/Limpiar.
+- Se mantiene diseno actual (panel desktop + modal movil) y responsive.
+- Se conserva la logica con query params y se refuerza coherencia en cliente y backend.
+
+12. Ajuste adicional posterior
+- Regla solicitada: cuando la categoria esta en "Todas" (sin categoria seleccionada), se muestran todos los bloques de filtros:
+  - Generales
+  - Ropa
+  - Media
+  - Accesorios
+- Para Accesorios se muestra su bloque informativo indicando que no tiene filtros especificos y que aplica filtros generales.
+- Se ajusto la normalizacion para permitir filtros especificos (ropa/media) cuando no hay scope cerrado por categoria, evitando que se limpien en estado "Todas".

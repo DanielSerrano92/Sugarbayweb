@@ -4,6 +4,7 @@ import StoreFiltersSidebar from "@/components/store/store-filters-sidebar";
 import StorePagination from "@/components/store/store-pagination";
 import StoreProductCard from "@/components/store/store-product-card";
 import { getStoreCatalog } from "@/lib/repositories/store";
+import { serializeStoreFilters } from "@/lib/store/filters";
 import type { StoreQueryParams } from "@/lib/store/types";
 
 const STORE_HEADER_IMAGE_SRC =
@@ -28,6 +29,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
   const params = await searchParams;
   const catalog = await getStoreCatalog(params);
   const hasNoProducts = catalog.products.length === 0;
+  const storeFiltersKey = serializeStoreFilters(catalog.filters).toString();
   const headerImageSrc =
     catalog.filters.category === "ropa"
       ? STORE_ROPA_HEADER_IMAGE_SRC
@@ -50,6 +52,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
           <div className="concert-top-controls concert-top-controls-right store-top-controls">
             <div className="store-mobile-filters-trigger lg:hidden">
               <StoreFiltersSidebar
+                key={`store-mobile-filters-${storeFiltersKey}`}
                 categories={catalog.categories}
                 filters={catalog.filters}
                 mode="icon-modal"
@@ -66,6 +69,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
 
         <div className="store-catalog-sidebar hidden lg:block lg:col-start-1 lg:row-start-2">
           <StoreFiltersSidebar
+            key={`store-desktop-filters-${storeFiltersKey}`}
             categories={catalog.categories}
             filters={catalog.filters}
           />

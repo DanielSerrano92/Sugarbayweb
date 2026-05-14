@@ -5,6 +5,7 @@ import {
   getStorePageSize,
   parseStoreFilters,
 } from "@/lib/store/filters";
+import { normalizeStoreFiltersByScope } from "@/lib/store/filter-scope";
 import {
   MEDIA_TYPES,
   type ApparelGenderFilter,
@@ -385,8 +386,9 @@ function buildOrderBy(sort: StoreFilters["sort"]): Prisma.ProductOrderByWithRela
 export async function getStoreCatalog(
   searchParams: StoreQueryParams,
 ): Promise<StoreCatalogResult> {
-  const filters = parseStoreFilters(searchParams);
+  const parsedFilters = parseStoreFilters(searchParams);
   const categories = await getStoreCategories();
+  const filters = normalizeStoreFiltersByScope(parsedFilters, categories);
   const where = buildStoreWhere(filters);
 
   const records = await withDatabaseFallback(
