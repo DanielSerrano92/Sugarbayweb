@@ -50,7 +50,6 @@ export default function VideoFilters({ basePath, filters }: VideoFiltersProps) {
           >
             <option value="all">Todo</option>
             <option value="collection">Colecciones</option>
-            <option value="single">Videos unicos</option>
           </select>
         </div>
 

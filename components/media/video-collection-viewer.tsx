@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { VideoEmbedItem } from "@/lib/media/types";
 import { formatDate } from "@/lib/utils";
 
 type VideoCollectionViewerProps = {
   videos: VideoEmbedItem[];
+  selectedVideoSlug?: string;
 };
 
 function RetroCalendarIcon() {
@@ -44,15 +45,32 @@ function formatDuration(seconds: number | null): string {
 
 export default function VideoCollectionViewer({
   videos,
+  selectedVideoSlug,
 }: VideoCollectionViewerProps) {
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(
-    videos[0]?.slug ?? null,
+  const availableSlugs = useMemo(
+    () => new Set(videos.map((video) => video.slug)),
+    [videos],
   );
+  const resolvedInitialSlug =
+    selectedVideoSlug && availableSlugs.has(selectedVideoSlug)
+      ? selectedVideoSlug
+      : (videos[0]?.slug ?? null);
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(resolvedInitialSlug);
+  const selectedTrackRef = useRef<HTMLButtonElement | null>(null);
 
   const selectedVideo = useMemo(
     () => videos.find((video) => video.slug === selectedSlug) ?? videos[0],
     [selectedSlug, videos],
   );
+
+  useEffect(() => {
+    if (!selectedTrackRef.current) return;
+
+    selectedTrackRef.current.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth",
+    });
+  }, [selectedSlug]);
 
   if (videos.length === 0 || !selectedVideo) return null;
 
@@ -70,6 +88,7 @@ export default function VideoCollectionViewer({
                 key={video.id}
                 type="button"
                 onClick={() => setSelectedSlug(video.slug)}
+                ref={video.slug === selectedVideo.slug ? selectedTrackRef : null}
                 className={`retro-music-modal-track ${
                   video.slug === selectedVideo.slug
                     ? "retro-video-track-active"

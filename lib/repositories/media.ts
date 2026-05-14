@@ -12,8 +12,8 @@ import type {
   PhotoAlbumsCatalogResult,
   PhotoFilterType,
   VideoCatalogCard,
+  VideoCollectionDetail,
   VideoCatalogResult,
-  VideoDetailResult,
   VideoEmbedItem,
 } from "@/lib/media/types";
 import {
@@ -102,33 +102,10 @@ type VideoCollectionRecord = Prisma.VideoCollectionGetPayload<{
   };
 }>;
 
-type VideoSingleRecord = Prisma.VideoItemGetPayload<{
-  select: {
-    id: true;
-    slug: true;
-    title: true;
-    description: true;
-    platform: true;
-    videoUrl: true;
-    thumbnailUrl: true;
-    durationSeconds: true;
-    publishedAt: true;
-    createdAt: true;
-    videoCollection: {
-      select: {
-        id: true;
-        slug: true;
-        title: true;
-        coverImageUrl: true;
-        isPublished: true;
-      };
-    };
-  };
-}>;
-
 type HomeVideoCollectionRecord = Prisma.VideoCollectionGetPayload<{
   select: {
     id: true;
+    slug: true;
     title: true;
     videos: {
       select: {
@@ -504,6 +481,7 @@ export async function getHomeVideoBandItems(limit?: number): Promise<HomeVideoBa
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
         select: {
           id: true,
+          slug: true,
           title: true,
           videos: {
             select: {
@@ -527,7 +505,8 @@ export async function getHomeVideoBandItems(limit?: number): Promise<HomeVideoBa
     .flatMap((collection) =>
       collection.videos.map((video) => ({
         id: video.id,
-        slug: video.slug,
+        collectionSlug: collection.slug,
+        videoSlug: video.slug,
         title: video.title,
         collectionTitle: collection.title,
         previewImageUrl: resolveVideoPreviewImageUrl(
@@ -552,7 +531,8 @@ export async function getHomeVideoBandItems(limit?: number): Promise<HomeVideoBa
   return items
     .map((item) => ({
       id: item.id,
-      slug: item.slug,
+      collectionSlug: item.collectionSlug,
+      videoSlug: item.videoSlug,
       title: item.title,
       collectionTitle: item.collectionTitle,
       previewImageUrl: item.previewImageUrl,
@@ -560,7 +540,9 @@ export async function getHomeVideoBandItems(limit?: number): Promise<HomeVideoBa
     }));
 }
 
-export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailResult | null> {
+export async function getVideoDetailBySlug(
+  slug: string,
+): Promise<VideoCollectionDetail | null> {
   const collection = await withDatabaseFallback(
     () =>
       prisma.videoCollection.findFirst({
@@ -612,75 +594,5 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
       videos,
     };
   }
-
-  const single = await withDatabaseFallback(
-    () =>
-      prisma.videoItem.findFirst({
-        where: {
-          slug,
-          videoCollection: {
-            isPublished: true,
-          },
-        },
-        select: {
-          id: true,
-          slug: true,
-          title: true,
-          description: true,
-          platform: true,
-          videoUrl: true,
-          thumbnailUrl: true,
-          durationSeconds: true,
-          publishedAt: true,
-          createdAt: true,
-          videoCollection: {
-            select: {
-              id: true,
-              slug: true,
-              title: true,
-              coverImageUrl: true,
-              isPublished: true,
-            },
-          },
-        },
-      }),
-    null as VideoSingleRecord | null,
-  );
-
-  if (!single || !single.videoCollection.isPublished) return null;
-
-  const publishedAt = single.publishedAt ?? single.createdAt;
-  const durationSeconds = await resolveVideoDurationSeconds(
-    single.platform,
-    single.videoUrl,
-    single.durationSeconds,
-  );
-
-  return {
-    kind: "single",
-    id: single.id,
-    slug: single.slug,
-    title: single.title,
-    description: single.description,
-    coverImageUrl: single.thumbnailUrl ?? single.videoCollection.coverImageUrl,
-    dateIso: publishedAt.toISOString(),
-    video: {
-      id: single.id,
-      slug: single.slug,
-      title: single.title,
-      youtubeId: extractYouTubeVideoId(single.videoUrl),
-      type: inferYouTubeVideoType(single.videoUrl),
-      description: single.description,
-      platform: single.platform,
-      videoUrl: single.videoUrl,
-      embedUrl: resolveVideoEmbedUrl(single.platform, single.videoUrl),
-      thumbnailUrl: single.thumbnailUrl,
-      durationSeconds,
-      publishedAtIso: publishedAt.toISOString(),
-    },
-    collection: {
-      slug: single.videoCollection.slug,
-      title: single.videoCollection.title,
-    },
-  };
+  return null;
 }

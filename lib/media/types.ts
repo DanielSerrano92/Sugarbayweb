@@ -18,7 +18,7 @@ export const PHOTO_FILTER_TYPES = [
 ] as const;
 export type PhotoFilterType = (typeof PHOTO_FILTER_TYPES)[number];
 
-export const VIDEO_FILTER_TYPES = ["all", "collection", "single"] as const;
+export const VIDEO_FILTER_TYPES = ["all", "collection"] as const;
 export type VideoFilterType = (typeof VIDEO_FILTER_TYPES)[number];
 
 export type MediaPhotoQueryParams = {
@@ -96,7 +96,7 @@ export type MediaVideoFilters = {
 
 export type VideoCatalogCard = {
   id: string;
-  kind: "collection" | "single";
+  kind: "collection";
   slug: string;
   title: string;
   description: string | null;
@@ -132,23 +132,6 @@ export type VideoCollectionDetail = {
   videos: VideoEmbedItem[];
 };
 
-export type VideoSingleDetail = {
-  kind: "single";
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  coverImageUrl: string | null;
-  dateIso: string;
-  video: VideoEmbedItem;
-  collection: {
-    slug: string;
-    title: string;
-  } | null;
-};
-
-export type VideoDetailResult = VideoCollectionDetail | VideoSingleDetail;
-
 export type VideoCatalogResult = {
   filters: MediaVideoFilters;
   items: VideoCatalogCard[];
@@ -159,7 +142,8 @@ export type VideoCatalogResult = {
 
 export type HomeVideoBandItem = {
   id: string;
-  slug: string;
+  collectionSlug: string;
+  videoSlug: string;
   title: string;
   collectionTitle: string;
   previewImageUrl: string | null;
