@@ -142,6 +142,10 @@ Caso 8: Validacion de consola React
   - Generales
   - Ropa
   - Media
-  - Accesorios
-- Para Accesorios se muestra su bloque informativo indicando que no tiene filtros especificos y que aplica filtros generales.
+- Se aplico un bloque visual inicial de Accesorios como mensaje informativo (sin filtros especificos).
 - Se ajusto la normalizacion para permitir filtros especificos (ropa/media) cuando no hay scope cerrado por categoria, evitando que se limpien en estado "Todas".
+
+13. Ajuste adicional posterior 2
+- Se elimino el bloque visual informativo de "Filtros accesorios" por solicitud.
+- Estado final en categoria "Accesorios": solo se muestran los filtros generales, sin caja ni texto adicional.
+- Estado final en categoria "Todas": se muestran los filtros generales y los filtros especificos de Ropa/Media, sin bloque informativo de Accesorios.
