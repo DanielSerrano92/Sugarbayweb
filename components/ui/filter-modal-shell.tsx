@@ -6,6 +6,8 @@ type FilterModalShellProps = {
   modalId: string;
   title?: string;
   buttonLabel?: string;
+  windowClassName?: string;
+  titlebarClassName?: string;
   children: ReactNode;
 };
 
@@ -13,6 +15,8 @@ export default function FilterModalShell({
   modalId,
   title = "Filtros",
   buttonLabel = "Abrir filtros",
+  windowClassName,
+  titlebarClassName,
   children,
 }: FilterModalShellProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,10 +77,18 @@ export default function FilterModalShell({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="win-window retro-filters-modal relative z-10 w-full max-w-lg overflow-hidden"
+            className={[
+              "win-window retro-filters-modal relative z-10 w-full max-w-lg overflow-hidden",
+              windowClassName,
+            ].filter(Boolean).join(" ")}
             onClick={handleContentClick}
           >
-            <div className="win-titlebar flex items-center justify-between gap-4">
+            <div
+              className={[
+                "win-titlebar flex items-center justify-between gap-4",
+                titlebarClassName,
+              ].filter(Boolean).join(" ")}
+            >
               <span id={titleId}>{title}</span>
               <button
                 type="button"

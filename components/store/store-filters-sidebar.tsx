@@ -144,7 +144,7 @@ export default function StoreFiltersSidebar({
   );
   const showApparelFilterFields = shouldShowApparelFilters(activeScopeCategory);
   const showMediaFilterFields = shouldShowMediaFilters(activeScopeCategory);
-  const formClassName = "space-y-4 p-4 text-black store-filters-form";
+  const formClassName = "retro-concert-body space-y-4 p-4 text-black store-filters-form";
   const labelClassName = "mb-1.5 block text-sm font-bold text-black store-filters-label";
   const inputClassName = "win-input";
   const selectClassName = "win-input";
@@ -424,6 +424,8 @@ export default function StoreFiltersSidebar({
         modalId="store-filters-modal"
         title="Filtros tienda"
         buttonLabel="Abrir filtros de tienda"
+        windowClassName="retro-concert-card store-filters-window store-filters-window-modal"
+        titlebarClassName="retro-concert-header store-filters-titlebar"
       >
         <div className="store-filters-modal-content">{form}</div>
       </FilterModalShell>
@@ -431,8 +433,8 @@ export default function StoreFiltersSidebar({
   }
 
   return (
-    <aside className="win-window store-filters-window h-fit overflow-hidden">
-      <div className="win-titlebar store-filters-titlebar">
+    <aside className="retro-concert-card store-filters-window h-fit overflow-hidden">
+      <div className="retro-concert-header store-filters-titlebar">
         <span>Filtros tienda</span>
       </div>
       <div className="store-filters-modal-content">{form}</div>
