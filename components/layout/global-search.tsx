@@ -148,11 +148,22 @@ export default function GlobalSearch({
     const nextRect = trigger.getBoundingClientRect();
     if (nextRect.width <= 0 || nextRect.height <= 0) return;
 
-    setPinAnchor({
-      top: nextRect.top,
+    const absoluteTop = nextRect.top + window.scrollY;
+    const nextAnchor = {
+      top: absoluteTop,
       left: nextRect.left,
       width: nextRect.width,
       height: nextRect.height,
+    };
+
+    setPinAnchor((currentAnchor) => {
+      const changed =
+        Math.abs(currentAnchor.top - nextAnchor.top) > 0.5 ||
+        Math.abs(currentAnchor.left - nextAnchor.left) > 0.5 ||
+        Math.abs(currentAnchor.width - nextAnchor.width) > 0.5 ||
+        Math.abs(currentAnchor.height - nextAnchor.height) > 0.5;
+
+      return changed ? nextAnchor : currentAnchor;
     });
   }, []);
 
@@ -172,24 +183,39 @@ export default function GlobalSearch({
     if (!showFloatingBubble) return;
 
     const threshold = Math.max(0, floatingThreshold);
-    const syncPinnedState = () => {
+    const syncPinnedState = (shouldCaptureAnchor: boolean) => {
       const currentScroll = window.scrollY;
-      const shouldPin = window.scrollY > threshold;
+      const shouldPin = currentScroll > threshold;
 
-      if (currentScroll <= 8) {
+      if (shouldCaptureAnchor || currentScroll <= 8) {
         captureAnchor();
       }
 
-      setIsPinned(shouldPin);
+      setIsPinned((currentPinned) =>
+        currentPinned === shouldPin ? currentPinned : shouldPin,
+      );
     };
 
-    syncPinnedState();
-    window.addEventListener("scroll", syncPinnedState, { passive: true });
-    window.addEventListener("resize", syncPinnedState);
+    const onScroll = () => syncPinnedState(false);
+    const onResize = () => syncPinnedState(true);
+
+    syncPinnedState(true);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => syncPinnedState(true))
+        : null;
+
+    if (resizeObserver && triggerRef.current) {
+      resizeObserver.observe(triggerRef.current);
+    }
 
     return () => {
-      window.removeEventListener("scroll", syncPinnedState);
-      window.removeEventListener("resize", syncPinnedState);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      resizeObserver?.disconnect();
     };
   }, [captureAnchor, floatingThreshold, showFloatingBubble]);
 

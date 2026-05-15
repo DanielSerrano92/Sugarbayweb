@@ -138,3 +138,62 @@ Se incremento dinamicamente el tamano del boton fijo respecto al ancla original 
 
 6. Resultado
 El boton fijo mantiene la misma ubicacion visual, pero con contenedor mas grande y el icono ya no sobresale.
+
+CORRECCION RESPONSIVE DEL CONTENEDOR DEL BOTON DE BUSQUEDA FIJO
+
+1. Objetivo de la correccion
+Hacer que el contenedor del boton fijo de busqueda se adapte en tiempo real al cambiar el tamano de la ventana, igual que el icono, sin exigir volver arriba y bajar otra vez.
+
+2. Problema detectado
+- El icono era responsive.
+- El contenedor no se adaptaba correctamente durante resize.
+- La alineacion solo se corregia al volver al inicio y hacer scroll de nuevo.
+
+3. Causa tecnica encontrada
+El ancla (top/left/width/height) del boton fijo se recalculaba de forma incompleta en resize cuando el usuario estaba en mitad de pagina. Ademas, la coordenada vertical se tomaba relativa al viewport sin convertirla a una referencia estable para estado fijo.
+
+4. Cambios aplicados
+- Se ajusto la captura de ancla para usar coordenada absoluta de pagina:
+  - `top = rect.top + window.scrollY`
+- Se optimizo `setPinAnchor` para actualizar estado solo cuando hay cambios reales de medidas/posicion (umbral de diferencia).
+- Se separo la sincronizacion en handlers claros:
+  - `scroll` (mantiene estado pinned)
+  - `resize` (fuerza recaptura de ancla)
+- Se anadio `ResizeObserver` sobre el boton original del header para recapturar ancla en cambios de tamano del propio trigger.
+- Se limpio correctamente listeners y observer en el cleanup de `useEffect`.
+
+5. Como ahora icono y contenedor se comportan como una unica unidad
+El boton fijo sigue tomando como referencia el boton original del header, pero ahora recaptura su geometria al redimensionar. Eso mantiene icono + contenedor sincronizados en desktop/tablet/movil como una sola pieza visual.
+
+6. Uso de CSS responsive
+No se cambio la logica visual general ni la paleta ya aplicada. Se mantuvieron las clases/estilos del estado fijo y se corrigio el recalculo de medidas para que esos estilos respondan correctamente a breakpoints en tiempo real.
+
+7. Uso de resize / ResizeObserver
+- `window.resize`: fuerza recaptura de ancla inmediatamente.
+- `ResizeObserver`: observa cambios de tamano del boton original del header y vuelve a sincronizar.
+- Ambos se limpian con `removeEventListener` y `disconnect` en cleanup.
+
+8. Confirmacion de que no se cambio la logica de busqueda
+No se modifico la apertura/cierre del buscador ni su contenido. El boton fijo sigue abriendo el mismo `GlobalSearch`.
+
+9. Confirmacion de que no se cambio la logica visual general
+Se mantuvo:
+- posicion conceptual del boton fijo,
+- estilo azul vaporwave/neon,
+- comportamiento de scroll.
+Solo se corrigio la sincronizacion responsive del contenedor.
+
+10. Archivos modificados
+- components/layout/global-search.tsx
+- docs/proceso-burbuja-busqueda-header.txt
+
+11. Pruebas realizadas
+- Scroll normal: boton fijo visible y alineado.
+- Resize en mitad de pagina: contenedor e icono se adaptan juntos sin volver arriba.
+- Cambio desktop -> movil y movil -> desktop en scroll: posicion/tamano se recalculan automaticamente.
+- Apertura de busqueda tras resize: funciona igual.
+- npm run lint.
+- npm run build (falla externa por Google Fonts, no relacionada).
+
+12. Resultado final
+El boton fijo mantiene comportamiento y estilo actuales, pero ahora su contenedor responde correctamente a resize en tiempo real. Icono y contenedor permanecen alineados en todos los breakpoints sin depender de reset manual del scroll.
