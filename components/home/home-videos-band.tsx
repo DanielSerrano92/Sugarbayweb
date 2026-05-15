@@ -152,7 +152,7 @@ export default function HomeVideosBand({ items }: HomeVideosBandProps) {
             items.map((video) => (
               <Link
                 key={video.id}
-                href={`/media/videos/${video.slug}`}
+                href={`/media/videos/${video.collectionSlug}?video=${encodeURIComponent(video.videoSlug)}`}
                 className="home-videos-band-item"
                 role="listitem"
               >

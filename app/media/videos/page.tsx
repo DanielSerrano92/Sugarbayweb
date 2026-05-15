@@ -56,7 +56,7 @@ export default async function MediaVideosPage() {
   return (
     <PageShell
       eyebrow="Media / Videos"
-      title="Colecciones y videos unicos"
+      title="Colecciones de videos"
       description="Explora los videos oficiales de Sugarbay con filtros por fecha, tipo y orden."
       headerImageSrc={MEDIA_VIDEOS_PAGE_HEADER_IMAGE_SRC}
     >
@@ -85,17 +85,17 @@ export default async function MediaVideosPage() {
         {catalog.items.length === 0 ? (
           <EmptyState
             title="No hay colecciones de videos publicadas"
-            description="Publica al menos una coleccion o video para mostrar tarjetas en esta seccion."
+            description="Publica al menos una coleccion para mostrar tarjetas en esta seccion."
           />
         ) : (
           <div className="grid grid-cols-1 justify-items-center gap-6 sm:gap-7 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-4">
             {catalog.items.map((item) => (
               <article
-                key={`${item.kind}-${item.id}`}
+                key={item.id}
                 className="retro-concert-card w-full max-w-[26.5rem] overflow-hidden"
               >
                 <div className="retro-concert-header">
-                  {item.kind === "collection" ? "Coleccion" : "Video unico"}
+                  Coleccion
                 </div>
 
                 <div className="retro-concert-body">
