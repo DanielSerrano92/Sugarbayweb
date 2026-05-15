@@ -1,7 +1,6 @@
-import ConcertCardsClient from "@/components/concerts/concert-cards-client";
+﻿import ConcertCardsClient from "@/components/concerts/concert-cards-client";
 import ConcertFilters from "@/components/concerts/concert-filters";
 import ConcertPagination from "@/components/concerts/concert-pagination";
-import ConcertsNavigationLink from "@/components/concerts/concerts-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
 import { buildConcertBreadcrumb } from "@/lib/navigation/breadcrumbs";
@@ -58,11 +57,6 @@ export default async function ConcertsCatalogPage({
     catalog.filters.continent,
     catalog.filters.country ?? "",
   ].join("-");
-  const navigationLink =
-    period === "upcoming"
-      ? { href: "/concerts/past", label: "Anteriores" }
-      : { href: "/concerts/upcoming", label: "Próximos" };
-
   return (
     <PageShell
       eyebrow={pageMeta.eyebrow}
@@ -109,12 +103,8 @@ export default async function ConcertsCatalogPage({
             selectedConcertSlug={selectedConcertSlug}
           />
         )}
-
-        <ConcertsNavigationLink
-          href={navigationLink.href}
-          label={navigationLink.label}
-        />
       </section>
     </PageShell>
   );
 }
+

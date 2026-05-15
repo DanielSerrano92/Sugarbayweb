@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import EmptyState from "@/components/ui/empty-state";
-import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
 import { buildMediaVideosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import VideoFilters from "@/components/media/video-filters";
@@ -157,7 +156,6 @@ export default async function MediaVideosPage() {
           </div>
         )}
 
-        <IconNavigationLink href="/media/photos" label="Fotos" />
       </section>
     </PageShell>
   );

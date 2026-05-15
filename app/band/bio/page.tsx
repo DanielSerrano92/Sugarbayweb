@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import BandBioModals from "@/components/band/band-bio-modals";
-import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
 import { buildBandBioBreadcrumb } from "@/lib/navigation/breadcrumbs";
 
@@ -24,7 +23,6 @@ export default function BandBioPage() {
       contentClassName="space-y-6 pt-0"
     >
       <BandBioModals />
-      <IconNavigationLink href="/band/news" label="Noticias" />
     </PageShell>
   );
 }

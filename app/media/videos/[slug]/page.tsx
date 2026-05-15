@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 
 import VideoCollectionViewer from "@/components/media/video-collection-viewer";
 import EmptyState from "@/components/ui/empty-state";
-import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
 import { buildMediaVideosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getVideoDetailBySlug } from "@/lib/repositories/media";
@@ -90,7 +89,6 @@ export default async function MediaVideoDetailPage({
         />
       )}
 
-      <IconNavigationLink href="/media/videos" label="Videos" />
     </PageShell>
   );
 }
