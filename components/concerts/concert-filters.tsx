@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import Link from "next/link";
 
+import FilterModalShell from "@/components/ui/filter-modal-shell";
 import {
   continentOptions,
   getCountriesForContinent,
@@ -28,7 +29,6 @@ export default function ConcertFilters({
   filters,
   mode = "panel",
 }: ConcertFiltersProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContinent, setSelectedContinent] =
     useState<ConcertContinent>(filters.continent);
   const [selectedCountry, setSelectedCountry] = useState(() =>
@@ -61,26 +61,6 @@ export default function ConcertFilters({
       setSelectedCountry("");
     }
   };
-
-  useEffect(() => {
-    if (!isIconMode || !isModalOpen) return;
-
-    const originalOverflow = document.body.style.overflow;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsModalOpen(false);
-      }
-    };
-
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [isIconMode, isModalOpen]);
 
   const form = (
     <form method="get" className={formClassName}>
@@ -156,7 +136,6 @@ export default function ConcertFilters({
         <Link
           href={basePath}
           className={resetButtonClassName}
-          onClick={() => setIsModalOpen(false)}
         >
           Reset
         </Link>
@@ -173,50 +152,5 @@ export default function ConcertFilters({
     );
   }
 
-  return (
-    <>
-      <button
-        type="button"
-        className="retro-folder-button"
-        aria-label="Abrir filtros"
-        aria-expanded={isModalOpen}
-        aria-controls="concert-filters-modal"
-        onClick={() => setIsModalOpen(true)}
-      >
-        <span className="retro-folder-icon" aria-hidden="true" />
-      </button>
-
-      {isModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <button
-            type="button"
-            className="retro-modal-overlay"
-            aria-label="Cerrar modal de filtros"
-            onClick={() => setIsModalOpen(false)}
-          />
-
-          <section
-            id="concert-filters-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="concert-filters-title"
-            className="win-window retro-filters-modal relative z-10 w-full max-w-lg overflow-hidden"
-          >
-            <div className="win-titlebar flex items-center justify-between gap-4">
-              <span id="concert-filters-title">Filtros</span>
-              <button
-                type="button"
-                className="win-button retro-win-close"
-                aria-label="Cerrar modal de filtros"
-                onClick={() => setIsModalOpen(false)}
-              >
-                X
-              </button>
-            </div>
-            {form}
-          </section>
-        </div>
-      ) : null}
-    </>
-  );
+  return <FilterModalShell modalId="concert-filters-modal">{form}</FilterModalShell>;
 }

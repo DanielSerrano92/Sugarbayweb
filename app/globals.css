@@ -1976,13 +1976,18 @@ p {
   .retro-modal-overlay {
     position: absolute;
     inset: 0;
+    z-index: 0;
     border: 0;
-    background: rgb(0 0 0 / 62%);
+    background: rgb(0 0 0 / 66%);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
   }
 
   .retro-filters-modal {
-    max-height: 88vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    max-width: min(32rem, 100%);
+    max-height: min(46rem, calc(100dvh - 1rem));
   }
 
   .retro-vapor-overlay {
@@ -2371,6 +2376,10 @@ p {
   @media (max-width: 639px) {
     .auth-retro-modal,
     .cart-modal-window {
+      max-height: calc(100dvh - 0.5rem);
+    }
+
+    .retro-filters-modal {
       max-height: calc(100dvh - 0.5rem);
     }
 

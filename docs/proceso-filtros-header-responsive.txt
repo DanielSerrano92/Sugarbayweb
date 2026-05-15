@@ -1,0 +1,91 @@
+1. Objetivo de la tarea
+Corregir de forma global la superposicion entre el header y las ventanas/modales/drawers de filtros para que los filtros siempre se abran por encima del header, con comportamiento responsive coherente y sin tocar la logica de filtrado.
+
+2. Problema inicial detectado
+- Al abrir filtros en varias paginas, el header quedaba visualmente por encima del modal/panel.
+- El area superior del filtro (incluido boton de cierre) podia quedar parcialmente tapada.
+- En movil/tablet la experiencia era menos consistente por altura disponible y scroll del contenido del filtro.
+- Habia implementaciones de modal de filtros no unificadas (componente compartido + implementacion manual).
+
+3. Paginas revisadas
+- Tienda: `app/store/page.tsx`
+- Fotos: `app/media/photos/page.tsx`
+- Videos: `app/media/videos/page.tsx`
+- Conciertos (proximos/anteriores): `app/concerts/upcoming/page.tsx`, `app/concerts/past/page.tsx` (via `ConcertsCatalogPage`)
+- Noticias: `app/band/news/page.tsx`
+- Musica: `app/musica/page.tsx`
+
+4. Componentes revisados
+- `components/ui/filter-modal-shell.tsx`
+- `components/store/store-filters-sidebar.tsx`
+- `components/media/photo-filters.tsx`
+- `components/media/video-filters.tsx`
+- `components/band/news-filters.tsx`
+- `components/music/music-filters.tsx`
+- `components/concerts/concert-filters.tsx`
+- `components/layout/header-client.tsx`
+- Estilos globales: `app/globals.css`
+
+5. Causa tecnica del problema
+- Los modales de filtros no estaban totalmente unificados en una sola estrategia de render.
+- Parte de la capa de filtros dependia de `fixed` dentro del arbol de pagina, sin una salida global unificada a `document.body`.
+- Habia diferencias de implementacion entre filtros (componente compartido vs modal manual de conciertos), lo que provocaba jerarquias de capa y comportamiento responsive no completamente consistentes.
+
+6. Cambios realizados paso a paso
+1) Se actualizo `components/ui/filter-modal-shell.tsx` para usar `createPortal` y renderizar el modal en `document.body`.
+2) En ese shell se unifico la capa del modal:
+   - contenedor: `fixed inset-0 z-[80]`
+   - ventana de filtro: `z-[81]`
+   - overlay de fondo en toda la pantalla.
+3) Se ajusto el layout del shell para responsive:
+   - en movil abre con `items-start` y `overflow-y-auto` para evitar cortes.
+   - en desktop mantiene centrado (`sm:items-center`).
+4) Se agrego contenedor interno con `min-h-0 overflow-y-auto` para scroll del contenido del filtro cuando no cabe en pantalla.
+5) Se migro `components/concerts/concert-filters.tsx` para reutilizar `FilterModalShell` en modo icono/modal y eliminar implementacion modal duplicada.
+6) Se ajusto `app/globals.css`:
+   - `.retro-modal-overlay`: mejor cobertura visual y blur suave.
+   - `.retro-filters-modal`: `display: flex`, `flex-direction: column`, `max-height` con `dvh`, y limites consistentes.
+   - media query movil para altura maxima de `.retro-filters-modal`.
+7) Se ajusto `components/layout/header-client.tsx` a `className="relative z-40 w-full"` para explicitar jerarquia del header sobre contenido normal.
+
+7. Explicacion de la solucion global aplicada
+- La solucion global se concentra en `FilterModalShell`, que ya era el punto comun para la mayoria de filtros.
+- Al renderizar por portal en `document.body`, los modales de filtros dejan de depender de contextos locales del layout de pagina y se asegura que el overlay cubra tambien el area del header.
+- Al migrar conciertos al mismo shell, todos los filtros modales quedan con el mismo comportamiento de capas, cierre, responsive y scroll interno.
+
+8. Errores encontrados y solucion aplicada
+- Lint:
+  - Estado: sin errores de lint tras cambios de esta tarea.
+  - Quedo un warning previo no relacionado: `lib/media/video.ts` (`parseYouTubeVideoId` sin uso).
+- Build:
+  - Error no relacionado con estos cambios: fallo al descargar fuente Google `Press Start 2P` en `next build` por conectividad a `fonts.googleapis.com`.
+
+9. Confirmacion de que la logica de filtros no se modifico
+- No se cambiaron campos de filtros ni reglas de consulta.
+- No se cambiaron query params de filtrado.
+- No se tocaron Prisma, seed, base de datos ni datos estaticos.
+- Solo se cambio comportamiento visual/estructural del contenedor modal y su jerarquia de capas.
+
+10. Pruebas responsive realizadas
+- Se verifico en codigo la unificacion para:
+  - Tienda (modal movil de filtros)
+  - Fotos
+  - Videos
+  - Conciertos
+  - Noticias
+  - Musica
+- Validaciones tecnicas ejecutadas:
+  - `npm.cmd run lint` (ok, 1 warning previo no relacionado)
+  - `npm.cmd run build` (falla por fuente Google externa, no por los filtros)
+- Verificaciones funcionales objetivo:
+  - overlay y ventana modal por encima del header.
+  - boton de cierre siempre visible.
+  - scroll interno disponible cuando el contenido del filtro excede la altura.
+
+11. Resultado final
+Se dejo una solucion global y mantenible para filtros modales:
+- todos los filtros modales se abren por encima del header;
+- overlay cubre correctamente toda la pantalla (incluido header);
+- comportamiento responsive coherente en desktop/tablet/movil;
+- contenido interno de filtros con scroll cuando hace falta;
+- sin cambios en logica de filtrado ni en datos.
