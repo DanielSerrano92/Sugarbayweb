@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import MusicCatalogClient from "@/components/music/music-catalog-client";
 import MusicFiltersPanel from "@/components/music/music-filters";
 import MusicPagination from "@/components/music/music-pagination";
-import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
 import { buildMusicBreadcrumb } from "@/lib/navigation/breadcrumbs";
@@ -31,17 +30,6 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
     currentType === "song"
       ? MUSIC_PAGE_HEADER_IMAGE_SONGS_SRC
       : MUSIC_PAGE_HEADER_IMAGE_ALBUMS_SRC;
-
-  const hasDirectionalSwitch = currentType === "song" || currentType === "album";
-  const nextType = currentType === "song" ? "album" : "song";
-  const nextLabel = currentType === "song" ? "Albumes" : "Canciones";
-
-  const switchParams = new URLSearchParams();
-  switchParams.set("type", nextType);
-  switchParams.set("sort", catalog.filters.sort);
-  if (catalog.filters.from) switchParams.set("from", catalog.filters.from);
-  if (catalog.filters.to) switchParams.set("to", catalog.filters.to);
-  const switchHref = `/musica?${switchParams.toString()}`;
 
   return (
     <PageShell
@@ -73,7 +61,7 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
             title="No hay resultados para estos filtros"
             description="Prueba otro rango de fechas, tipo o criterio de orden."
           />
-        ) : (
+      ) : (
           <MusicCatalogClient
             items={catalog.items}
             songsBySlug={catalog.songsBySlug}
@@ -81,10 +69,6 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
           />
         )}
       </section>
-
-      {hasDirectionalSwitch ? (
-        <IconNavigationLink href={switchHref} label={nextLabel} />
-      ) : null}
     </PageShell>
   );
 }

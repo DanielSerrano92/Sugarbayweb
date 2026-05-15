@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import PhotoGalleryClient from "@/components/media/photo-gallery-client";
 import EmptyState from "@/components/ui/empty-state";
-import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
 import { buildMediaPhotosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getPhotoAlbumDetailBySlug } from "@/lib/repositories/media";
@@ -56,7 +55,6 @@ export default async function PhotoAlbumDetailPage({ params }: PhotoAlbumDetailP
         <PhotoGalleryClient photos={album.photos} />
       )}
 
-      <IconNavigationLink href="/media/photos" label="Fotos" />
     </PageShell>
   );
 }
