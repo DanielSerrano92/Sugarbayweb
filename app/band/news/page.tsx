@@ -5,6 +5,7 @@ import BandNewsPagination from "@/components/band/news-pagination";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
+import { buildBandNewsBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import type { BandNewsQueryParams } from "@/lib/band/types";
 import { getBandNewsCatalog } from "@/lib/repositories/band";
 
@@ -30,26 +31,29 @@ export default async function BandNewsPage({ searchParams }: BandNewsPageProps) 
   const params = await searchParams;
   const catalog = await getBandNewsCatalog(params);
   const selectedNewsSlug = pickSingleQueryParam(params.news);
+  const selectedNewsTitle = selectedNewsSlug
+    ? catalog.items.find((item) => item.slug === selectedNewsSlug)?.title
+    : undefined;
 
   return (
     <PageShell
       eyebrow="Band"
       title="Noticias de Sugarbay"
       description="Actualidad oficial de la banda con detalle expandible y enlaces relacionados."
+      breadcrumbItems={buildBandNewsBreadcrumb(selectedNewsTitle)}
+      toolbarLeft={(
+        <div className="concert-top-controls">
+          <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
+          <BandNewsPagination
+            basePath="/band/news"
+            filters={catalog.filters}
+            totalPages={catalog.totalPages}
+          />
+        </div>
+      )}
       headerImageSrc={NEWS_PAGE_HEADER_IMAGE_SRC}
     >
       <section>
-        <div className="mb-5 flex justify-end">
-          <div className="concert-top-controls concert-top-controls-right">
-            <BandNewsFilters basePath="/band/news" filters={catalog.filters} />
-            <BandNewsPagination
-              basePath="/band/news"
-              filters={catalog.filters}
-              totalPages={catalog.totalPages}
-            />
-          </div>
-        </div>
-
         {catalog.totalPages > 1 ? (
           <p className="mb-4 text-sm text-zinc-600">
             Mostrando {catalog.items.length} de {catalog.totalItems} noticias.

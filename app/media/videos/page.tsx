@@ -5,6 +5,7 @@ import Link from "next/link";
 import EmptyState from "@/components/ui/empty-state";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
+import { buildMediaVideosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import VideoFilters from "@/components/media/video-filters";
 import VideoPagination from "@/components/media/video-pagination";
 import { getVideoCatalog } from "@/lib/repositories/media";
@@ -58,20 +59,20 @@ export default async function MediaVideosPage() {
       eyebrow="Media / Videos"
       title="Colecciones de videos"
       description="Explora los videos oficiales de Sugarbay con filtros por fecha, tipo y orden."
+      breadcrumbItems={buildMediaVideosBreadcrumb()}
+      toolbarLeft={(
+        <div className="concert-top-controls">
+          <VideoFilters basePath="/media/videos" filters={catalog.filters} />
+          <VideoPagination
+            basePath="/media/videos"
+            filters={catalog.filters}
+            totalPages={catalog.totalPages}
+          />
+        </div>
+      )}
       headerImageSrc={MEDIA_VIDEOS_PAGE_HEADER_IMAGE_SRC}
     >
       <section>
-        <div className="mb-5 flex justify-end">
-          <div className="concert-top-controls concert-top-controls-right">
-            <VideoFilters basePath="/media/videos" filters={catalog.filters} />
-            <VideoPagination
-              basePath="/media/videos"
-              filters={catalog.filters}
-              totalPages={catalog.totalPages}
-            />
-          </div>
-        </div>
-
         {catalog.totalPages > 1 ? (
           <p className="mb-4 text-sm text-zinc-600">
             Mostrando {catalog.items.length} de {catalog.totalItems} resultados.

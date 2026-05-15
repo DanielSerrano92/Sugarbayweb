@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import RetroBreadcrumb, { type BreadcrumbItem } from "@/components/navigation/retro-breadcrumb";
 
 type PageShellProps = {
   title: string;
@@ -8,6 +9,8 @@ type PageShellProps = {
   actions?: ReactNode;
   headerImageSrc?: string;
   headerOverlay?: ReactNode;
+  breadcrumbItems?: BreadcrumbItem[];
+  toolbarLeft?: ReactNode;
   children: ReactNode;
   contentClassName?: string;
   sectionClassName?: string;
@@ -24,6 +27,8 @@ export default function PageShell({
   actions,
   headerImageSrc,
   headerOverlay,
+  breadcrumbItems,
+  toolbarLeft,
   children,
   contentClassName,
   sectionClassName,
@@ -41,6 +46,11 @@ export default function PageShell({
   const contentClasses = [
     "page-content-wrapper",
     contentClassName ?? DEFAULT_CONTENT_CLASS_NAME,
+  ].join(" ");
+  const hasToolbar = Boolean(toolbarLeft) || Boolean(breadcrumbItems?.length);
+  const toolbarRowClassName = [
+    "page-toolbar-row",
+    toolbarLeft ? "page-toolbar-row-has-left" : "page-toolbar-row-no-left",
   ].join(" ");
 
   return (
@@ -74,7 +84,17 @@ export default function PageShell({
           {actions ? <div>{actions}</div> : null}
         </div>
       ) : null}
-      <div className={contentClasses}>{children}</div>
+      <div className={contentClasses}>
+        {hasToolbar ? (
+          <div className={toolbarRowClassName}>
+            {toolbarLeft ? <div className="page-toolbar-left">{toolbarLeft}</div> : null}
+            {breadcrumbItems?.length ? (
+              <RetroBreadcrumb items={breadcrumbItems} />
+            ) : null}
+          </div>
+        ) : null}
+        {children}
+      </div>
     </section>
   );
 }

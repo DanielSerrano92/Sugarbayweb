@@ -3,9 +3,10 @@ import PageShell from "@/components/ui/page-shell";
 import StoreFiltersSidebar from "@/components/store/store-filters-sidebar";
 import StorePagination from "@/components/store/store-pagination";
 import StoreProductCard from "@/components/store/store-product-card";
+import { buildStoreBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getStoreCatalog } from "@/lib/repositories/store";
 import { serializeStoreFilters } from "@/lib/store/filters";
-import type { StoreQueryParams } from "@/lib/store/types";
+import type { RootStoreCategory, StoreQueryParams } from "@/lib/store/types";
 
 const STORE_HEADER_IMAGE_SRC =
   "https://ik.imagekit.io/gq1enkszp/fotos/tienda.png?tr=w-2400,h-760,cm-extract,fo-top";
@@ -30,6 +31,13 @@ export default async function StorePage({ searchParams }: StorePageProps) {
   const catalog = await getStoreCatalog(params);
   const hasNoProducts = catalog.products.length === 0;
   const storeFiltersKey = serializeStoreFilters(catalog.filters).toString();
+  const breadcrumbCategory =
+    catalog.filters.category ??
+    (catalog.filters.subcategory
+      ? (catalog.categories.find((category) =>
+          category.children.some((child) => child.slug === catalog.filters.subcategory),
+        )?.slug as RootStoreCategory | undefined)
+      : undefined);
   const headerImageSrc =
     catalog.filters.category === "ropa"
       ? STORE_ROPA_HEADER_IMAGE_SRC
@@ -44,30 +52,32 @@ export default async function StorePage({ searchParams }: StorePageProps) {
       eyebrow="Store"
       title="Tienda oficial Sugarbay"
       description="Ropa, accesorios y media con filtros avanzados, ordenacion y paginacion."
+      breadcrumbItems={buildStoreBreadcrumb({
+        category: breadcrumbCategory,
+      })}
+      toolbarLeft={(
+        <div className="concert-top-controls store-top-controls">
+          <div className="store-mobile-filters-trigger lg:hidden">
+            <StoreFiltersSidebar
+              key={`store-mobile-filters-${storeFiltersKey}`}
+              categories={catalog.categories}
+              filters={catalog.filters}
+              mode="icon-modal"
+            />
+          </div>
+          <StorePagination
+            currentPage={catalog.filters.page}
+            totalPages={catalog.totalPages}
+            filters={catalog.filters}
+            className="store-pagination-shell"
+          />
+        </div>
+      )}
       headerImageSrc={headerImageSrc}
       contentClassName="space-y-6 store-catalog-content"
     >
       <section className="store-catalog-layout grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
-        <div className="store-results-toolbar mb-5 flex justify-end lg:col-start-2 lg:row-start-1 lg:mb-4">
-          <div className="concert-top-controls concert-top-controls-right store-top-controls">
-            <div className="store-mobile-filters-trigger lg:hidden">
-              <StoreFiltersSidebar
-                key={`store-mobile-filters-${storeFiltersKey}`}
-                categories={catalog.categories}
-                filters={catalog.filters}
-                mode="icon-modal"
-              />
-            </div>
-            <StorePagination
-              currentPage={catalog.filters.page}
-              totalPages={catalog.totalPages}
-              filters={catalog.filters}
-              className="store-pagination-shell"
-            />
-          </div>
-        </div>
-
-        <div className="store-catalog-sidebar hidden lg:block lg:col-start-1 lg:row-start-2">
+        <div className="store-catalog-sidebar hidden lg:block lg:col-start-1">
           <StoreFiltersSidebar
             key={`store-desktop-filters-${storeFiltersKey}`}
             categories={catalog.categories}
@@ -75,7 +85,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
           />
         </div>
 
-        <div className="lg:col-start-2 lg:row-start-2">
+        <div className="lg:col-start-2">
           <div className={`store-results-shell ${hasNoProducts ? "store-results-shell-empty" : ""}`}>
             {hasNoProducts ? (
               <article className="retro-concert-card store-empty-results-card w-full overflow-hidden">

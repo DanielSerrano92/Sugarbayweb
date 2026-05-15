@@ -1,0 +1,335 @@
+1. Objetivo de la tarea
+Crear un breadcrumb global reutilizable, con estetica retro/vaporwave coherente con Sugarbayweb, y ubicarlo en la parte derecha encima del contenido principal. En las paginas con filtros/paginacion, mover filtros/paginacion a la izquierda y mantener breadcrumb a la derecha en la misma fila.
+
+2. Estado inicial
+- No existia breadcrumb global.
+- Las paginas con filtros (Tienda, Fotos, Videos, Conciertos, Noticias, Musica) mostraban icono de filtros + paginacion alineados a la derecha.
+- No habia un componente comun para combinar "controles izquierda + breadcrumb derecha".
+
+3. Archivos revisados
+- components/ui/page-shell.tsx
+- app/globals.css
+- components/concerts/concerts-catalog-page.tsx
+- app/band/news/page.tsx
+- app/musica/page.tsx
+- app/media/photos/page.tsx
+- app/media/videos/page.tsx
+- app/media/photos/[slug]/page.tsx
+- app/media/videos/[slug]/page.tsx
+- app/store/page.tsx
+- app/store/[slug]/page.tsx
+- lib/services/navigation.ts
+- lib/repositories/store.ts
+- lib/repositories/media.ts
+
+4. Archivos creados
+- components/navigation/retro-breadcrumb.tsx
+- lib/navigation/breadcrumbs.ts
+- docs/proceso-breadcrumb-navegacion.txt
+
+5. Archivos modificados
+- components/ui/page-shell.tsx
+- app/globals.css
+- components/concerts/concerts-catalog-page.tsx
+- app/band/news/page.tsx
+- app/musica/page.tsx
+- app/media/photos/page.tsx
+- app/media/videos/page.tsx
+- app/media/photos/[slug]/page.tsx
+- app/media/videos/[slug]/page.tsx
+- app/store/page.tsx
+- app/store/[slug]/page.tsx
+
+6. Cambios realizados paso a paso
+1) Se creo `components/navigation/retro-breadcrumb.tsx`:
+   - Componente reutilizable con items `{ label, href?, active? }`.
+   - Enlaces clicables en niveles anteriores.
+   - Ultimo item como pagina activa (`aria-current="page"`).
+2) Se creo `lib/navigation/breadcrumbs.ts` para centralizar la logica:
+   - Breadcrumbs de conciertos, noticias, bio, musica, media fotos/videos y tienda.
+   - Helper para resolver categoria raiz de tienda:
+     - `resolveStoreRootCategory(...)`
+3) Se extendio `PageShell` con props:
+   - `breadcrumbItems`
+   - `toolbarLeft`
+   y se renderiza una fila superior comun:
+   - izquierda: `toolbarLeft` (filtros/paginacion)
+   - derecha: `RetroBreadcrumb`
+4) Se actualizo CSS en `app/globals.css`:
+   - Nuevas clases de layout: `page-toolbar-row`, `page-toolbar-left`.
+   - Estilos retro del breadcrumb: `retro-breadcrumb-*`.
+   - Ajustes responsive para wrap/scroll horizontal del breadcrumb.
+   - `concert-top-controls` ahora se justifica a la izquierda.
+5) Se conectaron breadcrumbs y toolbar en paginas con filtros:
+   - Conciertos: `components/concerts/concerts-catalog-page.tsx`
+   - Noticias: `app/band/news/page.tsx`
+   - Musica: `app/musica/page.tsx`
+   - Fotos: `app/media/photos/page.tsx`
+   - Videos: `app/media/videos/page.tsx`
+   - Tienda: `app/store/page.tsx`
+6) Se conectaron breadcrumbs en paginas dinamicas:
+   - Coleccion fotos: `app/media/photos/[slug]/page.tsx`
+   - Coleccion videos: `app/media/videos/[slug]/page.tsx`
+   - Detalle producto tienda: `app/store/[slug]/page.tsx`
+7) Para Tienda listado:
+   - Se calcula categoria para breadcrumb desde `filters.category`.
+   - Si solo hay subcategoria, se infiere categoria raiz desde el arbol.
+8) Para Noticias:
+   - Si viene `?news=...` y el item existe en la pagina actual, se muestra:
+     - `Home > Noticias > Titulo noticia`
+   - Si no existe, se mantiene:
+     - `Home > Noticias`
+
+7. Logica final del breadcrumb
+- Conciertos:
+  - Proximos: `Home > Proximos conciertos`
+  - Anteriores: `Home > Conciertos anteriores`
+- Banda:
+  - Noticias: `Home > Noticias`
+  - Bio: `Home > Bio`
+  - Noticias con item expandido (si disponible): `Home > Noticias > Titulo`
+- Musica:
+  - General: `Home > Musica`
+  - `type=song`: `Home > Musica > Canciones`
+  - `type=album`: `Home > Musica > Albumes`
+- Media:
+  - Fotos: `Home > Media > Fotos`
+  - Detalle fotos: `Home > Media > Fotos > Nombre coleccion`
+  - Videos: `Home > Media > Videos`
+  - Detalle videos: `Home > Media > Videos > Nombre coleccion`
+- Tienda:
+  - General: `Home > Tienda`
+  - Categoria: `Home > Tienda > Ropa/Media/Accesorios`
+  - Producto: `Home > Tienda > CategoriaReal > NombreProducto`
+
+8. Integracion con filtros y paginacion
+- En paginas con filtros:
+  - izquierda: icono de filtros + paginacion
+  - derecha: breadcrumb
+- Se mantuvo la misma altura funcional (fila superior sobre el contenido principal).
+- En movil:
+  - la fila puede envolver.
+  - el breadcrumb permite overflow horizontal suave.
+  - filtros siguen accesibles.
+
+9. Confirmacion de no cambios de logica
+- No se cambiaron filtros disponibles.
+- No se cambio logica de filtrado ni query params de filtros.
+- No se tocaron Prisma/seed/base de datos.
+- El cambio es de navegacion visual y composicion de layout.
+
+10. Errores encontrados y solucion aplicada
+- No hubo errores de TypeScript ni de lint por los cambios de breadcrumb.
+- Queda warning previo no relacionado:
+  - `lib/media/video.ts`: `parseYouTubeVideoId` sin uso.
+- `npm run build` falla por conectividad externa de Google Fonts (`Press Start 2P`), no por estos cambios.
+
+11. Pruebas realizadas
+- `npm.cmd run lint`:
+  - Sin errores (solo warning previo no relacionado).
+- `npm.cmd run build`:
+  - Fallo externo por fetch de fuente Google.
+- Verificacion funcional en codigo:
+  - Breadcrumb en paginas objetivo.
+  - Breadcrumb dinamico con nombre real en colecciones/producto.
+  - Filtros/paginacion alineados a la izquierda en la fila superior.
+  - Breadcrumb alineado a la derecha en desktop.
+  - Ajustes responsive aplicados en CSS.
+
+12. Resultado final
+Se implemento un breadcrumb global reutilizable, con estilo retro integrado en la identidad visual del proyecto, y se unifico la distribucion de la fila superior en paginas con filtros:
+- izquierda: filtros/paginacion
+- derecha: breadcrumb
+con comportamiento responsive coherente y sin modificar la logica de negocio.
+
+ACTUALIZACION DE ESTILO VISUAL DEL BREADCRUMB
+
+1. Objetivo de la mejora visual
+Reforzar el look retro/Windows 90/vaporwave del breadcrumb sin cambiar su comportamiento de navegacion ni su posicion dentro del layout.
+
+2. Estado anterior del breadcrumb
+- El breadcrumb ya funcionaba correctamente.
+- El contenedor tenia un estilo retro oscuro con glow.
+- El hover del texto era visible, pero menos intenso en neón rosa.
+
+3. Cambios aplicados al hover
+- Se aumento la intensidad del hover en enlaces clicables (`.retro-breadcrumb-link:hover`).
+- El texto ahora cambia a rosa neon con varios niveles de `text-shadow` para un glow mas marcado.
+- Se anadio un realce retro adicional en el borde/sombra del item al hacer hover.
+- El item activo no clicable (`.retro-breadcrumb-current`) no usa este hover.
+
+4. Cambios aplicados al contenedor
+- El contenedor paso a base gris tipo panel clasico:
+  - `background` gris retro.
+  - borde oscuro.
+  - sombras internas claras/oscuras para efecto 3D pixelado Windows 90.
+- Se mantuvo el comportamiento responsive y el scroll horizontal del breadcrumb.
+
+5. Explicacion del estilo Windows 90 aplicado
+- Se uso composicion visual de panel clasico:
+  - aristas claras en parte superior/izquierda.
+  - aristas oscuras en parte inferior/derecha.
+  - aspecto de control antiguo con relieve.
+- Se mantuvo tipografia pixel y estructura de separadores para continuidad visual.
+
+6. Explicacion del sombreado/glow neón rosa
+- El contenedor tiene glow rosa permanente suave.
+- En hover del contenedor se incrementa ligeramente la intensidad del glow.
+- Los separadores y enlaces mantienen acentos rosados para coherencia vaporwave.
+
+7. Archivos modificados
+- `app/globals.css`
+- `docs/proceso-breadcrumb-navegacion.txt`
+
+8. Confirmacion de que no se ha cambiado la logica de navegacion
+- No se cambio la generacion de breadcrumbs.
+- No se cambiaron rutas ni query params.
+- No se cambiaron items, orden ni comportamiento clicable.
+- No se movio la posicion de breadcrumb/filtros/paginacion.
+
+9. Pruebas realizadas
+- Revision visual del breadcrumb en paginas con breadcrumb activo.
+- Verificacion de hover en enlaces:
+  - aumento de neón rosa.
+  - legibilidad mantenida.
+- Verificacion responsive:
+  - desktop, tablet y movil sin romper layout.
+  - sin solape con filtros/paginacion.
+- Calidad tecnica:
+  - `npm.cmd run lint` (sin errores, 1 warning previo no relacionado).
+  - `npm.cmd run build` (falla externa por descarga de fuente Google, no por breadcrumb).
+
+10. Resultado final
+El breadcrumb mantiene exactamente la misma navegacion y posicion, pero con una apariencia mas retro:
+- contenedor gris estilo Windows 90 con relieve clasico.
+- glow rosa neon en contenedor y acentos.
+- hover de letras mucho mas visible en rosa neon.
+
+AJUSTE DE HOVER, ESTADO ACTIVO Y TIPOGRAFIA DEL BREADCRUMB
+
+1. Objetivo del ajuste
+Reducir la intensidad visual del texto en hover y simplificar la experiencia: hover limpio en rosa, estado activo en rosa y tipografia retro pixel/ByteBounce.
+
+2. Problema detectado
+El hover anterior del texto del breadcrumb tenia un efecto neon demasiado exagerado (glow/text-shadow intenso), lo que hacia la lectura menos limpia.
+
+3. Cambio aplicado: hover simple a color rosa
+- Se simplifico el hover de `.retro-breadcrumb-link:hover`.
+- Ahora el comportamiento es solo cambio de color de texto a rosa.
+- Se eliminaron efectos intensos de glow/text-shadow/box-shadow en el texto durante hover.
+
+4. Cambio aplicado: elemento activo en color rosa
+- `.retro-breadcrumb-current` ahora usa texto rosa permanente para marcar la pagina actual.
+- Se mantuvo sin animaciones y sin glow exagerado.
+
+5. Cambio aplicado: fuente pixel o ByteBounce
+- El breadcrumb ahora usa:
+  - `font-family: var(--font-bytebounce), var(--font-retro-pixel);`
+- Esto prioriza ByteBounce (si esta cargada) y mantiene fallback retro pixel.
+
+6. Fuente utilizada y motivo
+- Fuente prioritaria: `ByteBounce`.
+- Motivo: es una tipografia retro integrada ya en el proyecto y encaja mejor con el estilo solicitado, sin introducir fuentes externas nuevas.
+
+7. Confirmacion de que el resto del diseno se mantiene igual
+- No se modifico:
+  - contenedor gris estilo Windows 90
+  - bordes y relieve
+  - glow/sombra del contenedor
+  - posicion del breadcrumb
+  - responsive
+  - estructura del componente
+- Solo se ajusto el estilo del texto (hover/activo) y la fuente.
+
+8. Archivos modificados
+- `app/globals.css`
+- `docs/proceso-breadcrumb-navegacion.txt`
+
+9. Pruebas realizadas
+- Revision visual en varias paginas con breadcrumb:
+  - hover de enlaces cambia solo a rosa.
+  - item activo se mantiene en rosa.
+  - tipografia retro aplicada.
+- Validacion de calidad:
+  - `npm.cmd run lint` (sin errores, warning previo no relacionado).
+  - `npm.cmd run build` (falla externa por descarga de fuente Google, no relacionada con este ajuste).
+
+10. Resultado final
+El breadcrumb mantiene su funcionamiento y posicion, pero con una lectura mas limpia:
+- hover simple en rosa,
+- pagina actual en rosa,
+- tipografia ByteBounce/pixel,
+sin neón exagerado en las letras.
+
+MEJORA DE BACKGROUND Y BORDE NEON DEL BREADCRUMB
+
+1. Objetivo de la mejora
+Dar mas presencia visual al contenedor del breadcrumb manteniendo intacta su logica de navegacion y su ubicacion actual.
+
+2. Estado anterior del background
+- El contenedor ya tenia estilo retro/Windows 90 en gris.
+- El glow rosa existia, pero con menos trabajo visual en el fondo.
+- No habia animacion propia del fondo del breadcrumb.
+
+3. Cambios aplicados al background
+- Se mejoro el fondo con una combinacion de capas:
+  - base gris retro tipo panel Windows.
+  - tinte vaporwave suave (rosa/morado muy ligero).
+  - textura de lineas sutiles tipo scanline.
+- Se mantuvo legibilidad del texto y la estetica retro.
+
+4. Degradado aplicado
+- Se anadio un degradado diagonal suave (`linear-gradient` a 125deg) con acentos rosa/morado sobre la base gris.
+- El degradado se mantiene discreto para no romper el look clasico del panel.
+
+5. Animacion anadida y por que es sutil
+- Se anadio `@keyframes retro-breadcrumb-gradient` para mover lentamente el degradado.
+- Duracion larga (`14s`) y easing suave para evitar distraccion.
+- Se anadio `@keyframes retro-breadcrumb-glow` para un pulso ligero del borde interno.
+- Se incluyo `prefers-reduced-motion: reduce` para desactivar estas animaciones cuando aplique.
+
+6. Cambios aplicados al borde
+- Se mantuvo el borde retro oscuro del panel.
+- Se reforzaron sombras internas claras/oscuras para conservar relieve Windows 90.
+- Se ajusto el contorno externo con un halo rosa mas visible, pero controlado.
+- Se anadio pseudo-elemento `::before` para enriquecer el marco sin tocar la logica.
+
+7. Explicacion del shadow/glow neon rosa
+- El glow rosa del contenedor ahora tiene dos capas:
+  - una capa externa estable.
+  - un pulso suave de baja intensidad.
+- En hover del contenedor sube un poco la intensidad del glow sin ser agresiva.
+- No se tocaron hover/activo de texto solicitados anteriormente.
+
+8. Confirmacion de que no se cambio la logica de navegacion
+- No se modifico el componente funcional del breadcrumb.
+- No se cambiaron rutas, query params, orden ni generacion de items.
+- No se altero la navegacion de enlaces.
+
+9. Confirmacion de que no se modificaron filtros ni paginacion
+- No se movieron ni editaron controles de filtros/paginacion.
+- No se cambio su comportamiento ni estructura.
+- El ajuste fue solo visual en el contenedor del breadcrumb.
+
+10. Archivos modificados
+- `app/globals.css`
+- `docs/proceso-breadcrumb-navegacion.txt`
+
+11. Pruebas realizadas
+- Revision visual del breadcrumb en varias paginas internas:
+  - fondo con mayor personalidad retro/vaporwave.
+  - glow rosa visible en borde.
+  - texto legible y coherente.
+- Verificacion de que se mantiene:
+  - hover simple rosa en enlaces.
+  - item activo rosa.
+  - fuente pixel/ByteBounce.
+- Calidad tecnica:
+  - `npm.cmd run lint`
+  - `npm.cmd run build`
+
+12. Resultado final
+El breadcrumb mantiene la misma navegacion, posicion y responsive, pero con un contenedor mas trabajado visualmente:
+- background retro con degradado sutil y textura ligera,
+- borde estilo Windows 90 reforzado,
+- glow neon rosa elegante y no invasivo.

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -59,6 +60,8 @@ type FlattenedItem =
 
 type GlobalSearchProps = {
   className?: string;
+  showFloatingBubble?: boolean;
+  floatingThreshold?: number;
 };
 
 const DEBOUNCE_MS = 250;
@@ -103,10 +106,22 @@ function HeaderSearchIcon() {
   );
 }
 
-export default function GlobalSearch({ className }: GlobalSearchProps) {
+export default function GlobalSearch({
+  className,
+  showFloatingBubble = false,
+  floatingThreshold = 120,
+}: GlobalSearchProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
+  const [isPinned, setIsPinned] = useState(false);
+  const [pinAnchor, setPinAnchor] = useState({
+    top: 18,
+    left: 18,
+    width: 0,
+    height: 0,
+  });
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -126,6 +141,32 @@ export default function GlobalSearch({ className }: GlobalSearchProps) {
     return () => window.clearTimeout(timeoutId);
   }, [query]);
 
+  const captureAnchor = useCallback(() => {
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+
+    const nextRect = trigger.getBoundingClientRect();
+    if (nextRect.width <= 0 || nextRect.height <= 0) return;
+
+    const absoluteTop = nextRect.top + window.scrollY;
+    const nextAnchor = {
+      top: absoluteTop,
+      left: nextRect.left,
+      width: nextRect.width,
+      height: nextRect.height,
+    };
+
+    setPinAnchor((currentAnchor) => {
+      const changed =
+        Math.abs(currentAnchor.top - nextAnchor.top) > 0.5 ||
+        Math.abs(currentAnchor.left - nextAnchor.left) > 0.5 ||
+        Math.abs(currentAnchor.width - nextAnchor.width) > 0.5 ||
+        Math.abs(currentAnchor.height - nextAnchor.height) > 0.5;
+
+      return changed ? nextAnchor : currentAnchor;
+    });
+  }, []);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -137,6 +178,51 @@ export default function GlobalSearch({ className }: GlobalSearchProps) {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (!showFloatingBubble) return;
+
+    const threshold = Math.max(0, floatingThreshold);
+    const syncPinnedState = (shouldCaptureAnchor: boolean) => {
+      const currentScroll = window.scrollY;
+      const shouldPin = currentScroll > threshold;
+
+      if (shouldCaptureAnchor || currentScroll <= 8) {
+        captureAnchor();
+      }
+
+      setIsPinned((currentPinned) =>
+        currentPinned === shouldPin ? currentPinned : shouldPin,
+      );
+    };
+
+    const onScroll = () => syncPinnedState(false);
+    const onResize = () => syncPinnedState(true);
+
+    syncPinnedState(true);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => syncPinnedState(true))
+        : null;
+
+    if (resizeObserver && triggerRef.current) {
+      resizeObserver.observe(triggerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      resizeObserver?.disconnect();
+    };
+  }, [captureAnchor, floatingThreshold, showFloatingBubble]);
+
+  useEffect(() => {
+    if (!showFloatingBubble) return;
+    captureAnchor();
+  }, [captureAnchor, showFloatingBubble]);
 
   useEffect(() => {
     if (!open) return;
@@ -289,18 +375,25 @@ export default function GlobalSearch({ className }: GlobalSearchProps) {
     normalizedActiveIndex >= 0
       ? `global-search-option-${normalizedActiveIndex}`
       : undefined;
+  const pinnedVisible = showFloatingBubble && isPinned && !open;
 
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls="global-search-dialog"
+        aria-hidden={pinnedVisible}
+        tabIndex={pinnedVisible ? -1 : 0}
         className={
-          className ??
-          "sb-btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-200"
+          [
+            className ??
+              "sb-btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-200",
+            pinnedVisible ? "sb-header-search-hidden" : "",
+          ].filter(Boolean).join(" ")
         }
       >
         <HeaderSearchIcon />
@@ -309,6 +402,30 @@ export default function GlobalSearch({ className }: GlobalSearchProps) {
           Ctrl+K
         </span>
       </button>
+
+      {pinnedVisible ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Abrir busqueda"
+          className={`${
+            className ??
+            "sb-btn-secondary inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-200"
+          } sb-header-search-pinned`}
+          style={{
+            top: pinAnchor.top > 0 ? `${pinAnchor.top - 6}px` : `${pinAnchor.top}px`,
+            left: pinAnchor.left > 0 ? `${pinAnchor.left - 6}px` : `${pinAnchor.left}px`,
+            width: pinAnchor.width > 0 ? `${pinAnchor.width + 12}px` : undefined,
+            height: pinAnchor.height > 0 ? `${pinAnchor.height + 12}px` : undefined,
+          }}
+        >
+          <HeaderSearchIcon />
+          <span className="hidden sm:inline">Buscar</span>
+          <span className="sb-kbd hidden lg:inline">
+            Ctrl+K
+          </span>
+        </button>
+      ) : null}
 
       {open ? (
         <div className="fixed inset-0 z-[60] flex items-start justify-center px-2 py-2 sm:items-center sm:px-4 sm:py-6">

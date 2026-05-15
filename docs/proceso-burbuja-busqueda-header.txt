@@ -1,0 +1,199 @@
+﻿PROCESO BOTON DE BUSQUEDA EN HEADER
+
+1. Contexto
+Se habia implementado una burbuja de busqueda visible en scroll en la esquina inferior derecha.
+
+2. Estado previo
+- El buscador del header funcionaba.
+- Existia un boton flotante independiente abajo a la derecha al hacer scroll.
+- Este comportamiento no cumplia la UX solicitada para mantener el boton en la posicion original del header.
+
+3. Archivos revisados
+- components/layout/header-client.tsx
+- components/layout/global-search.tsx
+- app/globals.css
+
+4. Archivos modificados
+- components/layout/global-search.tsx
+- app/globals.css
+
+5. Cambios aplicados (resumen)
+- Se elimino el comportamiento de burbuja inferior derecha.
+- Se mantuvo el mismo buscador y la misma logica de apertura.
+- Se implemento anclaje del boton de busqueda a su posicion original del header cuando hay scroll.
+- Se oculta visualmente el boton original del header cuando aparece la version anclada, evitando duplicados.
+
+6. Calidad tecnica
+- npm run lint: correcto (solo warning previo no relacionado en lib/media/video.ts).
+- npm run build: fallo externo por descarga de fuente Google (Press Start 2P), no relacionado con este ajuste.
+
+AJUSTE DE POSICION DEL BOTON DE BUSQUEDA EN SCROLL
+
+1. Objetivo del ajuste
+Mantener visible el boton de busqueda durante el scroll en la misma posicion visual que tenia dentro del header, sin burbuja inferior derecha.
+
+2. Problema detectado: el boton aparecia abajo a la derecha
+La implementacion previa mostraba una burbuja flotante en la esquina inferior derecha al hacer scroll, lo cual no era el comportamiento esperado.
+
+3. Cambio aplicado: el boton permanece en la posicion original del header
+Se mantiene el boton original del header para estado normal. Al superar el umbral de scroll, se muestra una version anclada con estilo identico y coordenadas capturadas desde la posicion real del boton en header.
+
+4. Explicacion de como desaparece el header y se mantiene el boton
+Cuando el usuario hace scroll:
+- el header puede salir de pantalla segun su comportamiento actual,
+- el boton anclado pasa a modo fixed con top/left de la posicion original,
+- se mantiene accesible sobre el contenido sin enviarlo a la esquina inferior.
+
+5. Explicacion de como se evita duplicar botones
+Nunca hay dos botones visibles a la vez:
+- arriba: visible solo el boton integrado en header,
+- en scroll: se oculta visualmente el original y aparece el anclado.
+
+6. Confirmacion de que se reutiliza el mismo buscador
+El clic del boton (normal y anclado) abre exactamente el mismo modal/componente GlobalSearch. No se creo un segundo buscador ni se duplico logica de resultados.
+
+7. Archivos modificados
+- components/layout/global-search.tsx
+- app/globals.css
+
+8. Pruebas realizadas
+- Scroll en Home: verificacion de que no aparece boton abajo a la derecha.
+- Scroll en Home: verificacion de que el boton queda en posicion de header.
+- Apertura de busqueda en scroll: abre el mismo buscador.
+- Volver arriba: boton vuelve a verse integrado en header sin duplicados.
+- npm run lint.
+- npm run build (falla externa de fuente Google, no relacionada).
+
+9. Resultado final
+Al hacer scroll, el header puede desaparecer, pero el boton de busqueda permanece visible en la posicion original del header. No hay burbuja en la esquina inferior derecha, no hay duplicados y se mantiene exactamente la misma logica de busqueda.
+
+MEJORA VISUAL DEL BOTON DE BUSQUEDA FIJO
+
+1. Objetivo del ajuste visual
+Mejorar la apariencia del boton de busqueda anclado durante scroll para que no se vea como icono suelto y mantenga identidad visual del header.
+
+2. Problema detectado: el boton fijo solo mostraba el icono
+El estado fijo conservaba posicion y funcionalidad, pero visualmente quedaba transparente, sin contenedor propio.
+
+3. Cambio aplicado: contenedor con background azul del header
+Se aplico un contenedor visible al estado fijo (`.sb-header-search-pinned`) con fondo azul y bordes tipo retro para que el icono quede integrado dentro de un boton completo.
+
+4. Como se reutilizo el color azul del header
+Se reutilizo la misma base azul del header que ya existe en `sb-header-shell` (`#7eaede`) dentro del degradado del boton fijo, manteniendo coherencia cromatica.
+
+5. Estilo vaporwave/neon/80s aplicado
+El boton fijo ahora incluye:
+- borde retro (claro arriba/izquierda y oscuro abajo/derecha),
+- glow suave rosa/azul,
+- sombra interior y exterior,
+- acabado visual coherente con el estilo vaporwave/80s del proyecto.
+
+6. Hover aplicado al boton
+En hover/focus-visible se incremento suavemente el glow y brillo sin exagerar, con una ligera elevacion para mantener feedback visual claro y usable.
+
+7. Confirmacion de que no se cambio la logica de busqueda
+No se modifico la apertura/cierre del buscador. El boton fijo sigue abriendo el mismo `GlobalSearch`.
+
+8. Confirmacion de que no se cambio la logica de scroll
+No se cambio el criterio funcional del scroll. Solo se ajusto el estilo del estado fijo ya existente.
+
+9. Archivos modificados
+- app/globals.css
+- docs/proceso-burbuja-busqueda-header.txt
+
+10. Pruebas realizadas
+- Verificacion arriba de pagina: boton normal del header sin duplicados.
+- Verificacion en scroll: boton fijo visible en misma posicion con contenedor azul.
+- Verificacion hover: glow neon suave y legible.
+- Verificacion apertura: abre el mismo menu de busqueda.
+- Verificacion vuelta arriba: reintegracion en header sin duplicados.
+- npm run lint.
+- npm run build (falla externa de Google Fonts, no relacionada con estos cambios).
+
+11. Resultado final
+El boton fijo de busqueda mantiene su posicion y comportamiento actual, pero ahora se muestra con contenedor azul del header y estilo vaporwave/neon coherente con la web, sin alterar logica de busqueda ni de scroll.
+
+AJUSTE DE TAMANO DEL CONTENEDOR DEL BOTON FIJO
+
+1. Objetivo
+Aumentar el tamano del contenedor del boton de busqueda fijo para que el icono no sobresalga.
+
+2. Problema detectado
+En scroll, el icono de busqueda quedaba visualmente mas grande que su contenedor y se salia del cuadro.
+
+3. Cambio aplicado
+Se incremento dinamicamente el tamano del boton fijo respecto al ancla original del header:
+- ancho: +12px
+- alto: +12px
+- compensacion de posicion: -6px en top y left para mantener alineacion visual.
+
+4. Archivo modificado
+- components/layout/global-search.tsx
+- docs/proceso-burbuja-busqueda-header.txt
+
+5. Confirmacion de alcance
+- No se modifico la logica de busqueda.
+- No se modifico la logica de scroll.
+- No se cambio la posicion funcional del boton.
+
+6. Resultado
+El boton fijo mantiene la misma ubicacion visual, pero con contenedor mas grande y el icono ya no sobresale.
+
+CORRECCION RESPONSIVE DEL CONTENEDOR DEL BOTON DE BUSQUEDA FIJO
+
+1. Objetivo de la correccion
+Hacer que el contenedor del boton fijo de busqueda se adapte en tiempo real al cambiar el tamano de la ventana, igual que el icono, sin exigir volver arriba y bajar otra vez.
+
+2. Problema detectado
+- El icono era responsive.
+- El contenedor no se adaptaba correctamente durante resize.
+- La alineacion solo se corregia al volver al inicio y hacer scroll de nuevo.
+
+3. Causa tecnica encontrada
+El ancla (top/left/width/height) del boton fijo se recalculaba de forma incompleta en resize cuando el usuario estaba en mitad de pagina. Ademas, la coordenada vertical se tomaba relativa al viewport sin convertirla a una referencia estable para estado fijo.
+
+4. Cambios aplicados
+- Se ajusto la captura de ancla para usar coordenada absoluta de pagina:
+  - `top = rect.top + window.scrollY`
+- Se optimizo `setPinAnchor` para actualizar estado solo cuando hay cambios reales de medidas/posicion (umbral de diferencia).
+- Se separo la sincronizacion en handlers claros:
+  - `scroll` (mantiene estado pinned)
+  - `resize` (fuerza recaptura de ancla)
+- Se anadio `ResizeObserver` sobre el boton original del header para recapturar ancla en cambios de tamano del propio trigger.
+- Se limpio correctamente listeners y observer en el cleanup de `useEffect`.
+
+5. Como ahora icono y contenedor se comportan como una unica unidad
+El boton fijo sigue tomando como referencia el boton original del header, pero ahora recaptura su geometria al redimensionar. Eso mantiene icono + contenedor sincronizados en desktop/tablet/movil como una sola pieza visual.
+
+6. Uso de CSS responsive
+No se cambio la logica visual general ni la paleta ya aplicada. Se mantuvieron las clases/estilos del estado fijo y se corrigio el recalculo de medidas para que esos estilos respondan correctamente a breakpoints en tiempo real.
+
+7. Uso de resize / ResizeObserver
+- `window.resize`: fuerza recaptura de ancla inmediatamente.
+- `ResizeObserver`: observa cambios de tamano del boton original del header y vuelve a sincronizar.
+- Ambos se limpian con `removeEventListener` y `disconnect` en cleanup.
+
+8. Confirmacion de que no se cambio la logica de busqueda
+No se modifico la apertura/cierre del buscador ni su contenido. El boton fijo sigue abriendo el mismo `GlobalSearch`.
+
+9. Confirmacion de que no se cambio la logica visual general
+Se mantuvo:
+- posicion conceptual del boton fijo,
+- estilo azul vaporwave/neon,
+- comportamiento de scroll.
+Solo se corrigio la sincronizacion responsive del contenedor.
+
+10. Archivos modificados
+- components/layout/global-search.tsx
+- docs/proceso-burbuja-busqueda-header.txt
+
+11. Pruebas realizadas
+- Scroll normal: boton fijo visible y alineado.
+- Resize en mitad de pagina: contenedor e icono se adaptan juntos sin volver arriba.
+- Cambio desktop -> movil y movil -> desktop en scroll: posicion/tamano se recalculan automaticamente.
+- Apertura de busqueda tras resize: funciona igual.
+- npm run lint.
+- npm run build (falla externa por Google Fonts, no relacionada).
+
+12. Resultado final
+El boton fijo mantiene comportamiento y estilo actuales, pero ahora su contenedor responde correctamente a resize en tiempo real. Icono y contenedor permanecen alineados en todos los breakpoints sin depender de reset manual del scroll.
