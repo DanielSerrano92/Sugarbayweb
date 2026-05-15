@@ -5,6 +5,7 @@ import PhotoGalleryClient from "@/components/media/photo-gallery-client";
 import EmptyState from "@/components/ui/empty-state";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
+import { buildMediaPhotosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getPhotoAlbumDetailBySlug } from "@/lib/repositories/media";
 
 type PhotoAlbumDetailPageProps = {
@@ -44,6 +45,7 @@ export default async function PhotoAlbumDetailPage({ params }: PhotoAlbumDetailP
       eyebrow="Media / Fotos"
       title={album.title}
       description={album.description ?? "Detalle completo del album fotografico."}
+      breadcrumbItems={buildMediaPhotosBreadcrumb(album.title)}
     >
       {album.photos.length === 0 ? (
         <EmptyState

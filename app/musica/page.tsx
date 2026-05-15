@@ -5,6 +5,7 @@ import MusicPagination from "@/components/music/music-pagination";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
+import { buildMusicBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import type { MusicQueryParams } from "@/lib/music/types";
 import { getMusicCatalog } from "@/lib/repositories/music";
 
@@ -47,20 +48,20 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
       eyebrow="Musica"
       title="Canciones y albumes"
       description="Catalogo mixto con filtros por fecha, tipo y orden. Abre cualquier tarjeta para ver su detalle completo."
+      breadcrumbItems={buildMusicBreadcrumb(currentType)}
+      toolbarLeft={(
+        <div className="concert-top-controls">
+          <MusicFiltersPanel basePath="/musica" filters={catalog.filters} />
+          <MusicPagination
+            basePath="/musica"
+            filters={catalog.filters}
+            totalPages={catalog.totalPages}
+          />
+        </div>
+      )}
       headerImageSrc={headerImageSrc}
     >
       <section>
-        <div className="mb-5 flex justify-end">
-          <div className="concert-top-controls concert-top-controls-right">
-            <MusicFiltersPanel basePath="/musica" filters={catalog.filters} />
-            <MusicPagination
-              basePath="/musica"
-              filters={catalog.filters}
-              totalPages={catalog.totalPages}
-            />
-          </div>
-        </div>
-
         {catalog.totalPages > 1 ? (
           <p className="mb-4 text-sm text-zinc-600">
             Mostrando {catalog.items.length} de {catalog.totalItems} elementos.

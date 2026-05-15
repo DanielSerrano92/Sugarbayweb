@@ -7,6 +7,7 @@ import PhotoPagination from "@/components/media/photo-pagination";
 import EmptyState from "@/components/ui/empty-state";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
+import { buildMediaPhotosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import type { MediaPhotoQueryParams } from "@/lib/media/types";
 import { getPhotoAlbumsCatalog } from "@/lib/repositories/media";
 import { resolveImageUrl } from "@/lib/services/imagekit";
@@ -55,20 +56,20 @@ export default async function MediaPhotosPage({ searchParams }: MediaPhotosPageP
       eyebrow="Media / Fotos"
       title="Albumes de fotos"
       description="Galerias oficiales de Sugarbay con filtros por fecha, tipo y orden."
+      breadcrumbItems={buildMediaPhotosBreadcrumb()}
+      toolbarLeft={(
+        <div className="concert-top-controls">
+          <PhotoFilters basePath="/media/photos" filters={catalog.filters} />
+          <PhotoPagination
+            basePath="/media/photos"
+            filters={catalog.filters}
+            totalPages={catalog.totalPages}
+          />
+        </div>
+      )}
       headerImageSrc={MEDIA_PHOTOS_PAGE_HEADER_IMAGE_SRC}
     >
       <section>
-        <div className="mb-5 flex justify-end">
-          <div className="concert-top-controls concert-top-controls-right">
-            <PhotoFilters basePath="/media/photos" filters={catalog.filters} />
-            <PhotoPagination
-              basePath="/media/photos"
-              filters={catalog.filters}
-              totalPages={catalog.totalPages}
-            />
-          </div>
-        </div>
-
         {catalog.totalPages > 1 ? (
           <p className="mb-4 text-sm text-zinc-600">
             Mostrando {catalog.items.length} de {catalog.totalItems} albumes.

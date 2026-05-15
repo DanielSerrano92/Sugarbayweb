@@ -6,6 +6,7 @@ import VideoCollectionViewer from "@/components/media/video-collection-viewer";
 import EmptyState from "@/components/ui/empty-state";
 import IconNavigationLink from "@/components/ui/icon-navigation-link";
 import PageShell from "@/components/ui/page-shell";
+import { buildMediaVideosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getVideoDetailBySlug } from "@/lib/repositories/media";
 
 type VideoDetailPageProps = {
@@ -65,6 +66,7 @@ export default async function MediaVideoDetailPage({
       eyebrow="Media / Videos"
       title={detail.title}
       description={detailDescription}
+      breadcrumbItems={buildMediaVideosBreadcrumb(detail.title)}
     >
       <div className="flex flex-wrap gap-2">
         <Link href="/media/videos" className="retro-pixel-back-link">

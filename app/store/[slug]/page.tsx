@@ -5,6 +5,10 @@ import StoreProductDetailPanel from "@/components/store/store-product-detail-pan
 import StoreProductCard from "@/components/store/store-product-card";
 import PageShell from "@/components/ui/page-shell";
 import {
+  buildStoreBreadcrumb,
+  resolveStoreRootCategory,
+} from "@/lib/navigation/breadcrumbs";
+import {
   getRelatedStoreProducts,
   getStoreProductBySlug,
 } from "@/lib/repositories/store";
@@ -45,6 +49,10 @@ export default async function StoreProductPage({ params }: StoreProductPageProps
     product.category.slug,
     product.id,
   );
+  const rootStoreCategory = resolveStoreRootCategory({
+    categorySlug: product.category.slug,
+    parentCategorySlug: product.category.parentSlug,
+  });
 
   return (
     <PageShell
@@ -54,6 +62,10 @@ export default async function StoreProductPage({ params }: StoreProductPageProps
         product.description ??
         `Producto oficial de Sugarbay en la categoria ${product.category.name}.`
       }
+      breadcrumbItems={buildStoreBreadcrumb({
+        category: rootStoreCategory,
+        productName: product.name,
+      })}
       contentClassName="space-y-8"
     >
       <StoreProductDetailPanel product={product} />
