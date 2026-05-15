@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-
-import { TICKETMASTER_SUGARBAY_SEARCH_URL } from "@/lib/concerts/ticketmaster";
 import type { ConcertCardView, ConcertPeriod } from "@/lib/concerts/types";
 import { formatDate } from "@/lib/utils";
 
 type ConcertCardsClientProps = {
   period: ConcertPeriod;
   concerts: ConcertCardView[];
+  selectedConcertSlug?: string;
 };
 
 function RetroCalendarIcon() {
@@ -55,8 +54,12 @@ function ExternalLink({
 export default function ConcertCardsClient({
   period,
   concerts,
+  selectedConcertSlug,
 }: ConcertCardsClientProps) {
-  const [selectedConcertId, setSelectedConcertId] = useState<string | null>(null);
+  const [selectedConcertId, setSelectedConcertId] = useState<string | null>(() => {
+    if (!selectedConcertSlug) return null;
+    return concerts.find((concert) => concert.slug === selectedConcertSlug)?.id ?? null;
+  });
 
   const selectedConcert = useMemo(
     () => concerts.find((concert) => concert.id === selectedConcertId) ?? null,

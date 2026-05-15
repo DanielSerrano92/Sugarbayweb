@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { BandNewsItemView } from "@/lib/band/types";
 import { resolveImageUrl } from "@/lib/services/imagekit";
@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/utils";
 
 type BandNewsListClientProps = {
   items: BandNewsItemView[];
+  selectedNewsSlug?: string;
 };
 
 function RetroCalendarIcon() {
@@ -23,8 +24,32 @@ function RetroCalendarIcon() {
   );
 }
 
-export default function BandNewsListClient({ items }: BandNewsListClientProps) {
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+export default function BandNewsListClient({
+  items,
+  selectedNewsSlug,
+}: BandNewsListClientProps) {
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => {
+    if (!selectedNewsSlug) return new Set();
+
+    const selectedItem = items.find((item) => item.slug === selectedNewsSlug);
+    return selectedItem ? new Set([selectedItem.id]) : new Set();
+  });
+  const scrolledNewsSlugRef = useRef<string | null>(null);
+  const selectedNewsId = useMemo(() => {
+    if (!selectedNewsSlug) return null;
+    return items.find((item) => item.slug === selectedNewsSlug)?.id ?? null;
+  }, [items, selectedNewsSlug]);
+
+  useEffect(() => {
+    if (!selectedNewsSlug || !selectedNewsId) return;
+    if (scrolledNewsSlugRef.current === selectedNewsSlug) return;
+
+    const targetElement = document.getElementById(`news-${selectedNewsSlug}`);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      scrolledNewsSlugRef.current = selectedNewsSlug;
+    }
+  }, [selectedNewsId, selectedNewsSlug]);
 
   function toggleExpanded(id: string) {
     setExpandedIds((previous) => {

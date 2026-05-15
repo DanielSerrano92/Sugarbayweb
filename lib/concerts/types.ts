@@ -16,6 +16,7 @@ export type ConcertQueryParams = {
   to?: string | string[];
   continent?: string | string[];
   country?: string | string[];
+  concert?: string | string[];
 };
 
 export type ConcertFilters = {

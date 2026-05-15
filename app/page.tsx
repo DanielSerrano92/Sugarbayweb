@@ -8,7 +8,6 @@ import HomeVideosBand from "@/components/home/home-videos-band";
 import { getConcertExtraContent } from "@/lib/concerts/content";
 import { getHomeVideoBandItems } from "@/lib/repositories/media";
 import PageShell from "@/components/ui/page-shell";
-import { TICKETMASTER_SUGARBAY_SEARCH_URL } from "@/lib/concerts/ticketmaster";
 import { getHomeSnapshot } from "@/lib/repositories/site";
 import { resolveImageUrl } from "@/lib/services/imagekit";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -56,8 +55,9 @@ export default async function HomePage() {
       meta: `${formatDate(nextConcert.startsAt)} - ${nextConcert.city}`,
       title: nextConcert.title,
       description: `${nextConcert.venueName}. Reserva tu sitio para el siguiente directo de Sugarbay.`,
-      href: "/concerts/upcoming",
-      ctaLabel: "Ver conciertos",
+      mainHref: `/concerts/upcoming?concert=${encodeURIComponent(nextConcert.slug)}`,
+      buttonHref: "/concerts/upcoming",
+      buttonLabel: "Conciertos",
       imageUrl: concertDetail?.venuePhotoUrl ?? HOME_CAROUSEL_CONCERT_IMAGE,
       imageAlt: `Lugar del evento: ${nextConcert.venueName} (${nextConcert.city})`,
     });
@@ -75,8 +75,9 @@ export default async function HomePage() {
         featuredProduct.description
           ? truncateText(featuredProduct.description, 130)
           : "Merch oficial con estetica Sugarbay para directo, calle y coleccion.",
-      href: `/store/${featuredProduct.slug}`,
-      ctaLabel: "Ir al producto",
+      mainHref: `/store/${featuredProduct.slug}`,
+      buttonHref: "/store",
+      buttonLabel: "Tienda",
       imageUrl: featuredProduct.coverImageUrl
         ? resolveImageUrl(featuredProduct.coverImageUrl)
         : HOME_CAROUSEL_STORE_IMAGE,
@@ -101,8 +102,9 @@ export default async function HomePage() {
         : formatDate(latestNews.createdAt),
       title: latestNews.title,
       description: truncateText(latestNews.summary ?? latestNews.content, 140),
-      href: "/band/news",
-      ctaLabel: "Leer noticias",
+      mainHref: `/band/news?news=${encodeURIComponent(latestNews.slug)}`,
+      buttonHref: "/band/news",
+      buttonLabel: "Noticias",
       imageUrl: latestNewsImage,
       imageAlt: `Noticia destacada: ${latestNews.title}`,
     });
@@ -116,8 +118,9 @@ export default async function HomePage() {
       meta: "Web oficial",
       title: "Bienvenido al universo Sugarbay",
       description: "Explora conciertos, novedades y la tienda oficial con la nueva identidad retro vaporwave.",
-      href: "/store",
-      ctaLabel: "Explorar tienda",
+      mainHref: "/band/news",
+      buttonHref: "/band/news",
+      buttonLabel: "Noticias",
       imageUrl: HOME_CAROUSEL_STORE_IMAGE,
       imageAlt: "Vista destacada de la tienda oficial de Sugarbay",
     });
