@@ -137,13 +137,13 @@ export default function TermsAndConditionsModal({
   return createPortal(
     <div
       data-auth-nested-modal="true"
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-[10000] flex items-center justify-center px-2 py-2 sm:px-4 sm:py-6"
     >
       <button
         type="button"
         aria-label="Cerrar términos y condiciones"
         onClick={onClose}
-        className="absolute inset-0 cursor-default"
+        className="retro-vapor-overlay absolute inset-0 cursor-default"
       />
 
       <section
@@ -151,54 +151,45 @@ export default function TermsAndConditionsModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="sb-window relative z-10 flex max-h-[calc(100dvh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-3xl"
+        className="win-window auth-retro-modal relative z-10 flex w-full max-w-4xl min-h-0 flex-col overflow-hidden p-0"
       >
-        <header className="sb-titlebar flex shrink-0 items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <h2
-            id={titleId}
-            className="min-w-0 truncate text-xs font-black uppercase tracking-[0.14em] text-white sm:text-sm"
-          >
+        <div className="win-titlebar flex items-center justify-between gap-3">
+          <h2 id={titleId} className="min-w-0 truncate pr-2">
             Términos y condiciones
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar términos y condiciones"
-            className="sb-btn-secondary inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full p-0 text-xl leading-none text-white"
+            className="win-button retro-win-close"
           >
-            <span aria-hidden="true">&times;</span>
+            X
           </button>
-        </header>
+        </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto p-4 text-sm leading-6 text-zinc-800 sm:p-6">
-          <p className="rounded-2xl border border-emerald-300/40 bg-emerald-100/40 p-4 text-zinc-900">
-            Lee este resumen legal antes de crear tu cuenta. Está redactado para
-            una web musical con tienda, contenido multimedia y funcionalidades de
-            usuario.
-          </p>
+        <div className="auth-retro-body min-h-0 flex-1 overflow-y-auto p-3 sm:p-4">
+          <div className="auth-retro-form-wrap space-y-4">
+            <p className="rounded-none border border-[#7f7f9a] bg-[#ece9f8] p-3 text-sm font-semibold leading-6 text-[#2a2740]">
+              Lee este resumen legal antes de usar la plataforma. Está redactado
+              para una web musical con tienda, contenido multimedia y
+              funcionalidades de usuario.
+            </p>
 
-          <div className="mt-5 space-y-5">
-            {termsSections.map((section) => (
-              <section
-                key={section.title}
-                className="rounded-2xl border border-zinc-300/70 bg-zinc-50/45 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-              >
-                <h3 className="text-sm font-black uppercase tracking-[0.12em] text-zinc-900">
-                  {section.title}
-                </h3>
-                <p className="mt-2 text-zinc-700">{section.content}</p>
-              </section>
-            ))}
-          </div>
-
-          <div className="sticky bottom-0 mt-6 flex justify-end border-t border-zinc-300/70 bg-[#15112f]/95 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="sb-btn-primary px-4 py-2.5 text-sm font-semibold"
-            >
-              Volver al registro
-            </button>
+            <div className="space-y-4">
+              {termsSections.map((section) => (
+                <section
+                  key={section.title}
+                  className="rounded-none border border-[#8e8e8e] bg-[#e8e4f2] p-3 shadow-[inset_1px_1px_0_#f8f8f8,inset_-1px_-1px_0_#b0b0b0]"
+                >
+                  <h3 className="font-retro-pixel text-[0.58rem] uppercase tracking-[0.05em] text-[#1f1f2b]">
+                    {section.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-[#38354f]">
+                    {section.content}
+                  </p>
+                </section>
+              ))}
+            </div>
           </div>
         </div>
       </section>

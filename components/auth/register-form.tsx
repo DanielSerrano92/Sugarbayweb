@@ -6,7 +6,6 @@ import {
   useMemo,
   useState,
   type FormEvent,
-  type InputHTMLAttributes,
 } from "react";
 import { useRouter } from "next/navigation";
 
@@ -21,6 +20,7 @@ import {
 } from "@/lib/validators/auth";
 
 import AuthSubmitButton from "./auth-submit-button";
+import PasswordInputWithToggle from "./password-input-with-toggle";
 import TermsAndConditionsModal from "./terms-and-conditions-modal";
 
 type RegisterFormProps = {
@@ -97,89 +97,13 @@ function FieldErrorMessages({
   return (
     <ul
       id={fieldErrorId(field)}
-      className="mt-1.5 space-y-1 text-xs font-medium text-red-700"
+      className="auth-retro-error-text mt-1.5 space-y-1 text-xs font-medium"
       aria-live="polite"
     >
       {errors.map((error) => (
         <li key={error}>{error}</li>
       ))}
     </ul>
-  );
-}
-
-function EyeIcon({ crossed = false }: { crossed?: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      aria-hidden="true"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
-      <circle cx="12" cy="12" r="3" />
-      {crossed ? <path d="M4 4l16 16" /> : null}
-    </svg>
-  );
-}
-
-function PasswordInput({
-  id,
-  name,
-  label,
-  autoComplete,
-  errors,
-  onFieldChange,
-}: {
-  id: string;
-  name: "password" | "confirmPassword";
-  label: string;
-  autoComplete: InputHTMLAttributes<HTMLInputElement>["autoComplete"];
-  errors: string[] | undefined;
-  onFieldChange: (field: RegisterField) => void;
-}) {
-  const [isVisible, setIsVisible] = useState(false);
-  const labelForAction = name === "password" ? "contraseña" : "confirmación";
-
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        className="mb-1.5 block text-sm font-medium text-zinc-900"
-      >
-        {label}
-      </label>
-      <div className="relative">
-        <input
-          id={id}
-          name={name}
-          type={isVisible ? "text" : "password"}
-          required
-          autoComplete={autoComplete}
-          className="sb-input pr-12"
-          aria-invalid={Boolean(errors)}
-          aria-describedby={errors?.length ? fieldErrorId(name) : undefined}
-          onChange={() => onFieldChange(name)}
-        />
-        <button
-          type="button"
-          aria-label={
-            isVisible
-              ? `Ocultar ${labelForAction}`
-              : `Mostrar ${labelForAction}`
-          }
-          aria-pressed={isVisible}
-          onClick={() => setIsVisible((current) => !current)}
-          className="absolute right-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg border border-zinc-300/70 bg-zinc-100/70 text-zinc-800 transition hover:border-emerald-600 hover:text-zinc-900"
-        >
-          <EyeIcon crossed={isVisible} />
-        </button>
-      </div>
-      <FieldErrorMessages field={name} errors={errors} />
-    </div>
   );
 }
 
@@ -432,23 +356,54 @@ export default function RegisterForm({ redirectTo }: RegisterFormProps) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <PasswordInput
-            id="register-password"
-            name="password"
-            label="Contraseña"
-            autoComplete="new-password"
-            errors={passwordErrors}
-            onFieldChange={handleFieldChange}
-          />
+          <div>
+            <label
+              htmlFor="register-password"
+              className="mb-1.5 block text-sm font-medium text-zinc-900"
+            >
+              Contraseña
+            </label>
+            <PasswordInputWithToggle
+              id="register-password"
+              name="password"
+              autoComplete="new-password"
+              inputClassName="sb-input"
+              actionLabel="contraseña"
+              ariaInvalid={Boolean(passwordErrors)}
+              ariaDescribedBy={
+                passwordErrors?.length ? fieldErrorId("password") : undefined
+              }
+              onChange={() => handleFieldChange("password")}
+            />
+            <FieldErrorMessages field="password" errors={passwordErrors} />
+          </div>
 
-          <PasswordInput
-            id="register-confirm-password"
-            name="confirmPassword"
-            label="Confirmar contraseña"
-            autoComplete="new-password"
-            errors={confirmPasswordErrors}
-            onFieldChange={handleFieldChange}
-          />
+          <div>
+            <label
+              htmlFor="register-confirm-password"
+              className="mb-1.5 block text-sm font-medium text-zinc-900"
+            >
+              Confirmar contraseña
+            </label>
+            <PasswordInputWithToggle
+              id="register-confirm-password"
+              name="confirmPassword"
+              autoComplete="new-password"
+              inputClassName="sb-input"
+              actionLabel="confirmación de contraseña"
+              ariaInvalid={Boolean(confirmPasswordErrors)}
+              ariaDescribedBy={
+                confirmPasswordErrors?.length
+                  ? fieldErrorId("confirmPassword")
+                  : undefined
+              }
+              onChange={() => handleFieldChange("confirmPassword")}
+            />
+            <FieldErrorMessages
+              field="confirmPassword"
+              errors={confirmPasswordErrors}
+            />
+          </div>
         </div>
 
         <div>
@@ -486,7 +441,7 @@ export default function RegisterForm({ redirectTo }: RegisterFormProps) {
             className={`rounded-xl border px-3 py-2 text-sm ${
               isSuccessful
                 ? "border-emerald-300/70 bg-emerald-100/50 text-zinc-900"
-                : "border-red-200 bg-red-50 text-red-700"
+                : "auth-retro-error-box"
             }`}
             aria-live="polite"
           >

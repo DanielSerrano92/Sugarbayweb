@@ -2388,6 +2388,32 @@ p {
     font-weight: 700;
   }
 
+  .auth-retro-modal .auth-password-input {
+    padding-right: 2.85rem;
+  }
+
+  .auth-retro-modal .auth-password-toggle {
+    right: 0;
+    width: 2.6rem;
+    border: 0;
+    border-left: 1px solid #6e6c80;
+    color: #2e2951;
+    background: linear-gradient(180deg, #e5e2f2 0%, #d5d0e6 100%);
+    cursor: pointer;
+    transition: color 0.14s ease, background-color 0.14s ease;
+  }
+
+  .auth-retro-modal .auth-password-toggle:hover {
+    color: #172977;
+    background: linear-gradient(180deg, #f1eefe 0%, #ddd6f4 100%);
+  }
+
+  .auth-retro-modal .auth-password-toggle:focus-visible {
+    outline: 2px dotted #2f45be;
+    outline-offset: -3px;
+    z-index: 1;
+  }
+
   .auth-retro-modal .sb-input::placeholder {
     color: #4f4f5f;
     opacity: 1;
@@ -2441,19 +2467,24 @@ p {
   }
 
   .auth-retro-modal .text-red-600 {
-    color: #651631 !important;
+    color: #b1005b !important;
     font-weight: 700;
   }
 
-  .auth-retro-modal .auth-retro-form-wrap form > p {
+  .auth-retro-modal .auth-retro-error-text {
+    color: #b1005b !important;
+    font-weight: 700;
+  }
+
+  .auth-retro-modal .auth-retro-error-box {
     margin-top: 0.2rem;
-    border: 1px solid #7b3c57;
+    border: 1px solid #a32464;
     border-radius: 0;
-    background: linear-gradient(180deg, #f2d8e4 0%, #e9c9d7 100%);
+    background: linear-gradient(180deg, #ffe2f1 0%, #ffcfe6 100%);
     box-shadow:
-      inset 1px 1px 0 #fbeaf1,
-      inset -1px -1px 0 #b8829a;
-    color: #4e112d;
+      inset 1px 1px 0 #fff4fa,
+      inset -1px -1px 0 #cc7aa3;
+    color: #7a0f42;
     font-weight: 700;
   }
 

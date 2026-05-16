@@ -26,29 +26,10 @@ export default function AuthModalPanel({
     <AuthModal
       open={open}
       onClose={onClose}
-      title={mode === "login" ? "LOGIN" : "MI CUENTA"}
+      title={mode === "login" ? "Login" : "Registro"}
       description="Accede a tu perfil Sugarbay para carrito, checkout y contenido personalizado."
     >
       <div className="auth-retro-panel">
-        <div className="auth-retro-mode-switch mb-4 inline-flex gap-2 p-2">
-          <button
-            type="button"
-            onClick={() => onModeChange("login")}
-            aria-pressed={mode === "login"}
-            className={`win-button auth-retro-mode-button ${mode === "login" ? "is-active" : ""}`}
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            onClick={() => onModeChange("register")}
-            aria-pressed={mode === "register"}
-            className={`win-button auth-retro-mode-button ${mode === "register" ? "is-active" : ""}`}
-          >
-            Registro
-          </button>
-        </div>
-
         <div className="auth-retro-form-wrap">
           {mode === "login" ? (
             <LoginForm redirectTo={redirectTo} />
@@ -58,7 +39,7 @@ export default function AuthModalPanel({
         </div>
 
         <p className="auth-retro-mode-hint mt-4 text-sm">
-          {mode === "login" ? "No tienes cuenta?" : "Ya tienes cuenta?"}{" "}
+          {mode === "login" ? "¿No tienes cuenta?" : "¿Ya tienes cuenta?"}{" "}
           <button
             type="button"
             onClick={() =>
@@ -66,7 +47,7 @@ export default function AuthModalPanel({
             }
             className="auth-retro-mode-link"
           >
-            {mode === "login" ? "Crear cuenta" : "Inicia sesion"}
+            {mode === "login" ? "Crear cuenta" : "Inicia sesión"}
           </button>
         </p>
       </div>
