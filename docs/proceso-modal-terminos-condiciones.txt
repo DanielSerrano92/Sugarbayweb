@@ -1,0 +1,99 @@
+﻿1. Objetivo de la tarea
+Unificar el diseño y comportamiento del modal de Términos y Condiciones con el resto de modales retro/vaporwave del proyecto, eliminar el botón innecesario de “Volver a registro” y reutilizar exactamente el mismo modal desde Registro y desde el Footer.
+
+2. Estado inicial del modal de términos
+- El modal de términos tenía estructura y clases propias distintas al modal retro principal de autenticación.
+- Incluía un botón inferior “Volver al registro”.
+- El footer no abría este modal; el enlace legal de términos era un enlace placeholder (`#`).
+
+3. Problemas detectados
+- Estilo diferente al resto de modales.
+- Botón innecesario de volver a registro.
+- Footer no reutilizaba el mismo modal.
+
+4. Archivos revisados
+- components/auth/terms-and-conditions-modal.tsx
+- components/auth/register-form.tsx
+- components/auth/auth-modal.tsx
+- components/layout/site-footer.tsx
+- app/globals.css
+
+5. Archivos modificados
+- components/auth/terms-and-conditions-modal.tsx
+- components/layout/site-footer.tsx
+- components/layout/footer-terms-trigger.tsx (nuevo)
+
+6. Cambios realizados paso a paso
+- Se refactorizó `terms-and-conditions-modal.tsx` para usar la misma estructura visual retro común:
+  - overlay oscuro con `retro-vapor-overlay`
+  - contenedor `win-window auth-retro-modal`
+  - header `win-titlebar`
+  - botón `X` con estilo `win-button retro-win-close`
+  - body con scroll interno `auth-retro-body`
+- Se mantuvo la trampa de foco y cierre por `Escape`.
+- Se mantuvo `data-auth-nested-modal="true"` para no interferir con el modal de autenticación cuando el modal de términos se abre encima.
+- Se eliminó el bloque sticky y el botón “Volver al registro”.
+- Se creó el componente cliente `footer-terms-trigger.tsx` para abrir/cerrar el mismo modal desde el footer.
+- Se integró ese trigger en `site-footer.tsx` exclusivamente para el enlace de “Términos”, sin duplicar contenido.
+
+7. Explicación de cómo se reutiliza el mismo modal desde registro y footer
+- Registro sigue usando `TermsAndConditionsModal` directamente desde `register-form.tsx`.
+- Footer ahora abre ese mismo `TermsAndConditionsModal` a través de `footer-terms-trigger.tsx`.
+- No se crearon dos modales de términos distintos ni se copió el contenido en otro sitio.
+
+8. Explicación de cómo se aplicó el estilo común de modales
+- Se alineó el modal de términos con la familia visual retro ya usada en autenticación:
+  - `win-window` + `auth-retro-modal`
+  - `win-titlebar`
+  - botón `X` retro
+  - fondo/overlay vaporwave
+  - área de contenido con scroll y layout responsive
+- Resultado: aspecto coherente con el resto de modales del proyecto.
+
+9. Explicación de por qué se eliminó el botón “Volver a registro”
+- El botón duplicaba una acción ya cubierta por la `X` y el overlay.
+- Eliminándolo se simplifica la UX y se evita ruido visual.
+- También evita ocupar espacio innecesario en el contenido legal.
+
+10. Confirmación de que la X es suficiente para cerrar
+- El modal se cierra correctamente mediante:
+  - botón `X` del header
+  - tecla `Escape`
+  - clic en overlay
+- En registro vuelve al formulario sin romper el estado del componente.
+- En footer vuelve a la misma página sin navegación ni recarga.
+
+11. Confirmación de que no se modificó la lógica de autenticación
+- No se tocaron `loginAction`, `registerAction` ni validaciones funcionales.
+- No se alteró el flujo de sesión/autenticación.
+- Cambios limitados a UI/modal y apertura desde footer.
+
+12. Pruebas manuales realizadas
+- Desde Registro:
+  - Abrir términos desde el enlace del formulario.
+  - Verificar estilo retro común, header y `X`.
+  - Verificar ausencia del botón “Volver a registro”.
+  - Cerrar y confirmar retorno correcto al registro.
+- Desde Footer:
+  - Clic en “Términos”.
+  - Verificar apertura del mismo modal, sin navegación ni recarga.
+  - Cerrar con `X` y verificar retorno a la misma vista.
+- Responsive:
+  - Verificación de scroll interno del contenido y visibilidad de la `X`.
+
+13. Resultado de `npm run lint`
+- Completado con éxito.
+- Sin errores.
+- 1 warning preexistente no bloqueante:
+  - `lib/media/video.ts`: `parseYouTubeVideoId` definido y no usado.
+
+14. Resultado de `npm run build`
+- Primer intento falló por acceso de red a Google Fonts (`Press Start 2P`) dentro del sandbox.
+- Reintento con permisos escalados: build completado correctamente.
+- Resultado final: compilación OK.
+
+15. Resultado final
+- El modal de Términos y Condiciones quedó unificado visual y funcionalmente con los modales del proyecto.
+- Se eliminó el botón “Volver a registro”.
+- El mismo modal se reutiliza desde Registro y desde Footer.
+- No se creó página nueva ni se duplicó contenido, y no se modificó la lógica de autenticación.

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import FooterTermsTrigger from "./footer-terms-trigger";
+
 const FOOTER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
 const COPYRIGHT_YEAR = 2026;
 
@@ -15,7 +17,7 @@ const legalLinks = [
   { label: "Ayuda", href: "#" },
   { label: "Devoluciones", href: "#" },
   { label: "Creditos", href: "#" },
-  { label: "Terminos", href: "#" },
+  { label: "Términos", href: "#" },
   { label: "Privacidad", href: "#" },
   { label: "Accesibilidad", href: "#" },
 ] as const;
@@ -206,12 +208,19 @@ export default function SiteFooter() {
                             className="mr-1.5 h-1.5 w-1.5 bg-[#ff55cf] shadow-[0_0_8px_rgba(255,85,207,0.9)]"
                             aria-hidden="true"
                           />
-                          <Link
-                            href={link.href}
-                            className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
-                          >
-                            {link.label}
-                          </Link>
+                          {link.label === "Términos" ? (
+                            <FooterTermsTrigger
+                              label={link.label}
+                              className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
+                            />
+                          ) : (
+                            <Link
+                              href={link.href}
+                              className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
+                            >
+                              {link.label}
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>

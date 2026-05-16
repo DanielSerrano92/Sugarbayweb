@@ -6,6 +6,7 @@ import { loginAction } from "@/lib/auth/actions";
 import type { AuthActionState } from "@/lib/validators/auth";
 
 import AuthSubmitButton from "./auth-submit-button";
+import PasswordInputWithToggle from "./password-input-with-toggle";
 
 type LoginFormProps = {
   redirectTo?: string;
@@ -15,6 +16,8 @@ const initialState: AuthActionState = {};
 
 export default function LoginForm({ redirectTo }: LoginFormProps) {
   const [state, formAction] = useActionState(loginAction, initialState);
+  const emailError = state.fieldErrors?.email?.[0];
+  const passwordError = state.fieldErrors?.password?.[0];
 
   return (
     <form action={formAction} className="space-y-4">
@@ -34,9 +37,13 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {
           required
           autoComplete="email"
           className="sb-input"
+          aria-invalid={Boolean(emailError)}
+          aria-describedby={emailError ? "login-email-error" : undefined}
         />
-        {state.fieldErrors?.email ? (
-          <p className="mt-1 text-xs text-red-600">{state.fieldErrors.email[0]}</p>
+        {emailError ? (
+          <p id="login-email-error" className="auth-retro-error-text mt-1 text-xs">
+            {emailError}
+          </p>
         ) : null}
       </div>
 
@@ -45,19 +52,20 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {
           htmlFor="login-password"
           className="mb-1.5 block text-sm font-medium text-zinc-900"
         >
-          Contrasena
+          Contraseña
         </label>
-        <input
+        <PasswordInputWithToggle
           id="login-password"
           name="password"
-          type="password"
-          required
           autoComplete="current-password"
-          className="sb-input"
+          inputClassName="sb-input"
+          actionLabel="contraseña"
+          ariaInvalid={Boolean(passwordError)}
+          ariaDescribedBy={passwordError ? "login-password-error" : undefined}
         />
-        {state.fieldErrors?.password ? (
-          <p className="mt-1 text-xs text-red-600">
-            {state.fieldErrors.password[0]}
+        {passwordError ? (
+          <p id="login-password-error" className="auth-retro-error-text mt-1 text-xs">
+            {passwordError}
           </p>
         ) : null}
       </div>
@@ -73,7 +81,7 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {
       </label>
 
       {state.message ? (
-        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="auth-retro-error-box rounded-xl border px-3 py-2 text-sm" aria-live="polite">
           {state.message}
         </p>
       ) : null}

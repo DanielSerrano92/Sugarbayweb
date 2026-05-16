@@ -1,0 +1,94 @@
+﻿1. Objetivo de la tarea
+Mejorar la UI/UX de los modales de autenticación (Login y Registro) añadiendo visibilidad de contraseña en login, corrigiendo la posición del icono de ojo en registro, eliminando botones extra de cambio de modo, ajustando títulos del header y mejorando la visibilidad de errores.
+
+2. Estado inicial de login y registro
+- Login no tenía icono para mostrar/ocultar contraseña.
+- Registro tenía lógica de ojo propia, pero con separación visual a la derecha del input.
+- El panel de autenticación mostraba botones superiores extra para alternar entre Login y Registro.
+- El título del modal no coincidía con el formato solicitado (aparecía en variantes como "LOGIN" / "MI CUENTA").
+- Los mensajes de error tenían contraste limitado en algunos casos.
+
+3. Problemas detectados
+- Login sin icono de mostrar/ocultar contraseña.
+- Ojo de registro con espacio a la derecha.
+- Botones extra de navegación entre login y registro en la zona superior.
+- Headers no alineados con el texto exacto solicitado.
+- Errores poco visibles para ciertos estados.
+
+4. Archivos revisados
+- components/auth/login-form.tsx
+- components/auth/register-form.tsx
+- components/auth/auth-modal-panel.tsx
+- components/auth/auth-modal.tsx
+- app/globals.css
+
+5. Archivos modificados
+- components/auth/password-input-with-toggle.tsx (nuevo)
+- components/auth/login-form.tsx
+- components/auth/register-form.tsx
+- components/auth/auth-modal-panel.tsx
+- app/globals.css
+
+6. Cambios realizados paso a paso
+- Se creó un componente reutilizable `PasswordInputWithToggle` con estado local para mostrar/ocultar contraseña, botón accesible y `aria-label` dinámico.
+- Se integró `PasswordInputWithToggle` en Login para el campo de contraseña.
+- Se sustituyó la implementación local del ojo en Registro por `PasswordInputWithToggle` para password y confirmación.
+- Se retiró la botonera superior de cambio de modo (Login/Registro) en el panel modal.
+- Se dejó como única navegación entre formularios el texto inferior con botón enlazado.
+- Se cambió el título del modal a `Login` y `Registro` según modo.
+- Se añadieron clases visuales para alinear el icono del ojo al extremo derecho del input y reservar padding interno para no solapar texto.
+- Se reforzó el estilo de errores con color rosa/rojo de alto contraste.
+
+7. Explicación de cómo funciona ahora mostrar/ocultar contraseña en login
+- El campo de contraseña en Login usa un botón con icono de ojo dentro del input.
+- Al pulsar, cambia entre `type="password"` y `type="text"`.
+- El botón actualiza `aria-label` entre `Mostrar contraseña` y `Ocultar contraseña`.
+- Es accesible por teclado al ser un `<button type="button">`.
+
+8. Explicación de cómo se corrigió la posición del ojo en registro
+- Se unificó el control de password con el mismo componente reutilizable.
+- El botón del ojo queda anclado al extremo derecho del input (`right: 0`) y centrado verticalmente (`inset-y-0` + flex).
+- El input recibe `padding-right` suficiente para evitar solapamiento de texto con el icono.
+- Se eliminó el margen lateral extra que dejaba vacío visual en la derecha.
+
+9. Explicación de cómo se navega ahora entre login y registro
+- Ya no hay botones superiores de cambio de modo.
+- Solo se usa la navegación inferior:
+  - Login: `¿No tienes cuenta? Crear cuenta`
+  - Registro: `¿Ya tienes cuenta? Inicia sesión`
+- Ambos enlaces siguen cambiando correctamente entre formularios.
+
+10. Explicación de los cambios en mensajes de error
+- Se añadieron clases específicas de error (`auth-retro-error-text` y `auth-retro-error-box`) para mejorar contraste.
+- Se aplicó paleta rosa/rojo coherente con la estética retro/vaporwave.
+- Se mantuvo tamaño y legibilidad de texto de error.
+
+11. Confirmación de que no se modificó la lógica de autenticación
+- No se cambiaron acciones de login/registro (`loginAction`, `registerAction`).
+- No se alteraron llamadas a backend/auth provider ni flujo de sesión.
+- Los cambios son de UI/comportamiento visual del input de contraseña y presentación.
+
+12. Pruebas manuales realizadas
+- Verificación de título `Login` en modo login y `Registro` en modo registro.
+- Verificación del icono de ojo en Login (mostrar/ocultar).
+- Verificación de icono en Registro alineado al extremo derecho sin hueco extra.
+- Verificación de navegación inferior entre modos y ausencia de botonera superior.
+- Verificación visual de mensajes de error con mayor contraste.
+
+13. Resultado de `npm run lint`
+- Ejecutado correctamente.
+- Resultado: sin errores.
+- Advertencia existente (no bloqueante): `lib/media/video.ts` (`parseYouTubeVideoId` sin uso).
+
+14. Resultado de `npm run build`
+- Build inicial falló por bloqueo de red al descargar Google Fonts (`Press Start 2P`).
+- Se reintentó con permisos escalados y compiló correctamente.
+- Resultado final: build OK, TypeScript OK, generación de rutas completada.
+
+15. Resultado final
+- Login ahora incluye icono de mostrar/ocultar contraseña accesible.
+- Registro mantiene esa funcionalidad con icono corregido en posición.
+- Se eliminaron los botones extra de cambio de modo en cabecera interna.
+- El header del modal muestra exactamente `Login` o `Registro`.
+- Los errores son claramente visibles y legibles.
+- No se modificó la lógica funcional de autenticación.
