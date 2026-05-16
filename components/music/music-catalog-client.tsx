@@ -16,6 +16,8 @@ type MusicCatalogClientProps = {
   items: MusicCatalogCard[];
   songsBySlug: Record<string, MusicSongDetail>;
   albumsBySlug: Record<string, MusicAlbumDetail>;
+  selectedSongSlug?: string;
+  selectedAlbumSlug?: string;
 };
 
 type ExternalLinkKind =
@@ -148,9 +150,19 @@ export default function MusicCatalogClient({
   items,
   songsBySlug,
   albumsBySlug,
+  selectedSongSlug: selectedSongSlugFromQuery,
+  selectedAlbumSlug: selectedAlbumSlugFromQuery,
 }: MusicCatalogClientProps) {
-  const [selectedSongSlug, setSelectedSongSlug] = useState<string | null>(null);
-  const [selectedAlbumSlug, setSelectedAlbumSlug] = useState<string | null>(null);
+  const initialSongSlug = selectedSongSlugFromQuery ?? null;
+  const initialAlbumSlug =
+    selectedSongSlugFromQuery ? null : selectedAlbumSlugFromQuery ?? null;
+
+  const [selectedSongSlug, setSelectedSongSlug] = useState<string | null>(
+    initialSongSlug,
+  );
+  const [selectedAlbumSlug, setSelectedAlbumSlug] = useState<string | null>(
+    initialAlbumSlug,
+  );
 
   const selectedSong = useMemo(
     () => (selectedSongSlug ? songsBySlug[selectedSongSlug] ?? null : null),

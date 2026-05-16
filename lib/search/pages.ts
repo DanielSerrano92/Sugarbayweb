@@ -1,17 +1,17 @@
 import { normalizeSearchTerm } from "@/lib/utils";
 import type { SearchPageEntry, SearchPageResult } from "@/lib/search/types";
 
-const SEARCH_PAGES: SearchPageEntry[] = [
+const QUICK_SEARCH_PAGES: SearchPageEntry[] = [
   {
     id: "home",
-    title: "Inicio",
+    title: "Home",
     href: "/",
     description: "Landing oficial de Sugarbay con novedades destacadas.",
     keywords: ["home", "landing", "principal", "inicio"],
   },
   {
     id: "concerts-upcoming",
-    title: "Proximos conciertos",
+    title: "Pr\u00f3ximos Conciertos",
     href: "/concerts/upcoming",
     description: "Agenda futura de conciertos de Sugarbay.",
     keywords: ["conciertos", "agenda", "gira", "proximos", "shows"],
@@ -39,17 +39,10 @@ const SEARCH_PAGES: SearchPageEntry[] = [
   },
   {
     id: "music",
-    title: "Musica",
+    title: "M\u00fasica",
     href: "/musica",
     description: "Catalogo de canciones y albumes.",
     keywords: ["musica", "canciones", "albumes", "tracks"],
-  },
-  {
-    id: "media",
-    title: "Media",
-    href: "/media/photos",
-    description: "Seccion multimedia con acceso a fotos y videos.",
-    keywords: ["media", "fotos", "videos", "galeria"],
   },
   {
     id: "media-photos",
@@ -67,11 +60,15 @@ const SEARCH_PAGES: SearchPageEntry[] = [
   },
   {
     id: "store",
-    title: "Tienda oficial",
+    title: "Tienda",
     href: "/store",
     description: "Merchandising y productos oficiales de Sugarbay.",
     keywords: ["tienda", "store", "merch", "productos", "ropa", "accesorios"],
   },
+];
+
+const SEARCH_PAGES: SearchPageEntry[] = [
+  ...QUICK_SEARCH_PAGES,
   {
     id: "fanclub",
     title: "Fanclub",
@@ -102,6 +99,15 @@ const SEARCH_PAGES: SearchPageEntry[] = [
   },
 ];
 
+function mapEntryToResult(entry: SearchPageEntry): SearchPageResult {
+  return {
+    id: entry.id,
+    title: entry.title,
+    href: entry.href,
+    description: entry.description,
+  };
+}
+
 function scorePage(entry: SearchPageEntry, query: string): number {
   const title = normalizeSearchTerm(entry.title);
   const description = normalizeSearchTerm(entry.description);
@@ -125,12 +131,7 @@ export function searchSitePages(rawQuery: string, limit: number): SearchPageResu
   const query = normalizeSearchTerm(rawQuery);
 
   if (!query) {
-    return SEARCH_PAGES.slice(0, limit).map((entry) => ({
-      id: entry.id,
-      title: entry.title,
-      href: entry.href,
-      description: entry.description,
-    }));
+    return QUICK_SEARCH_PAGES.map(mapEntryToResult);
   }
 
   return SEARCH_PAGES.map((entry) => ({
@@ -144,10 +145,9 @@ export function searchSitePages(rawQuery: string, limit: number): SearchPageResu
         left.entry.title.localeCompare(right.entry.title),
     )
     .slice(0, limit)
-    .map(({ entry }) => ({
-      id: entry.id,
-      title: entry.title,
-      href: entry.href,
-      description: entry.description,
-    }));
+    .map(({ entry }) => mapEntryToResult(entry));
+}
+
+export function getQuickSearchPages(): SearchPageResult[] {
+  return QUICK_SEARCH_PAGES.map(mapEntryToResult);
 }

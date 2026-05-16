@@ -63,9 +63,12 @@ export default async function MusicaPage({ searchParams }: MusicaPageProps) {
           />
       ) : (
           <MusicCatalogClient
+            key={`${catalog.filters.song ?? ""}-${catalog.filters.album ?? ""}`}
             items={catalog.items}
             songsBySlug={catalog.songsBySlug}
             albumsBySlug={catalog.albumsBySlug}
+            selectedSongSlug={catalog.filters.song}
+            selectedAlbumSlug={catalog.filters.album}
           />
         )}
       </section>

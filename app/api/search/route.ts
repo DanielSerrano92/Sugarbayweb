@@ -6,13 +6,13 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const rawQuery = searchParams.get("q") ?? "";
   const query = rawQuery.trim().slice(0, 80);
-  const result = await searchHeaderContent(query, { limit: 6 });
+  const result = await searchHeaderContent(query, { limit: 120 });
 
   return NextResponse.json(
     {
       query,
-      pages: result.pages,
-      products: result.products,
+      quickLinks: result.quickLinks,
+      items: result.items,
     },
     {
       headers: {

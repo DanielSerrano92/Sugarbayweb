@@ -390,6 +390,17 @@ export async function getMusicCatalog(
     requiredSongSlugs.add(item.slug);
   }
 
+  if (filters.album && albumsBySlug[filters.album]) {
+    pageAlbumsBySlug[filters.album] = albumsBySlug[filters.album];
+    for (const track of albumsBySlug[filters.album].tracks) {
+      requiredSongSlugs.add(track.slug);
+    }
+  }
+
+  if (filters.song) {
+    requiredSongSlugs.add(filters.song);
+  }
+
   for (const slug of requiredSongSlugs) {
     const song = songsBySlug[slug];
     if (song) {

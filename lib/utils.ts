@@ -30,5 +30,9 @@ export function formatDate(
 
 export function normalizeSearchTerm(input?: string | null): string {
   if (!input) return "";
-  return input.trim().toLowerCase();
+  return input
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
