@@ -13,7 +13,29 @@ export type SearchPageResult = {
   description: string;
 };
 
-export type SearchProductResult = {
+export type SearchMenuResultType =
+  | "page"
+  | "concert-upcoming"
+  | "concert-past"
+  | "news"
+  | "song"
+  | "album"
+  | "photo-collection"
+  | "video-collection"
+  | "product";
+
+export type SearchMenuResult = {
+  id: string;
+  type: SearchMenuResultType;
+  title: string;
+  href: string;
+  description: string;
+  categoryLabel: string;
+  imageUrl: string | null;
+  price: string | null;
+};
+
+export type SearchProductRecord = {
   id: string;
   name: string;
   slug: string;
@@ -23,7 +45,7 @@ export type SearchProductResult = {
 };
 
 export type HeaderSearchResult = {
-  pages: SearchPageResult[];
-  products: SearchProductResult[];
+  quickLinks: SearchPageResult[];
+  items: SearchMenuResult[];
 };
 

@@ -1,0 +1,73 @@
+PROCESO AJUSTE BUSQUEDA RAPIDA DEL HEADER
+
+1. Objetivo de la tarea
+- Limitar el menu de busqueda rapida del header para que muestre solo accesos directos a paginas principales.
+- Mantener intacta la barra de busqueda para resultados de contenido concreto (productos, conciertos, noticias, fotos, videos, colecciones y demas contenido indexado).
+
+2. Estado inicial del menu de busqueda rapida
+- Al abrir el buscador sin escribir, se mezclaban paginas y productos destacados.
+- La lista de paginas no estaba restringida a las 9 opciones requeridas.
+- El texto de Home aparecia como "Inicio".
+
+3. Problema detectado
+- La seccion de busqueda rapida incluia opciones que no debian mostrarse como acceso rapido (por ejemplo, productos destacados y paginas fuera del alcance pedido).
+- No existia una separacion estricta entre accesos directos rapidos y resultados de busqueda de contenido.
+
+4. Archivos revisados
+- components/layout/global-search.tsx
+- app/api/search/route.ts
+- lib/repositories/search.ts
+- lib/search/pages.ts
+- app/buscar/page.tsx
+
+5. Archivos modificados
+- lib/search/pages.ts
+- lib/repositories/search.ts
+- docs/proceso-busqueda-rapida-header.txt
+
+6. Cambios realizados paso a paso
+1) En `lib/search/pages.ts` se creo una lista dedicada de busqueda rapida (`QUICK_SEARCH_PAGES`) con exactamente 9 entradas de navegacion principal.
+2) Se ajustaron los textos para que coincidan con el requerimiento, incluyendo:
+   - "Home" en lugar de "Inicio".
+   - "Próximos Conciertos", "Conciertos anteriores", "Noticias de la banda", "Bio de la banda", "Música", "Fotos", "Videos", "Tienda".
+3) Se mantuvo un catalogo de paginas buscables (`SEARCH_PAGES`) para la busqueda por texto, pero la salida sin query ahora usa solo `QUICK_SEARCH_PAGES`.
+4) En `lib/repositories/search.ts` se separo el comportamiento:
+   - Si no hay query: devuelve solo paginas de busqueda rapida y `products: []`.
+   - Si hay query: mantiene la busqueda de productos por nombre/descripcion/tags.
+5) No se modifico el layout visual ni estilos del header/global search.
+
+7. Lista final de opciones de busqueda rapida
+La busqueda rapida ahora muestra unicamente estas 9 opciones:
+1. Home
+2. Próximos Conciertos
+3. Conciertos anteriores
+4. Noticias de la banda
+5. Bio de la banda
+6. Música
+7. Fotos
+8. Videos
+9. Tienda
+
+8. Diferencia entre busqueda rapida y barra de busqueda
+- Busqueda rapida: accesos directos fijos a paginas principales de la web.
+- Barra de busqueda: busqueda de contenido concreto cuando el usuario escribe (productos y resto de contenido indexado por la logica existente).
+
+9. Confirmacion sobre productos, conciertos, noticias y otros contenidos
+- Productos y otros resultados dinamicos ya no se muestran como accesos rapidos al abrir el menu sin escribir.
+- La busqueda por texto sigue activa para encontrar contenido concreto al escribir en la barra.
+
+10. Confirmacion del cambio "Inicio" -> "Home"
+- Se reemplazo "Inicio" por "Home" en la lista de busqueda rapida.
+
+11. Pruebas realizadas
+- Verificacion funcional de la logica:
+  - Sin query: se devuelven solo paginas rapidas y sin productos.
+  - Con query: se mantiene busqueda de productos y paginas.
+- Ejecucion de calidad:
+  - `npm run lint`
+  - `npm run build`
+
+12. Resultado final
+- El menu de busqueda rapida queda limitado a navegacion directa de paginas principales (9 opciones).
+- Se elimina la mezcla de resultados dinamicos dentro de la seccion rapida.
+- Se conserva la busqueda general para contenido concreto al escribir en la barra.

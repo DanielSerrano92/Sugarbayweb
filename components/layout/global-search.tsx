@@ -12,51 +12,51 @@ import {
 } from "react";
 
 import { resolveImageUrl } from "@/lib/services/imagekit";
-import { formatCurrency } from "@/lib/utils";
 
-type SearchPageItem = {
+type SearchQuickLinkItem = {
   id: string;
   title: string;
   href: string;
   description: string;
 };
 
-type SearchProductItem = {
+type SearchMenuResultItem = {
   id: string;
-  name: string;
-  slug: string;
-  basePrice: string;
-  currency: string;
-  coverImageUrl: string | null;
+  type:
+    | "page"
+    | "concert-upcoming"
+    | "concert-past"
+    | "news"
+    | "song"
+    | "album"
+    | "photo-collection"
+    | "video-collection"
+    | "product";
+  title: string;
+  href: string;
+  description: string;
+  categoryLabel: string;
+  imageUrl: string | null;
+  price: string | null;
 };
 
 type SearchApiResponse = {
   query: string;
-  pages: SearchPageItem[];
-  products: SearchProductItem[];
+  quickLinks: SearchQuickLinkItem[];
+  items: SearchMenuResultItem[];
 };
 
-type FlattenedItem =
-  | {
-      id: string;
-      key: string;
-      type: "page";
-      title: string;
-      href: string;
-      subtitle: string;
-      imageUrl: null;
-      price: null;
-    }
-  | {
-      id: string;
-      key: string;
-      type: "product";
-      title: string;
-      href: string;
-      subtitle: string;
-      imageUrl: string | null;
-      price: string;
-    };
+type FlattenedItem = {
+  id: string;
+  key: string;
+  type: SearchMenuResultItem["type"];
+  title: string;
+  href: string;
+  subtitle: string;
+  imageUrl: string | null;
+  price: string | null;
+  categoryLabel: string;
+};
 
 type GlobalSearchProps = {
   className?: string;
@@ -128,8 +128,8 @@ export default function GlobalSearch({
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<SearchApiResponse>({
     query: "",
-    pages: [],
-    products: [],
+    quickLinks: [],
+    items: [],
   });
   const [activeIndex, setActiveIndex] = useState(-1);
 
@@ -288,31 +288,39 @@ export default function GlobalSearch({
     };
   }, [open, debouncedQuery]);
 
+  const hasTypedQuery = query.trim().length > 0;
+
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [debouncedQuery, hasTypedQuery]);
+
   const flattenedItems = useMemo<FlattenedItem[]>(() => {
-    const pageItems: FlattenedItem[] = results.pages.map((page) => ({
-      id: page.id,
-      key: `page-${page.id}`,
-      type: "page",
-      title: page.title,
-      href: page.href,
-      subtitle: page.description,
-      imageUrl: null,
-      price: null,
-    }));
+    if (!hasTypedQuery) {
+      return results.quickLinks.map((page) => ({
+        id: page.id,
+        key: `quick-${page.id}`,
+        type: "page",
+        title: page.title,
+        href: page.href,
+        subtitle: page.description,
+        imageUrl: null,
+        price: null,
+        categoryLabel: "Pagina",
+      }));
+    }
 
-    const productItems: FlattenedItem[] = results.products.map((product) => ({
-      id: product.id,
-      key: `product-${product.id}`,
-      type: "product",
-      title: product.name,
-      href: `/store/${product.slug}`,
-      subtitle: "Producto",
-      imageUrl: product.coverImageUrl,
-      price: formatCurrency(product.basePrice, product.currency),
+    return results.items.map((item) => ({
+      id: item.id,
+      key: `${item.type}-${item.id}`,
+      type: item.type,
+      title: item.title,
+      href: item.href,
+      subtitle: item.description,
+      imageUrl: item.imageUrl,
+      price: item.price,
+      categoryLabel: item.categoryLabel,
     }));
-
-    return [...pageItems, ...productItems];
-  }, [results.pages, results.products]);
+  }, [hasTypedQuery, results.items, results.quickLinks]);
 
   const normalizedActiveIndex = useMemo(() => {
     if (flattenedItems.length === 0) return -1;
@@ -358,9 +366,8 @@ export default function GlobalSearch({
         return;
       }
 
-      if (query.trim()) {
-        router.push(`/buscar?q=${encodeURIComponent(query.trim())}`);
-        closeSearch();
+      if (flattenedItems[0]) {
+        goToResult(flattenedItems[0]);
       }
       return;
     }
@@ -460,7 +467,7 @@ export default function GlobalSearch({
             <div className="global-search-modal-body flex min-h-0 flex-1 flex-col gap-3 overflow-x-hidden p-3 sm:p-4">
               <div className="global-search-input-shell p-2">
                 <label htmlFor="global-search-input" className="sr-only">
-                  Buscar paginas y productos
+                  Buscar contenido en la web
                 </label>
                 <input
                   ref={inputRef}
@@ -472,7 +479,7 @@ export default function GlobalSearch({
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   onKeyDown={handleInputKeyDown}
-                  placeholder="Buscar paginas y productos..."
+                  placeholder="Buscar conciertos, noticias, musica, media y tienda..."
                   className="win-input global-search-input text-sm"
                 />
               </div>
@@ -486,17 +493,20 @@ export default function GlobalSearch({
                   </p>
                 ) : flattenedItems.length === 0 ? (
                   <p className="global-search-empty">
-                    No encontramos resultados rapidos para esta busqueda.
+                    {hasTypedQuery
+                      ? "No encontramos resultados para esta busqueda."
+                      : "Accesos directos de navegacion principal."}
                   </p>
                 ) : (
                   <ul
                     id="global-search-results"
                     role="listbox"
-                    aria-label="Resultados rapidos"
+                    aria-label={hasTypedQuery ? "Resultados de busqueda" : "Accesos rapidos"}
                     className="space-y-2"
                   >
                     {flattenedItems.map((item, index) => {
                       const isActive = index === normalizedActiveIndex;
+                      const hasImage = Boolean(item.imageUrl);
 
                       return (
                         <li key={item.key} role="presentation">
@@ -509,7 +519,7 @@ export default function GlobalSearch({
                             onClick={() => goToResult(item)}
                             className={`global-search-result ${isActive ? "global-search-result-active" : ""}`}
                           >
-                            {item.type === "product" ? (
+                            {hasImage ? (
                               <div className="global-search-result-thumb relative h-11 w-11 shrink-0 overflow-hidden">
                                 <Image
                                   src={resolveImageUrl(item.imageUrl)}
@@ -537,7 +547,7 @@ export default function GlobalSearch({
                                 <p className="text-xs font-bold text-[#1f2458]">{item.price}</p>
                               ) : null}
                               <p className="global-search-result-kind">
-                                {item.type === "page" ? "Pagina" : "Producto"}
+                                {item.categoryLabel}
                               </p>
                             </div>
                           </button>
@@ -547,21 +557,6 @@ export default function GlobalSearch({
                   </ul>
                 )}
               </div>
-
-              {query.trim() ? (
-                <div className="global-search-actions">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      router.push(`/buscar?q=${encodeURIComponent(query.trim())}`);
-                      closeSearch();
-                    }}
-                    className="win-button global-search-view-all"
-                  >
-                    Ver resultados completos
-                  </button>
-                </div>
-              ) : null}
             </div>
           </section>
         </div>

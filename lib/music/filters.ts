@@ -51,6 +51,8 @@ export function parseMusicFilters(params: MusicQueryParams): MusicFilters {
 
   const from = pickString(params.from);
   const to = pickString(params.to);
+  const song = pickString(params.song);
+  const album = pickString(params.album);
 
   return {
     type,
@@ -58,6 +60,8 @@ export function parseMusicFilters(params: MusicQueryParams): MusicFilters {
     from: from && ISO_DATE_PATTERN.test(from) ? from : undefined,
     to: to && ISO_DATE_PATTERN.test(to) ? to : undefined,
     page: parsePositivePage(pickString(params.page)),
+    song,
+    album,
   };
 }
 
@@ -77,6 +81,8 @@ export function serializeMusicFilters(
   if (merged.sort) params.set("sort", merged.sort);
   if (merged.from) params.set("from", merged.from);
   if (merged.to) params.set("to", merged.to);
+  if (merged.song) params.set("song", merged.song);
+  if (merged.album) params.set("album", merged.album);
   if (typeof merged.page === "number" && merged.page > 1) {
     params.set("page", String(merged.page));
   }
