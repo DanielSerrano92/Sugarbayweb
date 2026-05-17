@@ -52,6 +52,12 @@ enum PaymentStatus {
   FAILED
 }
 
+enum SupportRequestStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
 enum ConcertStatus {
   SCHEDULED
   SOLD_OUT
@@ -128,6 +134,7 @@ model User {
   phone           String?
   isActive        Boolean   @default(true)
   addresses       Address[]
+  supportRequests SupportRequest[]
   cart            Cart?
   orders          Order[]
   createdAt       DateTime  @default(now())
@@ -156,6 +163,19 @@ model Address {
 
   @@index([userId, type])
   @@index([country, postalCode])
+}
+
+model SupportRequest {
+  id        String               @id @default(cuid())
+  userId    String
+  subject   String
+  message   String
+  status    SupportRequestStatus @default(OPEN)
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@index([userId, createdAt])
 }
 
 model ProductCategory {

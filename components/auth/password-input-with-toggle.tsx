@@ -11,6 +11,7 @@ type PasswordInputWithToggleProps = {
   actionLabel: string;
   ariaInvalid?: boolean;
   ariaDescribedBy?: string;
+  value?: string;
   onChange?: InputHTMLAttributes<HTMLInputElement>["onChange"];
 };
 
@@ -42,6 +43,7 @@ export default function PasswordInputWithToggle({
   actionLabel,
   ariaInvalid,
   ariaDescribedBy,
+  value,
   onChange,
 }: PasswordInputWithToggleProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -57,6 +59,7 @@ export default function PasswordInputWithToggle({
         className={`${inputClassName} auth-password-input`}
         aria-invalid={ariaInvalid}
         aria-describedby={ariaDescribedBy}
+        value={value}
         onChange={onChange}
       />
       <button
