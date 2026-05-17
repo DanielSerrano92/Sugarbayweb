@@ -1,0 +1,154 @@
+Proceso de ajuste de hover en botones del header y eliminacion de contorno interno
+Fecha: 2026-05-17
+
+1. Objetivo de la tarea
+Ajustar el hover de los botones principales del header para que el fondo no cambie, mantener el hover de tamano actual y eliminar el contorno interno del header que generaba una linea visual sobre el submenu.
+
+2. Estado inicial de los botones del header
+- Los botones principales (`.sb-header-tab`) cambiaban fondo en hover (`background: #ecc2f5`).
+- El hover aplicaba efecto de tamano con `transform: translateY(-2px) scale(var(--sb-header-hover-scale))`.
+- El texto en hover no se pintaba en rosa neon.
+
+3. Problema detectado
+- El hover necesitaba mantener el background fijo (sin cambio de fondo).
+- Se debia conservar el hover de tamano existente.
+- Aparecia una linea visual que cortaba letras en submenu, atribuida al contorno interno del header.
+
+4. Archivos revisados
+- `components/layout/header-client.tsx`
+- `app/globals.css`
+
+5. Archivos modificados
+- `app/globals.css`
+- `docs/proceso-botones-header-hover.txt`
+
+6. Cambios realizados paso a paso
+1. Se reviso el bloque de estilos de `.sb-header-tab` para hover/transiciones.
+2. Se elimino el cambio de fondo en hover del boton principal, dejando el mismo color base.
+3. Se aplico color rosa al texto en hover.
+4. Se anadio glow/sombra neon rosa al texto en hover.
+5. Se mantuvo intacto el `transform` de hover para conservar el mismo efecto de tamano.
+6. Se localizo el contorno interno del header en `.sb-header-shell::after`.
+7. Se elimino exclusivamente ese contorno interno dejando solo `content: none`.
+
+7. Explicacion de como se dejo fijo el background en hover
+En `.sb-header-tab:hover` y `.sb-header-nav-item:hover > .sb-header-tab` se cambio `background` a `#d8d8d8`, igual que el estado normal del boton.
+
+8. Explicacion de como se aplico texto rosa en hover
+En los mismos estados hover de boton principal se definio `color: #ff4fcf !important`.
+
+9. Explicacion de como se aplico sombra/glow neon rosa al texto
+Se anadio `text-shadow` en hover:
+- `0 0 7px rgb(255 79 207 / 52%)`
+- `0 0 12px rgb(255 79 207 / 32%)`
+Ademas se extendio la transicion para `color` y `text-shadow`.
+
+10. Confirmacion de que se mantuvo el hover de tamano de botones
+Confirmado: no se modifico `transform: translateY(-2px) scale(var(--sb-header-hover-scale))`.
+
+11. Confirmacion de que no se cambio el hover del submenu
+Confirmado: no se tocaron reglas de `.sb-header-dropdown-item:hover` ni `.sb-header-dropdown-item-active`.
+
+12. Causa del contorno interno del header
+El contorno interno provenia del pseudo-elemento `.sb-header-shell::after`, que dibujaba un borde interno animado dentro del contenedor del header.
+
+13. Explicacion de como se elimino el contorno interno
+Se cambio el bloque `.sb-header-shell::after` para que no renderice el contorno interno: `content: none`.
+
+14. Confirmacion de que se mantuvo el borde exterior del header
+Confirmado: no se modifico el borde exterior de `.sb-header-shell` (`border: 6px solid #fff`).
+
+15. Confirmacion de que se mantuvo el background interior con animacion
+Confirmado: no se modificaron `background`, `background-size` ni `animation: sb-header-shell-neon` del contenedor principal del header.
+
+16. Confirmacion de que no se cambio la logica de navegacion
+No se modificaron rutas, estructura de links, logica de apertura/cierre de submenu, ni codigo TS/JS del header.
+
+17. Pruebas manuales realizadas
+- Revision de CSS aplicada a botones principales: fondo fijo en hover, texto rosa y glow neon.
+- Verificacion de que el hover de tamano se mantiene con el mismo `transform` previo.
+- Verificacion de que el hover del submenu no fue modificado a nivel de reglas CSS.
+- Verificacion de que se elimino solo el contorno interno del header y se conserva borde exterior + fondo animado.
+Nota: validacion visual interactiva en navegador queda recomendada para confirmar el resultado final en desktop/tablet/movil.
+
+18. Resultado de `npm run lint`
+Comando ejecutado: `npm.cmd run lint`
+Resultado: OK con 1 warning preexistente (sin errores).
+Warning:
+- `lib/media/video.ts:62:10` -> `parseYouTubeVideoId` definido y no usado (`@typescript-eslint/no-unused-vars`).
+
+19. Resultado de `npm run build`
+- Primer intento (`npm.cmd run build`): fallo por conectividad al descargar la fuente `Press Start 2P` desde Google Fonts en entorno restringido.
+- Reintento con acceso de red: build completado correctamente.
+Resultado final: build OK.
+
+20. Resultado final
+Cambio completado segun alcance pedido:
+- Botones principales del header: mismo fondo en hover, texto rosa y glow neon rosa.
+- Hover de tamano de botones: intacto.
+- Hover del submenu: sin cambios.
+- Contorno interno del header: eliminado.
+- Borde exterior y background interior animado del header: mantenidos.
+
+---
+
+Actualizacion de estilo solicitada (2026-05-17)
+
+- Se redujo la intensidad del efecto neon en las letras de los botones principales del header.
+- Se cambio el color del texto hover a un rosa/morado mas oscuro: `#b73c97`.
+- Se oscurecio el borde hover del boton con tonos rosa/morado:
+  - `border-top: #d28abf`
+  - `border-left: #ba6da8`
+  - `border-right: #6e3e79`
+  - `border-bottom: #5b3366`
+- Se anadio/reforzo glow exterior del boton (fuera del borde) mediante `box-shadow`:
+  - `0 0 0 1px rgb(183 60 151 / 18%)`
+  - `0 0 12px rgb(183 60 151 / 30%)`
+  - `0 0 19px rgb(124 59 170 / 24%)`
+- Se mantuvo sin cambios:
+  - background fijo en hover del boton principal (`#d8d8d8`)
+  - hover de tamano (`transform: translateY(-2px) scale(var(--sb-header-hover-scale))`)
+  - hover del submenu
+  - logica de navegacion
+
+Resultado de validacion en esta actualizacion:
+- `npm.cmd run lint`: OK con 1 warning preexistente en `lib/media/video.ts`.
+- `npm.cmd run build`: primer intento fallo por conectividad a Google Fonts en entorno restringido; reintento con red completado OK.
+
+Ajuste adicional de color de letras (2026-05-17)
+- Se ajusto el color de texto hover de los botones principales a un rosa mas definido:
+  - de `#b73c97` a `#d94bb6`
+- Se actualizaron las sombras del texto para acompanar el nuevo tono rosa:
+  - `0 0 4px rgb(217 75 182 / 34%)`
+  - `0 0 7px rgb(163 62 146 / 24%)`
+- No se modificaron borde, escala hover, submenu ni logica de navegacion.
+
+Ajuste puntual de hover en botones de la derecha (2026-05-17)
+- Se cambio el color hover de `media`, `fanclub` y `tienda` al mismo azul de los iconos de perfil/carrito.
+- Color aplicado: `#61d7ff`.
+- Aplicacion tecnica: override solo en `.sb-header-nav-right` para no afectar botones de la izquierda.
+- Se ajusto tambien el `text-shadow` de esos botones en hover al mismo tono azul.
+- No se modifico la logica de navegacion ni el comportamiento del submenu.
+
+Ajuste adicional de azul y borde en botones de la derecha (2026-05-17)
+- Se oscurecio un poco el azul del texto hover en `media`, `fanclub` y `tienda`:
+  - de `#61d7ff` a `#47b5df`
+- Se aplico tambien borde hover en gama azul para esos botones:
+  - `border-top: #83cbe6`
+  - `border-left: #63add0`
+  - `border-right: #355f80`
+  - `border-bottom: #274a67`
+- Se actualizo el glow de texto para encajar con el nuevo azul mas oscuro.
+- No se modificaron submenu, rutas ni logica de navegacion.
+
+Ajuste final de tono azul en letras (2026-05-17)
+- Se oscurecio un poco mas el azul del texto hover en `media`, `fanclub` y `tienda`:
+  - de `#47b5df` a `#389ac2`
+- Se ajusto el glow de texto para mantener coherencia con el nuevo tono:
+  - `0 0 4px rgb(56 154 194 / 34%)`
+  - `0 0 7px rgb(37 108 140 / 24%)`
+
+Unificacion de sombra hover en todos los botones del header (2026-05-17)
+- Se aplico la misma sombra de hover a todos los botones del header.
+- En los botones de la derecha (`media`, `fanclub`, `tienda`) se elimino la sombra de texto azul especifica para que hereden la misma sombra global de `.sb-header-tab:hover`.
+- Se mantuvieron sin cambios el color azul de texto y el borde azul de esos botones.

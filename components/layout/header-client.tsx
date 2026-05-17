@@ -92,7 +92,7 @@ const profileMenuItemClass =
 
 const LEFT_NAVIGATION_HREFS = ["/concerts", "/band/news", "/musica"];
 const RIGHT_NAVIGATION_HREFS = ["/media/photos", "/fanclub", "/store"];
-const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
+const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo2.png?updatedAt=1779020800274";
 
 function sortNavigationByOrder(items: NavItem[], order: string[]): NavItem[] {
   return [...items].sort((left, right) => order.indexOf(left.href) - order.indexOf(right.href));
@@ -108,7 +108,7 @@ function HeaderLogoImage() {
   return (
     <Image
       src={HEADER_LOGO_SRC}
-      alt="Sugarbay"
+      alt="Sugarbay logo"
       fill
       priority
       sizes="(max-width: 639px) 70px, (max-width: 1560px) 106px, 156px"
