@@ -152,3 +152,14 @@ Unificacion de sombra hover en todos los botones del header (2026-05-17)
 - Se aplico la misma sombra de hover a todos los botones del header.
 - En los botones de la derecha (`media`, `fanclub`, `tienda`) se elimino la sombra de texto azul especifica para que hereden la misma sombra global de `.sb-header-tab:hover`.
 - Se mantuvieron sin cambios el color azul de texto y el borde azul de esos botones.
+
+Eliminacion del neón difuminado en letras del header (2026-05-17)
+- Se elimino el efecto de texto difuminado (neón) en las letras de los botones del header.
+- Ajuste aplicado en `.sb-header-tab` (estado base y hover): `text-shadow: none`.
+- No se modificaron colores, bordes, escala hover ni logica de navegacion.
+
+Ajuste de color en sombra hover de botones del header (2026-05-17)
+- Se anadio/reforzo color en la sombra de hover de los botones principales del header.
+- Botones generales: sombra hover con capas rosa/morado y un acento azul suave.
+- Botones de la derecha (`media`, `fanclub`, `tienda`): sombra hover en gama azul para mantener coherencia con su color de texto.
+- No se modificaron rutas, logica ni estructura de navegacion.

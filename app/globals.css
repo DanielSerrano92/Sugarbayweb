@@ -1118,9 +1118,7 @@ p {
     white-space: nowrap;
     transform-origin: center;
     overflow: hidden;
-    text-shadow:
-      0 0 5px rgb(255 255 255 / 18%),
-      0 0 8px rgb(119 80 255 / 12%);
+    text-shadow: none;
     transition:
       background-color 0.15s ease,
       color 0.15s ease,
@@ -1156,13 +1154,12 @@ p {
     border-bottom: 4px solid #5b3366;
     background: #d8d8d8;
     color: #d94bb6 !important;
-    text-shadow:
-      0 0 4px rgb(217 75 182 / 34%),
-      0 0 7px rgb(163 62 146 / 24%);
+    text-shadow: none;
     box-shadow:
-      0 0 0 1px rgb(183 60 151 / 18%),
-      0 0 12px rgb(183 60 151 / 30%),
-      0 0 19px rgb(124 59 170 / 24%);
+      0 0 0 1px rgb(183 60 151 / 24%),
+      0 0 10px rgb(217 75 182 / 36%),
+      0 0 18px rgb(124 59 170 / 30%),
+      0 0 24px rgb(68 175 225 / 20%);
     transform: translateY(-2px) scale(var(--sb-header-hover-scale));
   }
 
@@ -1173,6 +1170,10 @@ p {
     border-right: 4px solid #355f80;
     border-bottom: 4px solid #274a67;
     color: #389ac2 !important;
+    box-shadow:
+      0 0 0 1px rgb(56 154 194 / 24%),
+      0 0 11px rgb(56 154 194 / 34%),
+      0 0 18px rgb(37 108 140 / 30%);
   }
 
   .sb-header-tab-active {
