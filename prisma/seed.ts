@@ -68,6 +68,7 @@ async function main() {
   const rodajeAprilEventDate = new Date("2026-04-26T00:00:00.000Z");
   const releaseDate = addDays(now, -60, 0, 0);
   const newsPublishedAt = addDays(now, -7, 9, 0);
+  const discomaniacsNewsPublishedAt = addDays(now, -1, 20, 0);
 
   const passwordHash = await bcrypt.hash("Sugarbay123!", 12);
 
@@ -360,6 +361,22 @@ async function main() {
       authorName: "Sugarbay Team",
       tags: ["single", "tour", "madrid"],
       coverImageUrl: "https://ik.imagekit.io/sugarbay/news/midnight-frequency-announce.jpg",
+    },
+  });
+
+  await prisma.news.create({
+    data: {
+      title: "SUGARBAY ANUNCIA EL ESTRENO DEL VIDEOCLIP DISCOMANIACS",
+      slug: "estreno-video-discomaniacs-mitch-bucano-johnny-funk-feat-wazoo",
+      summary:
+        "Mitch Bucano & Johnny Funk presentan 'Discomaniacs', un nuevo video con la colaboracion de Wazoo que refuerza la energia funk, disco y retro de la escena Sugar Bay.",
+      content:
+        "Sugar Bay anuncia el estreno de 'Discomaniacs', la nueva pieza audiovisual de Mitch Bucano & Johnny Funk con la colaboracion especial de Wazoo.\n\nEl lanzamiento combina groove funk, pulso disco y una narrativa visual retro que encaja con el universo sonoro de la banda.\n\nDurante los proximos dias se compartiran nuevos avances y material exclusivo sobre este estreno para la comunidad.",
+      status: NewsStatus.PUBLISHED,
+      publishedAt: discomaniacsNewsPublishedAt,
+      authorName: "Sugarbay Team",
+      tags: ["video", "estreno", "colaboracion"],
+      coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/noticia-2.png",
     },
   });
 

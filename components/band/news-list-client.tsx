@@ -65,7 +65,7 @@ export default function BandNewsListClient({
 
   return (
     <div className="retro-news-concert-grid">
-      {items.map((item, index) => {
+      {items.map((item) => {
         const expanded = expandedIds.has(item.id);
         const publishedLabel = formatDate(item.publishedAtIso, "es-ES", {
           day: "2-digit",
@@ -73,14 +73,13 @@ export default function BandNewsListClient({
           year: "numeric",
         });
         const headerLabel = item.tags[0] ? `#${item.tags[0]}` : "Noticias Sugarbay";
-        const featuredCardClass = index === 0 ? "retro-news-featured-card" : "";
-        const imageHeightClass = index === 0 ? "h-52 sm:h-56 lg:h-60" : "h-48";
+        const imageHeightClass = "h-60 sm:h-64 lg:h-72";
 
         return (
           <article
             key={item.id}
             id={`news-${item.slug}`}
-            className={`retro-concert-card retro-news-concert-card ${featuredCardClass} overflow-hidden`}
+            className="retro-concert-card retro-news-concert-card overflow-hidden"
           >
             <div className="retro-concert-header retro-news-header">{headerLabel}</div>
 

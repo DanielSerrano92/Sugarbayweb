@@ -1,0 +1,14 @@
+﻿M	app/globals.css
+M	app/layout.tsx
+M	components/concerts/concert-cards-client.tsx
+M	components/concerts/concert-filters.tsx
+M	components/concerts/concert-pagination.tsx
+M	components/concerts/concerts-catalog-page.tsx
+M	components/layout/header-client.tsx
+M	components/ui/page-hero.tsx
+A	dev-server.err.log
+A	dev-server.out.log
+M	lib/repositories/concerts.ts
+M	lib/repositories/safe-query.ts
+M	package-lock.json
+A	public/images/hero-concerts.png

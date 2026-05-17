@@ -1,0 +1,289 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Length 4373 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 46.00 787.89 Tm (?# INFORME DETALLADO POR RAMA - sheyla/front-end) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 767.72 Tm (Fecha de elaboracion: 2026-05-14) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 753.54 Tm (Repositorio: Sugarbayweb) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 739.37 Tm (Rama auditada: `sheyla/front-end`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 725.19 Tm (Commit de referencia: `217bfc436e4a97585dfab4809d499f88cfa14c6f` \(mensaje: `upgrade) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 711.02 Tm (front-end`\)) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 685.84 Tm (1. Objetivo funcional de la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 664.94 Tm (Esta rama consolida una evolucion integral del front-end: extiende la identidad retro a) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 650.77 Tm (casi todas las secciones publicas \(Band, Media, Musica, Store, Footer\) y homogeniza) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 636.59 Tm (componentes de interaccion \(modales, paginacion, cards, filtros\). No es un ajuste puntual:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 622.42 Tm (es una fase de consolidacion visual + experiencia de usuario + enriquecimiento de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 608.24 Tm (contenido.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 583.07 Tm (2. Evidencia Git y trazabilidad) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 562.17 Tm (- Autor del commit: `root <you@example.com>`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 547.99 Tm (- Fecha commit: `2026-05-11T00:21:05+02:00`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 533.82 Tm (- Archivos tocados: 42.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 519.64 Tm (- Churn total bruto: +11.524 / -1.733.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 505.47 Tm (- Churn funcional sin logs de dev: +5.911 / -1.733.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 491.29 Tm (- Integracion: el commit esta contenido en `main` y `sheyla/new-changes`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 471.12 Tm (Top de ficheros por volumen:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 456.94 Tm (- `app/globals.css`: +3305 / -593) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 442.77 Tm (- `components/music/music-catalog-client.tsx`: +281 / -106) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 428.59 Tm (- `components/store/store-filters-sidebar.tsx`: +213 / -173) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 414.42 Tm (- `components/layout/site-footer.tsx`: +296 / -21) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 400.24 Tm (- `components/store/store-product-detail-panel.tsx`: +119 / -87) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 386.07 Tm (- `components/media/photo-gallery-client.tsx`: +115 / -68) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 371.89 Tm (- `components/band/band-bio-modals.tsx`: +131 / -51) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 351.72 Tm (Nota tecnica: se versionan `.devserver.err.log` y `.devserver.out.log` como artefactos no) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 337.54 Tm (funcionales.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 312.37 Tm (3. Cambios implementados en detalle) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 282.47 Tm (3.1 Reforzamiento del sistema visual global \(app/globals.css\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 265.27 Tm (Se amplian de forma masiva las clases de UI para toda la web:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 251.09 Tm (- Base retro reutilizable:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 236.92 Tm (- `.win-window`, `.win-titlebar`, `.win-button`, `.win-input`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 222.74 Tm (- Cards y bloques de contenido:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 208.57 Tm (- `.retro-concert-card`, `.retro-concert-header`, `.retro-concert-body`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 194.39 Tm (`.retro-card-action`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 180.22 Tm (- Paginaciones y controles:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 166.04 Tm (- `.concert-pagination-*`, `.concert-top-controls`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 151.87 Tm (- Header retro:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 137.69 Tm (- `.sb-header-shell`, `.sb-header-tab`, `.sb-header-dropdown-*`, `.sb-header-icon-pop`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 123.52 Tm (- Modulos verticales de seccion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 109.34 Tm (- `.retro-news-*`, `.retro-music-*`, `.retro-photo-*`, `.store-*`, `.retro-fanclub-*`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 95.17 Tm (`.retro-bio-*`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 74.99 Tm (Impacto:) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 1 / 5) Tj ET
+endstream
+endobj
+4 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 3 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+5 0 obj
+<< /Length 4243 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Se crea una base visual coherente y reusable en todas las secciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- Se reduce la dependencia de estilos locales dispersos.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 750.54 Tm (3.2 Normalizacion de layouts por seccion con PageShell) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 733.34 Tm (Paginas tocadas \(`app/band/news/page.tsx`, `app/media/videos/page.tsx`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 719.17 Tm (`app/store/page.tsx`, etc.\) pasan a un patron unificado:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 704.99 Tm (- Header visual de seccion con `headerImageSrc` \(ImageKit\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 690.82 Tm (- Capa de contenido uniforme \(`page-content-wrapper`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 676.64 Tm (- Controles de filtro y paginacion en cabecera de contenido.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 656.47 Tm (Ejemplo en `app/store/page.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 642.29 Tm (- Seleccion dinamica de cabecera segun categoria \(`tienda`, `ropa`, `accesorios`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 628.12 Tm (`media`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 613.94 Tm (- Layout responsive en dos columnas con sidebar en desktop y trigger modal en mobile.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 590.77 Tm (3.3 Componente modal transversal \(components/ui/app-modal.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 573.57 Tm (Se refuerza `AppModal` con API de variantes:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 559.39 Tm (- `variant: "default" | "win95"`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 545.22 Tm (- `heightMode: "fixed" | "content"`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 531.04 Tm (- `overlayOpacity`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 510.87 Tm (Comportamiento:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 496.69 Tm (- Render por `createPortal`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 482.52 Tm (- Cierre por `Escape`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 468.34 Tm (- Bloqueo de scroll de fondo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 454.17 Tm (- Header sticky dentro del modal.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 433.99 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 419.82 Tm (- Se evita duplicar logica de modales por feature.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 405.64 Tm (- Se estandariza el comportamiento UX.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 382.47 Tm (3.4 Busqueda rapida global \(components/layout/global-search.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 365.27 Tm (Implementaciones clave:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 351.09 Tm (- Apertura por boton y atajo `Ctrl+K`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 336.92 Tm (- Debounce de busqueda \(`DEBOUNCE_MS=250`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 322.74 Tm (- Fetch a `/api/search` con `AbortController`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 308.57 Tm (- Navegacion por teclado \(flechas, Enter, Escape\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 294.39 Tm (- Render combinado de paginas + productos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 274.22 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 260.04 Tm (- Mejora el descubrimiento de contenido.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 245.87 Tm (- Incrementa velocidad de navegacion interna.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 222.69 Tm (3.5 Footer redisenado en clave retro \(components/layout/site-footer.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 205.49 Tm (Se implementa un footer complejo con:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 191.32 Tm (- Estructura de paneles biselados tipo Win95.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 177.14 Tm (- Logo central, enlaces legales y sociales con glow.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 162.97 Tm (- Iconos SVG custom \(Instagram/YouTube/Spotify\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 148.79 Tm (- Micro-animaciones \(`sb-footer-sheen`, `sb-footer-icon-breathe`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 128.62 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 114.44 Tm (- Cierre visual coherente con identidad vaporwave/retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 100.27 Tm (- Mayor densidad de informacion util en pie de pagina.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 77.09 Tm (3.6 Banda y noticias) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 2 / 5) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 5 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+7 0 obj
+<< /Length 4363 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 46.00 787.89 Tm (`components/band/news-list-client.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- Cards de noticia con imagen, fecha, resumen y contenido expandible \(`Mas/Menos`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (- Estado local `expandedIds` para controlar expansion por item.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 739.37 Tm (`components/band/band-bio-modals.tsx` y `app/band/bio/page.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 725.19 Tm (- Rediseno de modales y bloques de biografia para el mismo lenguaje retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 705.02 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 690.84 Tm (- Mejor legibilidad editorial y narrativa de contenido.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 667.67 Tm (3.7 Media fotos y videos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 650.47 Tm (`components/media/photo-gallery-client.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 636.29 Tm (- Galeria con miniaturas + preview grande.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 622.12 Tm (- Navegacion por teclado izquierda/derecha.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 607.94 Tm (- Contador y metadata de foto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 587.77 Tm (`components/media/video-collection-viewer.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 573.59 Tm (- Sidebar con lista de videos de coleccion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 559.42 Tm (- Reproductor embebido y metadata \(fecha/duracion\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 545.24 Tm (- Estado local para seleccion de video activo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 525.07 Tm (Paginas `app/media/photos*` y `app/media/videos*`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 510.89 Tm (- Integracion de filtros + paginacion + cards retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 490.72 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 476.54 Tm (- Flujo media comparable a producto final, no solo MVP.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 453.37 Tm (3.8 Musica: catalogo y modales de detalle) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 436.17 Tm (`components/music/music-catalog-client.tsx` implementa:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 421.99 Tm (- Grid de cards de canciones/albums.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 407.82 Tm (- Apertura de detalle en modal Win95.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 393.64 Tm (- Secciones de info: creditos, letra, partitura, liner notes.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 379.47 Tm (- Iconos por plataforma externa \(Spotify, YouTube, Apple, etc.\) con deteccion por URL.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 365.29 Tm (- Dedupe de enlaces por plataforma para evitar repetidos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 345.12 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 330.94 Tm (- Catalogo musical con profundidad documental y valor para fan.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 307.77 Tm (3.9 Store: filtros, cards y detalle) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 290.57 Tm (`components/store/store-filters-sidebar.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 276.39 Tm (- Modo panel en desktop y modal iconico en mobile \(`FilterModalShell`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 262.22 Tm (- Filtros por categoria/subcategoria/precio/talla/genero/mediaType.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 242.04 Tm (`components/store/store-product-card.tsx`, `store-product-detail-panel.tsx`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 227.87 Tm (`store-pagination.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 213.69 Tm (- Cards con estetica retro y CTA consistentes.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 199.52 Tm (- Detalle de producto con galeria, precio, categoria y compra.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 185.34 Tm (- Soporte para notas especiales de productos media.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 165.17 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 150.99 Tm (- Mejora conversion visual y claridad de compra.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 127.82 Tm (3.10 Capa de datos y enriquecimiento multimedia) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 110.62 Tm (`lib/media/video.ts`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 96.44 Tm (- Normalizacion de embeds YouTube/Vimeo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 82.27 Tm (- Resolucion de duracion con estrategia en 2 pasos:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 68.09 Tm (- API interna YouTube player endpoint.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 3 / 5) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 7 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+9 0 obj
+<< /Length 4285 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Fallback scraping de watch page.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- Cache en memoria \(`youtubeDurationCache`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 753.54 Tm (`lib/repositories/media.ts`, `lib/repositories/music.ts`, `lib/repositories/band.ts`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 739.37 Tm (- Ajustes de queries para soportar nueva UI y metadata.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 719.19 Tm (`prisma/seed.ts`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 705.02 Tm (- Refuerzo de dataset demo \(productos, conciertos, noticias, multimedia\) para entornos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 690.84 Tm (de presentacion.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 665.67 Tm (4. Tecnologias, librerias y patrones usados en la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 644.77 Tm (- Next.js App Router + React Client Components.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 630.59 Tm (- TypeScript estricto en componentes y repositorios.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 616.42 Tm (- Tailwind + CSS global de componentes retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 602.24 Tm (- Next Image para activos visuales.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 588.07 Tm (- Prisma como capa de datos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 567.89 Tm (Patrones tecnicos observados:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 553.72 Tm (- `useState` para estados UI locales \(seleccion, expansion, apertura\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 539.54 Tm (- `useEffect` para side-effects \(ESC, listeners, body overflow\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 525.37 Tm (- `useMemo` para transformaciones y listas derivadas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 511.19 Tm (- Repositorios para separar acceso a datos del rendering.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 486.02 Tm (5. Responsive, UX y accesibilidad) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 465.12 Tm (Responsive:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 450.94 Tm (- Grids adaptativos por breakpoints \(`sm`, `md`, `lg`, `xl`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 436.77 Tm (- Sidebars convertidas a modales en mobile.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 422.59 Tm (- Cards dimensionadas para conservar legibilidad.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 402.42 Tm (UX:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 388.24 Tm (- Controles consistentes \(paginacion, botones, titlebars\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 374.07 Tm (- Patrones de interaccion repetibles entre secciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 353.89 Tm (Accesibilidad aplicada:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 339.72 Tm (- `aria-label`, `aria-modal`, `aria-expanded`, `aria-controls`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 325.54 Tm (- Navegacion de teclado en buscador y galerias.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 311.37 Tm (- Cierre de modales por Escape.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 286.19 Tm (6. Riesgos, deuda tecnica y puntos debiles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 265.29 Tm (- Se incluyen logs de servidor en el commit \(`.devserver.*.log`\), no deben ir a) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 251.12 Tm (versionado funcional.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 236.94 Tm (- `app/globals.css` crece mucho; convendria modularizar por dominio para facilitar) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 222.77 Tm (mantenimiento.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 208.59 Tm (- Uso amplio de `unoptimized` en algunas imagenes de producto puede penalizar) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 194.42 Tm (optimizacion final.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 180.24 Tm (- No se detectan tests automatizados de front para estas interacciones.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 155.07 Tm (7. Validaciones realizadas para este informe) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 134.17 Tm (- Revision de commit con `git show --name-status`, `--stat`, `--numstat`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 119.99 Tm (- Lectura directa de componentes y paginas modificadas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 105.82 Tm (- Inspeccion de helpers de media y seed.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 85.64 Tm (No se pudo ejecutar `npm run lint` en esta sesion porque `npm` no esta disponible en el) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 71.47 Tm (entorno.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 4 / 5) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 9 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+11 0 obj
+<< /Length 3375 >>
+stream
+BT /F2 14.00 Tf 1 0 0 1 46.00 776.89 Tm (8. Como defender oralmente esta rama) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 746.99 Tm (8.1 Version de 1 minuto) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 729.79 Tm ("`sheyla/front-end` es la rama que lleva la identidad retro a todo el producto: Band,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 715.62 Tm (Media, Musica, Store y Footer. Ademas, no solo cambia estilos: se unifica el sistema de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 701.44 Tm (modales, se mejora la busqueda rapida, se incorporan galerias interactivas y se refuerza) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 687.27 Tm (la capa de datos multimedia para enriquecer la experiencia del usuario.") Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 664.09 Tm (8.2 Version tecnica de 3 minutos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 646.89 Tm ("Esta rama toca 42 archivos y es un salto de consolidacion. El corazon visual esta en) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 632.72 Tm (`app/globals.css`, donde se define un sistema reusable de clases Win95/retro. En) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 618.54 Tm (arquitectura UI se introduce un `AppModal` parametrizable para evitar duplicacion de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 604.37 Tm (logica. En dominio funcional, noticias incorporan expansion por item, fotos y videos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 590.19 Tm (anaden navegacion interna y reproductor, musica integra modales ricos con creditos/letras,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 576.02 Tm (y store consolida filtros avanzados con UX responsive. En datos, `lib/media/video.ts`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 561.84 Tm (resuelve duraciones y embeds de YouTube/Vimeo con cache y fallback, y `prisma/seed.ts`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 547.67 Tm (alimenta la demo para pruebas realistas.") Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 524.49 Tm (8.3 Preguntas tipicas y respuestas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 507.29 Tm (- Pregunta: "Que diferencia esta rama de una rama solo de disenio?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 493.12 Tm (Respuesta: "Aqui hay tres capas: estilo global, interaccion \(modales, teclado, paginacion,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 478.94 Tm (filtros\) y datos enriquecidos \(duraciones/video metadata\).") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 464.77 Tm (- Pregunta: "Como se asegura coherencia entre secciones?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 450.59 Tm (Respuesta: "Con un sistema de clases globales y wrappers compartidos como `PageShell` y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 436.42 Tm (`AppModal`.") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 422.24 Tm (- Pregunta: "Que mejorarias despues de esta rama?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 408.07 Tm (Respuesta: "Modularizar `globals.css`, eliminar logs de commit y anadir tests de UI para) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 393.89 Tm (modales, teclado y flujos criticos.") Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 368.72 Tm (9. Conclusiones de la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 347.82 Tm (`sheyla/front-end` es una rama de consolidacion mayor: eleva madurez visual, uniformiza) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 333.64 Tm (patrones de interfaz y prepara el terreno para flujos de usuario mas completos en ramas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 319.47 Tm (posteriores \(auth, cart, checkout y home dinamico\).) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 5 / 5) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 11 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+13 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R] /Count 5 >>
+endobj
+14 0 obj
+<< /Type /Catalog /Pages 13 0 R >>
+endobj
+xref
+0 15
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000004585 00000 n 
+0000004728 00000 n 
+0000009023 00000 n 
+0000009166 00000 n 
+0000013581 00000 n 
+0000013724 00000 n 
+0000018061 00000 n 
+0000018205 00000 n 
+0000021633 00000 n 
+0000021778 00000 n 
+0000021862 00000 n 
+trailer
+<< /Size 15 /Root 14 0 R >>
+startxref
+21913
+%%EOF
