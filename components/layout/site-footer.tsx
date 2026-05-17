@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import FooterTermsTrigger from "./footer-terms-trigger";
 
-const FOOTER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
+const FOOTER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo2.png?updatedAt=1779020800274";
 const COPYRIGHT_YEAR = 2026;
 
 const primaryLinks = [
@@ -178,7 +178,7 @@ export default function SiteFooter() {
                   >
                     <Image
                       src={FOOTER_LOGO_SRC}
-                      alt="Logo de Sugarbay"
+                      alt="Sugarbay logo"
                       width={520}
                       height={180}
                       sizes="(max-width: 1023px) 165px, 190px"
