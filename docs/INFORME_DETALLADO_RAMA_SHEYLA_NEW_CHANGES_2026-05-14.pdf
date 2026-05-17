@@ -1,0 +1,279 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Length 4181 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 46.00 787.89 Tm (?# INFORME DETALLADO POR RAMA - sheyla/new-changes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 767.72 Tm (Fecha de elaboracion: 2026-05-14) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 753.54 Tm (Repositorio: Sugarbayweb) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 739.37 Tm (Rama auditada: `sheyla/new-changes`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 725.19 Tm (Commit de referencia: `6e5df5e0bcea4a34672644490e92c9b609d9f113` \(mensaje: `new changes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 711.02 Tm (front-end`\)) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 685.84 Tm (1. Objetivo funcional de la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 664.94 Tm (Esta rama se centra en experiencia de usuario final y cierre de flujos clave:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 650.77 Tm (- Home dinamico con carrusel y banda de videos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 636.59 Tm (- Homologacion visual retro de Login y Carrito en modal.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 622.42 Tm (- Mejora de secciones autenticadas \(`account`, `carrito`, `checkout`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 608.24 Tm (- Refuerzo de usabilidad y persistencia en checkout.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 588.07 Tm (Es una rama de "producto usable" orientada a defensa/demo: combina diseno, interaccion,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 573.89 Tm (accesibilidad y flujo de compra.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 548.72 Tm (2. Evidencia Git y trazabilidad) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 527.82 Tm (- Autor del commit: `root <you@example.com>`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 513.64 Tm (- Fecha commit: `2026-05-12T04:57:29+02:00`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 499.47 Tm (- Archivos tocados: 21.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 485.29 Tm (- Churn total: +2.821 / -734.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.12 Tm (- Integracion: el commit esta contenido en `main`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 450.94 Tm (Top de ficheros por volumen:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 436.77 Tm (- `app/globals.css`: +1559 / -0) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 422.59 Tm (- `components/checkout/checkout-address-fields.tsx`: +123 / -120) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 408.42 Tm (- `components/checkout/checkout-flow.tsx`: +114 / -111) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 394.24 Tm (- `app/page.tsx`: +113 / -106) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 380.07 Tm (- `components/layout/global-search.tsx`: +106 / -107) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 365.89 Tm (- `components/home/home-videos-band.tsx`: +200 / -0 \(nuevo\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 351.72 Tm (- `components/home/home-header-carousel.tsx`: +150 / -0 \(nuevo\)) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 326.54 Tm (3. Cambios implementados en detalle) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 296.64 Tm (3.1 Home dinamico: cabecera + banda de videos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 279.44 Tm (Archivos clave:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 265.27 Tm (- `components/home/home-header-carousel.tsx` \(nuevo\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 251.09 Tm (- `components/home/home-videos-band.tsx` \(nuevo\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 236.92 Tm (- `app/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 222.74 Tm (- `lib/repositories/media.ts`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 208.57 Tm (- `lib/media/types.ts`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 188.39 Tm (Implementacion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 174.22 Tm (- `HomeHeaderCarousel`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 160.04 Tm (- Rotacion automatica de slides \(`AUTO_ADVANCE_MS = 6400`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 145.87 Tm (- Navegacion manual con botones prev/next.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 131.69 Tm (- Dots seleccionables y barra de progreso.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 117.52 Tm (- Soporte de tipos de slide: `concert`, `store`, `news`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 97.34 Tm (- `HomeVideosBand`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 83.17 Tm (- Lista horizontal de videos de todas las colecciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 68.99 Tm (- Scroll asistido por botones laterales.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 1 / 5) Tj ET
+endstream
+endobj
+4 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 3 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+5 0 obj
+<< /Length 4249 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Auto-scroll de banda \(`AUTO_SCROLL_MS = 4400`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- Pausa en hover/focus para control del usuario.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (- Indicador de progreso del scroll.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 739.37 Tm (- `app/page.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 725.19 Tm (- Construye slides reales con datos de `getHomeSnapshot\(\)`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 711.02 Tm (- Integra `getHomeVideoBandItems\(\)` para poblar la banda de videos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 696.84 Tm (- Define fallback si no hay datos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 682.67 Tm (- Usa imagen de cabecera Home con URL ImageKit dedicada.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 662.49 Tm (- `lib/repositories/media.ts`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 648.32 Tm (- Nuevo `getHomeVideoBandItems\(limit?\)`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 634.14 Tm (- Agrega videos desde colecciones publicadas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 619.97 Tm (- Ordena por fecha de publicacion desc.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 605.79 Tm (- Resuelve preview image por plataforma.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 585.62 Tm (- `lib/media/types.ts`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 571.44 Tm (- Nuevo tipo `HomeVideoBandItem`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 551.27 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 537.09 Tm (- Home deja de ser estatica y pasa a ser una portada editorial/comercial dinamica.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 522.92 Tm (- Reutiliza contenido real del ecosistema \(concert/news/store/videos\).) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 499.74 Tm (3.2 Login y Carrito en modal retro unificado) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 482.54 Tm (Archivos clave:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 468.37 Tm (- `components/auth/auth-modal.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 454.19 Tm (- `components/auth/auth-modal-panel.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 440.02 Tm (- `components/cart/cart-drawer.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 425.84 Tm (- `components/layout/header-client.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 411.67 Tm (- `app/globals.css`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 391.49 Tm (Implementacion modal auth:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 377.32 Tm (- Modal con `win-window` + `win-titlebar`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 363.14 Tm (- Focus trapping manual sobre elementos focusables.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 348.97 Tm (- Cierre por `Escape` y overlay.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 334.79 Tm (- `aria-modal`, `aria-labelledby`, `aria-describedby`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 320.62 Tm (- Alternancia `Login` / `Registro` dentro del mismo panel.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 300.44 Tm (Implementacion modal carrito:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 286.27 Tm (- Drawer/Modal con mismo lenguaje visual retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 272.09 Tm (- Seccion guest y seccion autenticada diferenciadas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 257.92 Tm (- Items con imagen, metadatos, total y acciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 243.74 Tm (- CTA a `checkout` y enlace a carrito completo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 229.57 Tm (- Focus trapping + scroll lock + cierre por Escape.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 209.39 Tm (Header relacionado:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 195.22 Tm (- Centro visual de logo y distribucion de nav izquierda/derecha.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 181.04 Tm (- Menu de perfil con opciones login/registro o cuenta/logout.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 166.87 Tm (- Contador de carrito reactivo y escucha de evento `CART_CLEARED_EVENT`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 146.69 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 132.52 Tm (- Coherencia visual entre acciones criticas de usuario.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 118.34 Tm (- UX de entrada a autenticacion y compra mas robusta.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 95.17 Tm (3.3 Secciones de cuenta, carrito y checkout) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 77.97 Tm (Archivos clave:) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 2 / 5) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 5 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+7 0 obj
+<< /Length 4537 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- `app/account/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- `app/carrito/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (- `app/checkout/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 745.37 Tm (- `components/cart/cart-line-item.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 731.19 Tm (- `components/checkout/checkout-flow.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 717.02 Tm (- `components/checkout/checkout-address-fields.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 696.84 Tm (Cuenta \(`/account`\):) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 682.67 Tm (- Dos cards retro: perfil y panel rapido de acciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 668.49 Tm (- Header de seccion con imagen dedicada.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 648.32 Tm (Carrito completo \(`/carrito`\):) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 634.14 Tm (- Reutiliza `CartLineItem` en cards retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 619.97 Tm (- Resumen lateral con subtotal y acciones \(`checkout`, `vaciar carrito`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 605.79 Tm (- Mensaje vacio con `EmptyState`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 585.62 Tm (Checkout \(`/checkout`\):) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 571.44 Tm (- Flujo en dos columnas \(direccion + resumen pedido\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 557.27 Tm (- Alertas de estado de pago via `searchParams.payment`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 543.09 Tm (- Integracion de `CheckoutFlow` con prefill.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 519.92 Tm (3.4 Mejora funcional fuerte del checkout) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 502.72 Tm (`components/checkout/checkout-flow.tsx` incorpora:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 488.54 Tm (- Estados de formulario para shipping/billing.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 474.37 Tm (- Opcion "usar misma direccion".) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 460.19 Tm (- Persistencia en `localStorage` \(`sugarbay.checkout.draft.v1`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 446.02 Tm (- Validacion cliente con `checkoutPayloadSchema`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 431.84 Tm (- Mapeo de errores de campo \(`mapCheckoutIssuesToFieldErrors`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 417.67 Tm (- Envio a `/api/checkout` con control de errores API y redireccion Stripe.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 403.49 Tm (- Bloqueo de submit cuando no cumple validacion o pago no disponible.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 383.32 Tm (`components/checkout/checkout-address-fields.tsx`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 369.14 Tm (- Inputs con labels claros.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 354.97 Tm (- `aria-invalid` y `aria-describedby` por campo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 340.79 Tm (- Render de errores contextual por input.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 320.62 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 306.44 Tm (- El checkout pasa de "form basico" a flujo robusto y defendible tecnicamente.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 283.27 Tm (3.5 Ajustes de infraestructura visual/media) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 266.07 Tm (- `components/ui/page-shell.tsx`: nuevo `headerOverlay` para capas sobre cabecera sin) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 251.89 Tm (romper estructura base.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 237.72 Tm (- `next.config.ts`: amplia `remotePatterns` para hosts de imagen/video preview) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 223.54 Tm (\(`ik.imagekit.io`, `i.ytimg.com`, `img.youtube.com`\) y endpoint configurable por env.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 209.37 Tm (- `lib/media/video.ts`: nuevo helper `resolveVideoPreviewImageUrl` para thumbnails) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 195.19 Tm (autom·ticos de YouTube.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 181.02 Tm (- `.gitignore`: anade `*.log` y `.devserver.*` para evitar versionar logs en adelante.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 155.84 Tm (4. Tecnologias y patrones usados en la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 134.94 Tm (- Next.js App Router + React Client Components.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 120.77 Tm (- TypeScript con tipado fuerte de datos y props.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 106.59 Tm (- Tailwind + clases globales retro en `app/globals.css`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 92.42 Tm (- Next Image para cabeceras/cards/previews.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 78.24 Tm (- Persistencia local con `localStorage` para draft checkout.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 3 / 5) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 7 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+9 0 obj
+<< /Length 4518 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Validacion con schema \(zod en capa de validadores\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 767.72 Tm (Patrones tecnicos:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 753.54 Tm (- `useState` para estados UI y formularios.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 739.37 Tm (- `useEffect` para side-effects \(teclado, timers, scroll lock, storage sync\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 725.19 Tm (- `useMemo` y `useCallback` para derivadas y rendimiento en componentes interactivos.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 700.02 Tm (5. Responsive, UX y accesibilidad) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 679.12 Tm (Responsive aplicado:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 664.94 Tm (- Home videos: comportamiento por ancho disponible con scroll horizontal.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 650.77 Tm (- Modales con `max-w-*`, `min-h-0`, `overflow-y-auto` para evitar roturas en mobile.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 636.59 Tm (- Checkout en grid adaptable \(`lg:grid-cols-[2fr_1fr]`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 616.42 Tm (UX clave:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 602.24 Tm (- Carrusel + banda de videos mejora descubrimiento de contenido.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 588.07 Tm (- Pausa en hover/focus en auto-scroll evita perdida de control del usuario.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 573.89 Tm (- Modales coherentes entre perfil, auth, carrito y busqueda.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 553.72 Tm (Accesibilidad aplicada:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 539.54 Tm (- Labels de formulario explicitos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 525.37 Tm (- `aria-label` en botones de cierre/acciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 511.19 Tm (- Roles dialogo y semantica `aria-modal`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 497.02 Tm (- Navegacion por teclado en modales y buscador.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 471.84 Tm (6. Riesgos, deuda tecnica y puntos debiles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 450.94 Tm (- `app/globals.css` sigue creciendo de forma intensa; urge modularizar por dominios para) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 436.77 Tm (largo plazo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 422.59 Tm (- Alto volumen de cambios visuales + funcionales en un solo commit aumenta riesgo de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 408.42 Tm (regresion cruzada.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 394.24 Tm (- No se detectan tests automaticos front-end para validar flujos de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 380.07 Tm (modal/carrusel/checkout.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 354.89 Tm (7. Validaciones realizadas para este informe) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 333.99 Tm (- Inspeccion de commit con `git show --name-status`, `--stat`, `--numstat`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 319.82 Tm (- Lectura de componentes nuevos y modificados.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 305.64 Tm (- Trazabilidad de repositorios y tipos de media.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 285.47 Tm (No se pudo ejecutar `npm run lint` en esta sesion porque `npm` no esta disponible en el) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 271.29 Tm (entorno.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 246.12 Tm (8. Como defender oralmente esta rama) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 216.22 Tm (8.1 Version de 1 minuto) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 199.02 Tm ("`sheyla/new-changes` cierra los flujos de usuario mas importantes: Home dinamico con) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 184.84 Tm (carrusel y banda de videos, modales retro consistentes para login y carrito, y un checkout) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 170.67 Tm (mucho mas robusto con validacion y persistencia local. Es la rama que convierte el front) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 156.49 Tm (en una experiencia completa de navegacion y compra.") Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 133.32 Tm (8.2 Version tecnica de 3 minutos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 116.12 Tm ("Esta rama toca 21 archivos con +2.821/-734 lineas. Introduce dos componentes nuevos para) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 101.94 Tm (Home \(`home-header-carousel` y `home-videos-band`\) y conecta su contenido a datos reales) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 87.77 Tm (con `getHomeVideoBandItems`. En UX critica, estandariza modales de autenticacion y carrito) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 73.59 Tm (con focus trapping, Escape, overlay y scroll lock. En checkout, implementa estado completo) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 4 / 5) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 9 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+11 0 obj
+<< /Length 2061 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 46.00 787.89 Tm (de formulario, validacion por schema, errores por campo, draft en localStorage y envio) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 773.72 Tm (seguro al endpoint de pago. Tambien ajusta infraestructura de imagenes externas en) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 759.54 Tm (`next.config.ts` para previews de video.") Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 736.37 Tm (8.3 Preguntas tipicas y respuestas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 719.17 Tm (- Pregunta: "Que aporta esta rama respecto a la anterior?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 704.99 Tm (Respuesta: "Pasa de coherencia visual a flujo completo de producto: Home vivo, auth/cart) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 690.82 Tm (modales y checkout operable con validacion y persistencia.") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 676.64 Tm (- Pregunta: "Como garantizas que el checkout no pierda datos?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 662.47 Tm (Respuesta: "Se guarda un draft local sincronizado por `useEffect`, y se limpia solo al) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 648.29 Tm (redirigir correctamente a Stripe.") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 634.12 Tm (- Pregunta: "Como evitaste romper accesibilidad en modales?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 619.94 Tm (Respuesta: "Con roles ARIA, labels, cierre por teclado y focus trapping en componentes de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 605.77 Tm (auth y carrito.") Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 580.59 Tm (9. Conclusiones de la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 559.69 Tm (`sheyla/new-changes` es una rama de cierre funcional y de presentacion: mejora la portada,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 545.52 Tm (refuerza interacciones clave y robustece el flujo de compra. Es la rama mas alineada con) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 531.34 Tm (defensa de producto final porque combina experiencia visual, arquitectura de componentes y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 517.17 Tm (comportamiento real de negocio.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 5 / 5) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 11 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+13 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R] /Count 5 >>
+endobj
+14 0 obj
+<< /Type /Catalog /Pages 13 0 R >>
+endobj
+xref
+0 15
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000004393 00000 n 
+0000004536 00000 n 
+0000008837 00000 n 
+0000008980 00000 n 
+0000013569 00000 n 
+0000013712 00000 n 
+0000018282 00000 n 
+0000018426 00000 n 
+0000020540 00000 n 
+0000020685 00000 n 
+0000020769 00000 n 
+trailer
+<< /Size 15 /Root 14 0 R >>
+startxref
+20820
+%%EOF
