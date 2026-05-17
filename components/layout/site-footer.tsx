@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import FooterCookieTrigger from "./footer-cookie-trigger";
 import FooterTermsTrigger from "./footer-terms-trigger";
 
 const FOOTER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo2.png?updatedAt=1779020800274";
@@ -14,12 +15,13 @@ const primaryLinks = [
 ] as const;
 
 const legalLinks = [
-  { label: "Ayuda", href: "#" },
-  { label: "Devoluciones", href: "#" },
-  { label: "Creditos", href: "#" },
-  { label: "Términos", href: "#" },
-  { label: "Privacidad", href: "#" },
-  { label: "Accesibilidad", href: "#" },
+  { id: "help", label: "Ayuda", href: "#" },
+  { id: "returns", label: "Devoluciones", href: "#" },
+  { id: "credits", label: "Creditos", href: "#" },
+  { id: "terms", label: "Términos", href: "#" },
+  { id: "privacy", label: "Privacidad", href: "#" },
+  { id: "cookies", label: "Cookies", href: "#" },
+  { id: "accessibility", label: "Accesibilidad", href: "#" },
 ] as const;
 
 const socialLinks = [
@@ -203,13 +205,18 @@ export default function SiteFooter() {
                   <nav aria-label="Enlaces legales del pie de pagina" className="flex justify-center">
                     <ul className="mx-auto flex w-full max-w-[58rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[0.74rem] font-bold uppercase tracking-[0.08em] text-[#f4f0ff] sm:text-[0.82rem] lg:justify-between lg:gap-x-4">
                       {legalLinks.map((link) => (
-                        <li key={link.label} className="flex min-h-[1.7rem] items-center justify-center">
+                        <li key={link.id} className="flex min-h-[1.7rem] items-center justify-center">
                           <span
                             className="mr-1.5 h-1.5 w-1.5 bg-[#ff55cf] shadow-[0_0_8px_rgba(255,85,207,0.9)]"
                             aria-hidden="true"
                           />
-                          {link.label === "Términos" ? (
+                          {link.id === "terms" ? (
                             <FooterTermsTrigger
+                              label={link.label}
+                              className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
+                            />
+                          ) : link.id === "cookies" ? (
+                            <FooterCookieTrigger
                               label={link.label}
                               className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
                             />

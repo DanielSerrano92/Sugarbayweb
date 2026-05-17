@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Press_Start_2P } from "next/font/google";
 
+import CookieConsentBanner from "@/components/cookies/cookie-consent-banner";
 import SiteFooter from "@/components/layout/site-footer";
 import SiteHeader from "@/components/layout/site-header";
 
@@ -64,6 +65,7 @@ export default function RootLayout({
           </main>
           <SiteFooter />
         </div>
+        <CookieConsentBanner />
       </body>
     </html>
   );

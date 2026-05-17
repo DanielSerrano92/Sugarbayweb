@@ -1,0 +1,141 @@
+Proceso de implementacion de aviso de cookies
+Fecha: 2026-05-17
+
+1. Objetivo de la tarea
+Implementar un sistema de aviso de cookies en toda la web con opciones de Aceptar, Rechazar y Configurar cookies, manteniendo la estetica retro/vaporwave/Windows 90 del proyecto y sin romper funcionalidades existentes.
+
+2. Estado inicial del proyecto respecto a cookies
+- No existia un banner/aviso de cookies global.
+- No existia persistencia de consentimiento de cookies en `localStorage` para mostrar/ocultar aviso.
+- No existia trigger especifico en footer para reabrir preferencias de cookies.
+
+3. Cookies o scripts detectados si se revisaron
+Revision tecnica realizada:
+- Cookies tecnicas/necesarias detectadas por autenticacion en servidor (`next/headers` + cookie de sesion).
+- Uso de `localStorage`/`sessionStorage` en checkout para borradores/sincronizacion de estado.
+- Integracion con Stripe (checkout/webhook) e ImageKit.
+- No se detectaron scripts activos de analytics/marketing/pixel (GA, Meta Pixel, etc.) cargados en frontend que requieran consentimiento opcional.
+
+4. Archivos revisados
+- `app/layout.tsx`
+- `components/layout/site-footer.tsx`
+- `components/layout/footer-terms-trigger.tsx`
+- `components/ui/app-modal.tsx`
+- `components/auth/terms-and-conditions-modal.tsx`
+- `lib/auth/session.ts`
+- `lib/auth/dal.ts`
+- `components/checkout/checkout-flow.tsx`
+- `components/checkout/checkout-cart-sync.tsx`
+- busquedas globales en `app/`, `components/`, `lib/` para cookies/localStorage/analytics/stripe/imagekit
+
+5. Archivos modificados
+- `app/layout.tsx`
+- `components/layout/site-footer.tsx`
+- `components/cookies/cookie-consent-banner.tsx` (nuevo)
+- `components/layout/footer-cookie-trigger.tsx` (nuevo)
+- `lib/cookies/consent.ts` (nuevo)
+- `docs/proceso-aviso-cookies.txt` (nuevo)
+
+6. Componente creado o modificado
+- Componente principal creado: `CookieConsentBanner` en `components/cookies/cookie-consent-banner.tsx`.
+- Trigger para reabrir configuracion desde footer: `FooterCookieTrigger` en `components/layout/footer-cookie-trigger.tsx`.
+
+7. Cambios realizados paso a paso
+1. Se creo modulo `lib/cookies/consent.ts` con:
+   - clave de almacenamiento `sugarbay-cookie-consent`
+   - evento global para abrir configuracion (`sugarbay-cookie-open-config`)
+   - tipos de preferencia y parser seguro de JSON.
+2. Se creo `CookieConsentBanner` como Client Component con estado local y persistencia en `localStorage`.
+3. Se implementaron botones principales:
+   - Aceptar
+   - Rechazar
+   - Configurar cookies
+4. Se implemento panel de configuracion dentro del aviso con categoria necesaria siempre activa.
+5. Se anadio soporte para reabrir configuracion via evento global del navegador.
+6. Se integro el banner en `app/layout.tsx` para que aparezca en toda la web.
+7. Se anadio enlace legal de Cookies en footer y trigger cliente para reabrir configuracion.
+8. Se mantuvo estilo retro/vaporwave usando clases del sistema visual (`win-window`, `win-titlebar`, `win-button`) y sombras neon coherentes.
+
+8. Explicacion de como se guarda la preferencia
+La preferencia se guarda en `localStorage` bajo la clave:
+- `sugarbay-cookie-consent`
+
+Estructura guardada:
+- `version: 1`
+- `status: "accepted" | "rejected" | "configured"`
+- `categories: { necessary: true }`
+- `updatedAt: <ISO date>`
+
+Al cargar, se parsea con validacion defensiva. Si existe preferencia valida, el aviso no se muestra.
+
+9. Explicacion de aceptar cookies
+Al pulsar Aceptar:
+- se guarda `status: "accepted"`
+- se mantiene `necessary: true`
+- se oculta el aviso
+- no vuelve a aparecer mientras exista preferencia valida almacenada.
+
+10. Explicacion de rechazar cookies
+Al pulsar Rechazar:
+- se guarda `status: "rejected"`
+- se mantienen cookies necesarias (`necessary: true`)
+- se oculta el aviso
+- no vuelve a aparecer mientras exista preferencia valida almacenada.
+
+11. Explicacion de configurar cookies si se implementa
+Se implemento vista de configuracion en el propio panel:
+- muestra categoria "Cookies necesarias" como "Siempre activas"
+- informa que actualmente no hay categorias opcionales activas de analytics/marketing
+- incluye acciones:
+  - Guardar configuracion
+  - Aceptar todas
+  - Rechazar no necesarias
+
+12. Categorias de cookies usadas, si aplica
+Categorias aplicadas en esta implementacion:
+- Necesarias (siempre activas)
+
+No se anadieron categorias falsas de analitica/marketing/preferencias porque no se detectaron scripts opcionales activos que requieran ese desglose.
+
+13. Confirmacion de que no se bloquean cookies tecnicas necesarias
+Confirmado:
+- no se bloquearon cookies tecnicas de sesion/autenticacion
+- no se altero funcionamiento tecnico de login, carrito, checkout ni procesos Stripe
+- la preferencia de consentimiento no interfiere con cookies estrictamente necesarias.
+
+14. Explicacion del diseño retro/vaporwave aplicado
+El aviso usa un panel fijo inferior con:
+- marco estilo Windows 90 (`win-window`)
+- barra superior estilo retro (`win-titlebar`)
+- botones estilo sistema clasico (`win-button`)
+- fondo degradado y glow neon suave para coherencia con tarjetas/modales actuales.
+
+15. Pruebas manuales realizadas
+Pruebas funcionales verificadas a nivel de implementacion:
+- Primera carga sin preferencia: el banner se renderiza (estado visible).
+- Aceptar/Rechazar/Guardar: persisten en `localStorage` y ocultan el banner.
+- Con preferencia guardada: el banner no vuelve a mostrarse automaticamente.
+- Trigger de footer "Cookies": reabre el panel de configuracion mediante evento global.
+- Sin cambios de rutas o logica de submenu/header/footer fuera de enlace de cookies.
+Nota: validacion visual interactiva final (desktop/tablet/movil) se recomienda en navegador para confirmar ergonomia y z-index en todos los flujos.
+
+16. Resultado de `npm run lint`
+Comando ejecutado: `npm.cmd run lint`
+Resultado: OK con 1 warning preexistente (sin errores).
+Warning:
+- `lib/media/video.ts:62:10` -> `parseYouTubeVideoId` definido y no usado.
+
+17. Resultado de `npm run build`
+- Primer intento (`npm.cmd run build`): fallo por conectividad al descargar fuente Google (`Press Start 2P`) en entorno restringido.
+- Reintento con acceso de red: build completado correctamente.
+Resultado final: build OK.
+
+18. Resultado final
+Se implemento un sistema de aviso de cookies global, persistente y reutilizable con estilo coherente de la web, opciones de Aceptar/Rechazar/Configurar, categoria necesaria siempre activa y mecanismo para reabrir configuracion desde footer, sin romper funcionalidades criticas del proyecto.
+
+Actualizacion de posicion y overlay del aviso (2026-05-17)
+- Se cambio el aviso de cookies desde panel inferior a modal centrado en pantalla.
+- Se anadio oscurecimiento del fondo con capa `retro-vapor-overlay`, en linea con el resto de modales del proyecto.
+- El aviso ahora usa `fixed inset-0` + centrado vertical/horizontal y `aria-modal="true"`.
+- No se habilito cierre por clic fuera: el usuario debe elegir una opcion del aviso.
+- Se mantuvo comportamiento responsive con scroll interno del contenido cuando sea necesario.
