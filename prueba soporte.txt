@@ -1,0 +1,101 @@
+Sugarbayweb - prueba soporte
+Fecha: 2026-05-18
+
+1) Error inicial encontrado
+- Al entrar en "Mi cuenta" tras login, fallaba con:
+  TypeError: Cannot read properties of undefined (reading 'findMany')
+  en lib/repositories/account.ts (listAccountSupportRequests -> prisma.supportRequest.findMany)
+
+2) Causa real del error
+- El modelo SupportRequest SI existe en prisma/schema.prisma.
+- El problema era desincronizacion del cliente Prisma generado en este proyecto.
+- En este proyecto faltaba el modelo generado:
+  app/generated/prisma/models/SupportRequest.ts
+- Por eso en runtime el delegate prisma.supportRequest quedaba undefined.
+
+3) Archivos revisados
+- prisma/schema.prisma
+- lib/repositories/account.ts
+- app/account/page.tsx
+- app/account/error.tsx
+- app/api/account/support/route.ts
+- lib/db.ts
+- components/account/account-dashboard.tsx
+- package.json
+- prisma.config.ts
+
+4) Diferencias con el proyecto funcional
+- Proyecto comparado:
+  C:\Users\danie\Desktop\DOMINION\TFC\Sugarbayweb-sheyla\Sugarbayweb
+- Hallazgo principal:
+  - En el proyecto funcional SI estaba presente SupportRequest en app/generated/prisma/models/.
+  - En este proyecto NO estaba antes de regenerar.
+- schema.prisma, account repository y rutas de soporte estan alineados entre ambos proyectos.
+
+5) Cambios realizados
+- Se regenero el cliente Prisma en este proyecto:
+  npm.cmd run prisma:generate
+- Se agrego proteccion en package.json:
+  - script nuevo "predev": "prisma generate"
+  - objetivo: evitar volver a levantar el entorno con cliente Prisma desactualizado.
+- Se valido sincronizacion de BD:
+  npm.cmd run prisma:push
+  Resultado: "The database is already in sync with the Prisma schema."
+- Se valido lectura real de SupportRequest en BD con script tsx:
+  Resultado: "supportRequest query ok, rows: 1"
+- Se ejecuto lint:
+  npm.cmd run lint
+  Resultado: sin errores (1 warning no relacionado en lib/media/video.ts).
+
+6) Archivos modificados
+- prueba soporte.txt (este archivo de documentacion)
+- package.json (script predev para generar cliente Prisma automaticamente)
+- No fue necesario cambiar logica de negocio en account/support ni schema Prisma.
+
+7) Cambios en Prisma o base de datos
+- No hubo cambio de schema en esta intervencion.
+- No fue necesario crear migracion nueva porque el schema actual ya coincide con la base.
+- El fix fue regenerar cliente Prisma desactualizado.
+
+8) Comandos que debes ejecutar
+- Si el servidor dev estaba levantado, reinicialo.
+- Ejecuta:
+  1. npm.cmd run prisma:push
+  2. npm.cmd run dev
+- Nota: "npm.cmd run dev" ahora ejecuta automaticamente "prisma generate" antes de Next (por predev).
+
+9) Como probar que funciona
+- Inicia sesion con un usuario valido.
+- Entra a /account.
+- Verifica:
+  - La pagina carga sin error de findMany.
+  - Seccion Ayuda/Soporte visible.
+  - Si no hay solicitudes, aparece estado vacio ("Todavia no has enviado solicitudes de soporte.").
+  - Si envias una solicitud, se guarda y aparece en el listado.
+  - El listado solo muestra solicitudes del usuario autenticado.
+
+10) Posibles errores futuros y como solucionarlos
+- Error similar "prisma.<modelo> is undefined":
+  - Ejecutar prisma generate para regenerar cliente.
+  - Reiniciar servidor dev para limpiar cache runtime.
+  - Alternativamente, levantar con npm run dev (ya dispara predev -> prisma generate).
+- Error de tabla/modelo no encontrado en BD:
+  - Ejecutar prisma db push o prisma migrate dev segun flujo del equipo.
+- Error de conexion DB (sandbox/red local):
+  - Verificar DATABASE_URL y DIRECT_URL en .env.
+  - Reintentar comando fuera de restricciones de red si aplica.
+
+11) Seguridad y validaciones confirmadas
+- listAccountSupportRequests filtra por userId del usuario autenticado.
+- createAccountSupportRequest asigna userId desde sesion, no desde cliente.
+- API /api/account/support requiere sesion y valida input con Zod.
+- No se detectaron fugas de solicitudes entre usuarios en la logica revisada.
+
+12) Referencias internas usadas
+- lib/repositories/account.ts
+- app/api/account/support/route.ts
+- app/account/page.tsx
+- components/account/account-dashboard.tsx
+- lib/db.ts
+- prisma/schema.prisma
+- app/generated/prisma (salida de prisma generate)
