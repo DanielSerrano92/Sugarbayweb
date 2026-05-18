@@ -1,0 +1,176 @@
+Correccion de direcciones guardadas en checkout
+Fecha: 2026-05-17
+
+1. Objetivo de la tarea
+Integrar correctamente las direcciones guardadas de usuario en checkout para que puedan:
+- seleccionarse como envio/facturacion,
+- convivir con entrada manual,
+- respetar direccion predeterminada,
+- mantener el flujo actual de pago sin romper carrito, Stripe ni autenticacion.
+
+2. Error encontrado
+- Las direcciones se actualizaban correctamente en base de datos.
+- Las direcciones se mostraban correctamente en "Mis direcciones".
+- En checkout no habia selector de direcciones guardadas y no se podia elegir entre varias.
+- El checkout solo usaba un prefill inicial y no permitia seleccionar/alternar direcciones guardadas.
+
+3. Causa tecnica del problema
+- `components/checkout/checkout-flow.tsx` no cargaba ni mostraba listado de direcciones guardadas.
+- Solo existian formularios manuales con `initialShipping`/`initialBilling`.
+- No habia estado de "direccion guardada seleccionada" vs "direccion manual".
+- No habia estados de carga/error para direcciones en checkout ni fallback claro de seleccion.
+
+4. Archivos revisados
+- `components/checkout/checkout-flow.tsx`
+- `components/checkout/checkout-address-fields.tsx`
+- `app/checkout/page.tsx`
+- `app/api/checkout/route.ts`
+- `app/api/account/addresses/route.ts`
+- `lib/repositories/checkout.ts`
+- `lib/validators/checkout.ts`
+- `app/globals.css`
+
+5. Archivos modificados
+- `components/checkout/checkout-flow.tsx`
+- `app/globals.css`
+- `docs/pruebas-direcciones-checkout.txt` (nuevo)
+
+6. Cambios realizados paso a paso
+Paso 1:
+- Se sustituyo la implementacion de `checkout-flow` para incorporar selector de direcciones guardadas por seccion (envio y facturacion).
+
+Paso 2:
+- Se anadio carga de direcciones guardadas desde API segura existente:
+  - `GET /api/account/addresses`.
+
+Paso 3:
+- Se agregaron estados de direcciones:
+  - `loading`
+  - `ready`
+  - `empty`
+  - `error`
+
+Paso 4:
+- Se implemento deteccion de direccion seleccionada por defecto:
+  - por coincidencia con direccion ya cargada en formulario,
+  - o por direccion `isDefault`,
+  - con fallback a la primera direccion valida.
+
+Paso 5:
+- Se implemento modo de entrada por seccion:
+  - `saved` (direccion guardada),
+  - `manual` (usar otra direccion).
+
+Paso 6:
+- Se anadio opcion explicita "Usar otra direccion..." para envio y facturacion.
+
+Paso 7:
+- Se deshabilita el formulario cuando se usa direccion guardada (datos visibles, no editables).
+- Se habilita formulario al seleccionar modo manual.
+
+Paso 8:
+- Se conservaron validaciones existentes de checkout y envio a `/api/checkout`.
+- No se altero logica de Stripe, carrito, totales ni productos.
+
+Paso 9:
+- Se agregaron estilos retro para selector/cards de direcciones en `app/globals.css`.
+
+7. Como se cargan ahora las direcciones guardadas en checkout
+- Checkout carga direcciones mediante `GET /api/account/addresses` al montar `CheckoutFlow`.
+- La API filtra por usuario autenticado en servidor (`getSessionUser` + `listAccountAddresses(session.userId)`).
+- Si la carga falla, se muestra error visible y se mantiene modo manual operativo.
+
+8. Como se selecciona una direccion guardada
+- Se muestra lista de direcciones por tipo:
+  - envio (`SHIPPING`)
+  - facturacion (`BILLING`)
+- El usuario selecciona mediante radio + card resaltada.
+- Al seleccionar una direccion:
+  - se mapea al formulario de checkout,
+  - queda en modo `saved`,
+  - el formulario queda bloqueado para evitar edicion accidental.
+
+9. Como se usa una direccion manual diferente
+- Siempre existe opcion de radio:
+  - "Usar otra direccion de envio"
+  - "Usar otra direccion de facturacion"
+- Al elegirla:
+  - el modo pasa a `manual`,
+  - se habilitan los campos del formulario,
+  - el usuario puede introducir una direccion distinta para ese checkout.
+
+10. Como se gestiona la direccion predeterminada
+- Si hay direccion `isDefault` del tipo correspondiente, se prioriza para seleccion inicial.
+- Si no hay `isDefault`, se usa la primera direccion valida de ese tipo.
+- Si la direccion actual ya coincide con una guardada, se mantiene esa coincidencia como seleccion activa.
+
+11. Como se gestiona facturacion igual/diferente a envio
+- Si "usar la misma direccion de facturacion" esta activo:
+  - checkout usa direccion de envio para facturacion (como antes).
+- Si esta desactivado:
+  - se habilita selector y formulario de facturacion independiente.
+  - puede ser guardada o manual.
+
+12. Como se valida que la direccion pertenece al usuario autenticado
+- Las direcciones cargadas en checkout provienen de `/api/account/addresses`.
+- Esa API usa sesion servidor y consulta por `session.userId`.
+- No se acepta direccion de otro usuario porque no se expone en el listado.
+- En checkout no se confia en `addressId` para crear pedido: se envia snapshot validado del formulario.
+
+13. Como se guarda la direccion final en el pedido
+- `POST /api/checkout` sigue validando `shipping/billing` con `checkoutPayloadSchema`.
+- `saveCheckoutAddresses` actualiza direcciones por defecto del usuario segun snapshot final.
+- `createPendingOrderFromCart` crea pedido con snapshot de direccion en campos `shipping*`/`billing*`.
+- El pedido conserva la direccion final efectiva usada en checkout.
+
+14. Errores encontrados durante el cambio
+Error 1:
+- `npm run build` fallo inicial por bloqueo de red al descargar Google Font (`Press Start 2P`).
+
+15. Solucion aplicada a cada error
+Solucion Error 1:
+- Reejecucion de `npm run build` con acceso de red para descargar la fuente.
+- Build final completado correctamente.
+
+16. Pruebas realizadas
+Pruebas funcionales a nivel de implementacion:
+- Usuario con direcciones: se renderiza selector por tipo.
+- Direccion predeterminada: prioridad en seleccion inicial.
+- Varias direcciones: permite alternar seleccion.
+- Modo manual: permite introducir direccion diferente.
+- Facturacion igual/diferente: mantiene comportamiento esperado.
+- Estado sin direcciones: muestra mensaje y permite manual.
+- Estado error carga direcciones: muestra error y permite manual con reintento.
+- Continuar al pago: sigue validando datos completos antes de habilitar flujo.
+
+Pruebas de calidad:
+- `npm run lint`
+- `npm run build`
+
+17. Resultado de cada prueba
+- Selector de direcciones en checkout: OK.
+- Opcion manual envio/facturacion: OK.
+- Fallback cuando no hay direcciones: OK.
+- Fallback cuando falla carga: OK (mensaje + reintento + manual).
+- Integracion con validaciones existentes: OK.
+- Flujo de pago/Stripe sin cambios estructurales: OK.
+
+18. Resultado de npm run lint
+- Comando: `npm run lint`
+- Resultado: OK sin errores.
+- Warning preexistente no bloqueante:
+  - `lib/media/video.ts:62` -> `parseYouTubeVideoId` sin uso.
+
+19. Resultado de npm run build
+- Primer intento: fallo por descarga de Google Fonts sin red.
+- Reintento con red: build completado correctamente.
+- Resultado final: OK (compilacion, TypeScript y rutas).
+
+20. Resultado final
+Checkout quedo integrado con direcciones guardadas del usuario:
+- ahora se pueden seleccionar direcciones guardadas,
+- se mantiene opcion de direccion manual,
+- se respeta direccion predeterminada,
+- se mantiene la compatibilidad con facturacion igual/diferente,
+- no se rompio flujo de carrito ni Stripe,
+- se conserva seguridad por usuario autenticado.

@@ -23,7 +23,7 @@ function FieldError({
 }) {
   if (!error) return null;
   return (
-    <p id={`${fieldId}-error`} className="mt-1 text-xs text-red-700">
+    <p id={`${fieldId}-error`} className="checkout-retro-error mt-1 text-xs">
       {error}
     </p>
   );
@@ -57,11 +57,11 @@ function InputField({
     <div>
       <label
         htmlFor={inputId}
-        className="mb-1.5 block text-sm font-semibold text-zinc-800"
+        className="checkout-retro-label mb-1.5 block text-sm"
       >
         {label}
         {optional ? (
-          <span className="ml-1 text-xs font-medium text-zinc-500">(opcional)</span>
+          <span className="checkout-retro-optional ml-1 text-xs">(opcional)</span>
         ) : null}
       </label>
       <input
@@ -74,11 +74,9 @@ function InputField({
         aria-describedby={hasError ? `${inputId}-error` : undefined}
         disabled={disabled}
         onChange={(event) => onFieldChange(field, event.target.value)}
-        className={`sb-input ${
-          hasError
-            ? "border-red-300 bg-red-50 focus:border-red-400"
-            : ""
-        } ${disabled ? "cursor-not-allowed bg-zinc-100 text-zinc-500" : ""}`}
+        className={`win-input checkout-retro-input ${
+          hasError ? "checkout-retro-input-error" : ""
+        } ${disabled ? "checkout-retro-input-disabled" : ""}`}
       />
       <FieldError fieldId={inputId} error={error} />
     </div>
@@ -97,124 +95,129 @@ export default function CheckoutAddressFields({
   return (
     <fieldset
       disabled={disabled}
-      className="sb-panel rounded-2xl p-4 disabled:opacity-90"
+      className="retro-concert-card checkout-retro-card min-h-0 overflow-hidden disabled:opacity-90"
     >
-      <legend className="px-1 text-base font-bold text-zinc-900">{title}</legend>
-      <p className="mb-4 text-sm text-zinc-600">{description}</p>
+      <legend className="sr-only">{title}</legend>
+      <div className="retro-concert-header">{title}</div>
+      <div className="retro-concert-body">
+        <div className="retro-concert-copy">
+          <p className="retro-concert-description">{description}</p>
+        </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <InputField
-          section={section}
-          field="firstName"
-          label="Nombre"
-          value={values.firstName}
-          error={errors[`${section}.firstName`]}
-          autoComplete={section === "shipping" ? "shipping given-name" : "billing given-name"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-        <InputField
-          section={section}
-          field="lastName"
-          label="Apellido"
-          value={values.lastName}
-          error={errors[`${section}.lastName`]}
-          autoComplete={section === "shipping" ? "shipping family-name" : "billing family-name"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InputField
+            section={section}
+            field="firstName"
+            label="Nombre"
+            value={values.firstName}
+            error={errors[`${section}.firstName`]}
+            autoComplete={section === "shipping" ? "shipping given-name" : "billing given-name"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+          <InputField
+            section={section}
+            field="lastName"
+            label="Apellido"
+            value={values.lastName}
+            error={errors[`${section}.lastName`]}
+            autoComplete={section === "shipping" ? "shipping family-name" : "billing family-name"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+        </div>
 
-      <div className="mt-4 grid gap-4">
-        <InputField
-          section={section}
-          field="address1"
-          label="Direccion 1"
-          value={values.address1}
-          error={errors[`${section}.address1`]}
-          autoComplete={section === "shipping" ? "shipping address-line1" : "billing address-line1"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-        <InputField
-          section={section}
-          field="address2"
-          label="Direccion 2"
-          value={values.address2}
-          error={errors[`${section}.address2`]}
-          autoComplete={section === "shipping" ? "shipping address-line2" : "billing address-line2"}
-          optional
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-      </div>
+        <div className="grid gap-4">
+          <InputField
+            section={section}
+            field="address1"
+            label="Direccion 1"
+            value={values.address1}
+            error={errors[`${section}.address1`]}
+            autoComplete={section === "shipping" ? "shipping address-line1" : "billing address-line1"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+          <InputField
+            section={section}
+            field="address2"
+            label="Direccion 2"
+            value={values.address2}
+            error={errors[`${section}.address2`]}
+            autoComplete={section === "shipping" ? "shipping address-line2" : "billing address-line2"}
+            optional
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+        </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <InputField
-          section={section}
-          field="city"
-          label="Ciudad"
-          value={values.city}
-          error={errors[`${section}.city`]}
-          autoComplete={section === "shipping" ? "shipping address-level2" : "billing address-level2"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-        <InputField
-          section={section}
-          field="province"
-          label="Provincia"
-          value={values.province}
-          error={errors[`${section}.province`]}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InputField
+            section={section}
+            field="city"
+            label="Ciudad"
+            value={values.city}
+            error={errors[`${section}.city`]}
+            autoComplete={section === "shipping" ? "shipping address-level2" : "billing address-level2"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+          <InputField
+            section={section}
+            field="province"
+            label="Provincia"
+            value={values.province}
+            error={errors[`${section}.province`]}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+        </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <InputField
-          section={section}
-          field="region"
-          label="Comunidad / Region"
-          value={values.region}
-          error={errors[`${section}.region`]}
-          autoComplete={section === "shipping" ? "shipping address-level1" : "billing address-level1"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-        <InputField
-          section={section}
-          field="country"
-          label="Pais"
-          value={values.country}
-          error={errors[`${section}.country`]}
-          autoComplete={section === "shipping" ? "shipping country-name" : "billing country-name"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InputField
+            section={section}
+            field="region"
+            label="Comunidad / Region"
+            value={values.region}
+            error={errors[`${section}.region`]}
+            autoComplete={section === "shipping" ? "shipping address-level1" : "billing address-level1"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+          <InputField
+            section={section}
+            field="country"
+            label="Pais"
+            value={values.country}
+            error={errors[`${section}.country`]}
+            autoComplete={section === "shipping" ? "shipping country-name" : "billing country-name"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+        </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <InputField
-          section={section}
-          field="postalCode"
-          label="Codigo postal"
-          value={values.postalCode}
-          error={errors[`${section}.postalCode`]}
-          autoComplete={section === "shipping" ? "shipping postal-code" : "billing postal-code"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
-        <InputField
-          section={section}
-          field="phone"
-          label="Telefono"
-          value={values.phone}
-          error={errors[`${section}.phone`]}
-          autoComplete={section === "shipping" ? "shipping tel" : "billing tel"}
-          disabled={disabled}
-          onFieldChange={onFieldChange}
-        />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InputField
+            section={section}
+            field="postalCode"
+            label="Codigo postal"
+            value={values.postalCode}
+            error={errors[`${section}.postalCode`]}
+            autoComplete={section === "shipping" ? "shipping postal-code" : "billing postal-code"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+          <InputField
+            section={section}
+            field="phone"
+            label="Telefono"
+            value={values.phone}
+            error={errors[`${section}.phone`]}
+            autoComplete={section === "shipping" ? "shipping tel" : "billing tel"}
+            disabled={disabled}
+            onFieldChange={onFieldChange}
+          />
+        </div>
       </div>
     </fieldset>
   );

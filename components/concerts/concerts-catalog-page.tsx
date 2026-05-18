@@ -1,16 +1,27 @@
-import ConcertCardsClient from "@/components/concerts/concert-cards-client";
+﻿import ConcertCardsClient from "@/components/concerts/concert-cards-client";
 import ConcertFilters from "@/components/concerts/concert-filters";
 import ConcertPagination from "@/components/concerts/concert-pagination";
-import ConcertsNavigationLink from "@/components/concerts/concerts-navigation-link";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
+import { buildConcertBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getConcertCatalog } from "@/lib/repositories/concerts";
 import type { ConcertPeriod, ConcertQueryParams } from "@/lib/concerts/types";
+
+const UPCOMING_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/proximos-conciertos.png?tr=w-2400,h-760,cm-extract,fo-top&updatedAt=1778369713978";
+const PAST_PAGE_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/conciertos-anteriores.png?tr=w-2400,h-760,cm-extract,fo-top";
 
 type ConcertsCatalogPageProps = {
   period: ConcertPeriod;
   searchParams: Promise<ConcertQueryParams>;
 };
+
+function pickSingleQueryParam(value: string | string[] | undefined): string | undefined {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  const trimmed = candidate?.trim();
+  return trimmed ? trimmed : undefined;
+}
 
 function resolvePageMeta(period: ConcertPeriod) {
   if (period === "upcoming") {
@@ -37,6 +48,7 @@ export default async function ConcertsCatalogPage({
   searchParams,
 }: ConcertsCatalogPageProps) {
   const params = await searchParams;
+  const selectedConcertSlug = pickSingleQueryParam(params.concert);
   const pageMeta = resolvePageMeta(period);
   const catalog = await getConcertCatalog(period, params);
   const filtersKey = [
@@ -45,37 +57,39 @@ export default async function ConcertsCatalogPage({
     catalog.filters.continent,
     catalog.filters.country ?? "",
   ].join("-");
-  const navigationLink =
-    period === "upcoming"
-      ? { href: "/concerts/past", label: "Anteriores" }
-      : { href: "/concerts/upcoming", label: "Próximos" };
-
   return (
     <PageShell
       eyebrow={pageMeta.eyebrow}
       title={pageMeta.title}
       description={pageMeta.description}
+      breadcrumbItems={buildConcertBreadcrumb(period)}
+      toolbarLeft={(
+        <div className="concert-top-controls">
+          <ConcertFilters
+            key={filtersKey}
+            basePath={pageMeta.basePath}
+            filters={catalog.filters}
+            mode="icon-modal"
+          />
+          <ConcertPagination
+            basePath={pageMeta.basePath}
+            filters={catalog.filters}
+            totalPages={catalog.totalPages}
+          />
+        </div>
+      )}
+      headerImageSrc={
+        period === "upcoming"
+          ? UPCOMING_PAGE_HEADER_IMAGE_SRC
+          : PAST_PAGE_HEADER_IMAGE_SRC
+      }
     >
       <section>
-        <div className="mb-5 flex justify-end">
-          <div className="concert-top-controls">
-            <ConcertFilters
-              key={filtersKey}
-              basePath={pageMeta.basePath}
-              filters={catalog.filters}
-              mode="icon-modal"
-            />
-            <ConcertPagination
-              basePath={pageMeta.basePath}
-              filters={catalog.filters}
-              totalPages={catalog.totalPages}
-            />
-          </div>
-        </div>
-
-        <p className="mb-4 text-sm text-zinc-600">
-          Mostrando {catalog.concerts.length} de {catalog.totalItems} conciertos.
-        </p>
+        {catalog.totalPages > 1 ? (
+          <p className="mb-4 text-sm text-zinc-600">
+            Mostrando {catalog.concerts.length} de {catalog.totalItems} conciertos.
+          </p>
+        ) : null}
 
         {catalog.concerts.length === 0 ? (
           <EmptyState
@@ -83,14 +97,14 @@ export default async function ConcertsCatalogPage({
             description="Prueba cambiando rango de fechas o ubicacion."
           />
         ) : (
-          <ConcertCardsClient period={period} concerts={catalog.concerts} />
+          <ConcertCardsClient
+            period={period}
+            concerts={catalog.concerts}
+            selectedConcertSlug={selectedConcertSlug}
+          />
         )}
-
-        <ConcertsNavigationLink
-          href={navigationLink.href}
-          label={navigationLink.label}
-        />
       </section>
     </PageShell>
   );
 }
+

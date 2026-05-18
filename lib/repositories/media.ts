@@ -2,6 +2,7 @@ import type { Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { parsePhotoFilters, parseVideoFilters, toDateRange } from "@/lib/media/filters";
 import type {
+  HomeVideoBandItem,
   MediaOverviewStats,
   MediaPhotoQueryParams,
   MediaSortOption,
@@ -11,14 +12,16 @@ import type {
   PhotoAlbumsCatalogResult,
   PhotoFilterType,
   VideoCatalogCard,
+  VideoCollectionDetail,
   VideoCatalogResult,
-  VideoDetailResult,
   VideoEmbedItem,
 } from "@/lib/media/types";
 import {
   extractYouTubeVideoId,
   inferYouTubeVideoType,
+  resolveVideoDurationSeconds,
   resolveVideoEmbedUrl,
+  resolveVideoPreviewImageUrl,
 } from "@/lib/media/video";
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
 
@@ -99,26 +102,23 @@ type VideoCollectionRecord = Prisma.VideoCollectionGetPayload<{
   };
 }>;
 
-type VideoSingleRecord = Prisma.VideoItemGetPayload<{
+type HomeVideoCollectionRecord = Prisma.VideoCollectionGetPayload<{
   select: {
     id: true;
     slug: true;
     title: true;
-    description: true;
-    platform: true;
-    videoUrl: true;
-    thumbnailUrl: true;
-    durationSeconds: true;
-    publishedAt: true;
-    createdAt: true;
-    videoCollection: {
+    videos: {
       select: {
         id: true;
         slug: true;
         title: true;
-        coverImageUrl: true;
-        isPublished: true;
+        platform: true;
+        videoUrl: true;
+        thumbnailUrl: true;
+        publishedAt: true;
+        createdAt: true;
       };
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }];
     };
   };
 }>;
@@ -171,7 +171,14 @@ function compareBySort<T>(
   }
 }
 
-function mapVideoEmbedItem(video: VideoCollectionRecord["videos"][number]): VideoEmbedItem {
+async function mapVideoEmbedItem(video: VideoCollectionRecord["videos"][number]): Promise<VideoEmbedItem> {
+  const publishedDate = video.publishedAt ?? video.createdAt;
+  const durationSeconds = await resolveVideoDurationSeconds(
+    video.platform,
+    video.videoUrl,
+    video.durationSeconds,
+  );
+
   return {
     id: video.id,
     slug: video.slug,
@@ -183,8 +190,8 @@ function mapVideoEmbedItem(video: VideoCollectionRecord["videos"][number]): Vide
     videoUrl: video.videoUrl,
     embedUrl: resolveVideoEmbedUrl(video.platform, video.videoUrl),
     thumbnailUrl: video.thumbnailUrl,
-    durationSeconds: video.durationSeconds,
-    publishedAtIso: video.publishedAt ? video.publishedAt.toISOString() : null,
+    durationSeconds,
+    publishedAtIso: publishedDate.toISOString(),
   };
 }
 
@@ -464,7 +471,78 @@ export async function getVideoCatalog(
   };
 }
 
-export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailResult | null> {
+export async function getHomeVideoBandItems(limit?: number): Promise<HomeVideoBandItem[]> {
+  const records = await withDatabaseFallback(
+    () =>
+      prisma.videoCollection.findMany({
+        where: {
+          isPublished: true,
+        },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          videos: {
+            select: {
+              id: true,
+              slug: true,
+              title: true,
+              platform: true,
+              videoUrl: true,
+              thumbnailUrl: true,
+              publishedAt: true,
+              createdAt: true,
+            },
+            orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+          },
+        },
+      }),
+    [] as HomeVideoCollectionRecord[],
+  );
+
+  const sortedItems = records
+    .flatMap((collection) =>
+      collection.videos.map((video) => ({
+        id: video.id,
+        collectionSlug: collection.slug,
+        videoSlug: video.slug,
+        title: video.title,
+        collectionTitle: collection.title,
+        previewImageUrl: resolveVideoPreviewImageUrl(
+          video.platform,
+          video.videoUrl,
+          video.thumbnailUrl,
+        ),
+        publishedAt: video.publishedAt ?? video.createdAt,
+      })),
+    )
+    .sort(
+      (left, right) =>
+        right.publishedAt.getTime() - left.publishedAt.getTime() ||
+        left.title.localeCompare(right.title, "es", { sensitivity: "base" }),
+    );
+
+  const items =
+    typeof limit === "number"
+      ? sortedItems.slice(0, Math.max(1, limit))
+      : sortedItems;
+
+  return items
+    .map((item) => ({
+      id: item.id,
+      collectionSlug: item.collectionSlug,
+      videoSlug: item.videoSlug,
+      title: item.title,
+      collectionTitle: item.collectionTitle,
+      previewImageUrl: item.previewImageUrl,
+      publishedAtIso: item.publishedAt.toISOString(),
+    }));
+}
+
+export async function getVideoDetailBySlug(
+  slug: string,
+): Promise<VideoCollectionDetail | null> {
   const collection = await withDatabaseFallback(
     () =>
       prisma.videoCollection.findFirst({
@@ -503,6 +581,8 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
 
   if (collection) {
     const date = resolveCollectionDate(collection);
+    const videos = await Promise.all(collection.videos.map((video) => mapVideoEmbedItem(video)));
+
     return {
       kind: "collection",
       id: collection.id,
@@ -511,72 +591,8 @@ export async function getVideoDetailBySlug(slug: string): Promise<VideoDetailRes
       description: collection.description,
       coverImageUrl: collection.coverImageUrl ?? collection.videos[0]?.thumbnailUrl ?? null,
       dateIso: date.toISOString(),
-      videos: collection.videos.map(mapVideoEmbedItem),
+      videos,
     };
   }
-
-  const single = await withDatabaseFallback(
-    () =>
-      prisma.videoItem.findFirst({
-        where: {
-          slug,
-          videoCollection: {
-            isPublished: true,
-          },
-        },
-        select: {
-          id: true,
-          slug: true,
-          title: true,
-          description: true,
-          platform: true,
-          videoUrl: true,
-          thumbnailUrl: true,
-          durationSeconds: true,
-          publishedAt: true,
-          createdAt: true,
-          videoCollection: {
-            select: {
-              id: true,
-              slug: true,
-              title: true,
-              coverImageUrl: true,
-              isPublished: true,
-            },
-          },
-        },
-      }),
-    null as VideoSingleRecord | null,
-  );
-
-  if (!single || !single.videoCollection.isPublished) return null;
-
-  const publishedAt = single.publishedAt ?? single.createdAt;
-  return {
-    kind: "single",
-    id: single.id,
-    slug: single.slug,
-    title: single.title,
-    description: single.description,
-    coverImageUrl: single.thumbnailUrl ?? single.videoCollection.coverImageUrl,
-    dateIso: publishedAt.toISOString(),
-    video: {
-      id: single.id,
-      slug: single.slug,
-      title: single.title,
-      youtubeId: extractYouTubeVideoId(single.videoUrl),
-      type: inferYouTubeVideoType(single.videoUrl),
-      description: single.description,
-      platform: single.platform,
-      videoUrl: single.videoUrl,
-      embedUrl: resolveVideoEmbedUrl(single.platform, single.videoUrl),
-      thumbnailUrl: single.thumbnailUrl,
-      durationSeconds: single.durationSeconds,
-      publishedAtIso: single.publishedAt ? single.publishedAt.toISOString() : null,
-    },
-    collection: {
-      slug: single.videoCollection.slug,
-      title: single.videoCollection.title,
-    },
-  };
+  return null;
 }

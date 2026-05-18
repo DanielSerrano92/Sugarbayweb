@@ -5,10 +5,14 @@ import { notFound } from "next/navigation";
 import VideoCollectionViewer from "@/components/media/video-collection-viewer";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
+import { buildMediaVideosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getVideoDetailBySlug } from "@/lib/repositories/media";
 
 type VideoDetailPageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{
+    video?: string | string[];
+  }>;
 };
 
 export async function generateMetadata({
@@ -19,20 +23,26 @@ export async function generateMetadata({
 
   if (!detail) {
     return {
-      title: "Video",
-      description: "Detalle de video oficial de Sugarbay.",
+      title: "Videos",
+      description: "Coleccion de videos oficiales de Sugarbay.",
     };
   }
 
   return {
-    title: detail.kind === "collection" ? `Videos: ${detail.title}` : `Video: ${detail.title}`,
+    title: `Videos: ${detail.title}`,
     description:
-      detail.description ?? "Detalle de coleccion o video oficial de Sugarbay.",
+      detail.description ?? "Coleccion de videos oficiales de Sugarbay.",
   };
 }
 
-export default async function MediaVideoDetailPage({ params }: VideoDetailPageProps) {
-  const { slug } = await params;
+export default async function MediaVideoDetailPage({
+  params,
+  searchParams,
+}: VideoDetailPageProps) {
+  const [{ slug }, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const detail = await getVideoDetailBySlug(slug);
 
   if (!detail) {
@@ -40,52 +50,45 @@ export default async function MediaVideoDetailPage({ params }: VideoDetailPagePr
   }
 
   const detailDescription =
-    detail.description ??
-    (detail.kind === "collection"
-      ? "Coleccion de videos oficiales de Sugarbay."
-      : "Video oficial de Sugarbay.");
-  const videos = detail.kind === "collection" ? detail.videos : [detail.video];
+    detail.description ?? "Coleccion de videos oficiales de Sugarbay.";
+  const selectedVideoSlugCandidate = Array.isArray(resolvedSearchParams.video)
+    ? resolvedSearchParams.video[0]
+    : resolvedSearchParams.video;
+  const selectedVideoSlug =
+    typeof selectedVideoSlugCandidate === "string" &&
+      selectedVideoSlugCandidate.trim().length > 0
+      ? selectedVideoSlugCandidate.trim()
+      : undefined;
 
   return (
     <PageShell
       eyebrow="Media / Videos"
       title={detail.title}
       description={detailDescription}
+      breadcrumbItems={buildMediaVideosBreadcrumb(detail.title)}
     >
       <div className="flex flex-wrap gap-2">
-        <Link
-          href="/media/videos"
-          className="retro-pixel-back-link"
-        >
+        <Link href="/media/videos" className="retro-pixel-back-link">
           <span aria-hidden="true" className="retro-pixel-back-arrow">
-            ◀
+            {"<"}
           </span>
           <span>Volver a videos</span>
         </Link>
-        {detail.kind === "single" && detail.collection ? (
-          <Link
-            href={`/media/videos/${detail.collection.slug}`}
-            className="sb-btn-secondary px-3 py-2 text-sm font-semibold text-zinc-200"
-          >
-            Ver coleccion
-          </Link>
-        ) : null}
       </div>
 
-      {detail.description ? (
-        <p className="sb-panel-soft rounded-2xl px-4 py-3 text-sm leading-7 text-zinc-700">
-          {detail.description}
-        </p>
-      ) : null}
-
-      {videos.length > 0 ? (
-        <VideoCollectionViewer videos={videos} />
+      {detail.videos.length > 0 ? (
+        <VideoCollectionViewer
+          key={`${detail.id}-${selectedVideoSlug ?? "default"}`}
+          videos={detail.videos}
+          selectedVideoSlug={selectedVideoSlug}
+        />
       ) : (
         <EmptyState
           title="Esta coleccion no tiene videos publicados"
           description="Publica videos en esta coleccion para mostrar su detalle."
         />
       )}
+
     </PageShell>
   );
 }

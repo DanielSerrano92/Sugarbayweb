@@ -18,6 +18,8 @@ export type MusicQueryParams = {
   from?: string | string[];
   to?: string | string[];
   page?: string | string[];
+  song?: string | string[];
+  album?: string | string[];
 };
 
 export type MusicFilters = {
@@ -26,6 +28,8 @@ export type MusicFilters = {
   from?: string;
   to?: string;
   page: number;
+  song?: string;
+  album?: string;
 };
 
 export type MusicCatalogCard = {

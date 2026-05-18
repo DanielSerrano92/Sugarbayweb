@@ -92,12 +92,12 @@ export default function CartDrawer({
   const hasItems = cartItems.length > 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-0 z-50 flex items-start justify-center px-2 py-2 sm:items-center sm:px-4 sm:py-6">
       <button
         type="button"
         aria-label="Cerrar carrito"
         onClick={onClose}
-        className="absolute inset-0 bg-black/70"
+        className="retro-vapor-overlay absolute inset-0"
       />
 
       <section
@@ -105,30 +105,42 @@ export default function CartDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby="cart-drawer-title"
-        className="sb-window relative z-10 flex h-full w-full max-w-md flex-col rounded-l-2xl border-l shadow-2xl"
+        className="win-window cart-modal-window relative z-10 flex w-full max-w-4xl min-h-0 flex-col overflow-hidden p-0"
       >
-        <header>
-          <div className="sb-titlebar rounded-tl-2xl px-5 py-2">Carrito Sugarbay</div>
-          <div className="border-b border-zinc-300 px-5 py-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-            {currentUserFirstName ? `Hola ${currentUserFirstName}` : "Sugarbay"}
-          </p>
-          <h2 id="cart-drawer-title" className="mt-1 text-2xl font-black text-zinc-900">
-            Carrito
-          </h2>
+        <header className="shrink-0">
+          <div className="win-titlebar flex items-center justify-between gap-3">
+            <h2 id="cart-drawer-title" className="min-w-0 truncate pr-2">
+              CARRITO
+            </h2>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Cerrar carrito"
+              className="win-button retro-win-close"
+            >
+              X
+            </button>
+          </div>
+          <div className="cart-modal-subheader border-b px-4 py-3 sm:px-5">
+            <p className="cart-modal-user text-xs uppercase tracking-[0.18em]">
+              {currentUserFirstName ? `Hola ${currentUserFirstName}` : "Sugarbay"}
+            </p>
+            <p className="cart-modal-caption mt-1 text-xs">
+              Resumen rapido de tu pedido
+            </p>
           </div>
         </header>
 
         {!currentUserFirstName ? (
-          <div className="flex flex-1 flex-col justify-between p-5">
-            <p className="sb-panel-soft rounded-xl px-4 py-3 text-sm text-zinc-700">
+          <div className="cart-modal-guest flex flex-1 flex-col justify-between p-4 sm:p-5">
+            <p className="cart-modal-empty text-sm">
               Inicia sesion para ver tu carrito y continuar con checkout.
             </p>
             <div className="space-y-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="sb-btn-secondary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold text-zinc-900"
+                className="win-button cart-modal-action-btn inline-flex w-full items-center justify-center"
               >
                 Volver
               </button>
@@ -149,24 +161,24 @@ export default function CartDrawer({
           </div>
         ) : (
           <>
-            <div className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
+            <div className="cart-modal-items flex-1 space-y-3 overflow-y-auto px-4 py-4 sm:px-5">
               {!hasItems ? (
-                <p className="sb-panel-soft rounded-xl px-4 py-3 text-sm text-zinc-700">
+                <p className="cart-modal-empty text-sm">
                   Tu carrito esta vacio. Explora la tienda y anade productos.
                 </p>
               ) : (
                 cartItems.map((item) => (
                   <article
                     key={item.id}
-                    className="sb-panel-soft rounded-2xl p-3"
+                    className="cart-modal-item p-3"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-zinc-100">
+                      <div className="cart-modal-item-image relative h-16 w-16 shrink-0 overflow-hidden">
                         <Image
                           src={resolveImageUrl(item.product.coverImage)}
                           alt={item.product.name}
                           fill
-                          className="object-cover"
+                          className="object-cover object-center"
                           sizes="64px"
                         />
                       </div>
@@ -175,28 +187,28 @@ export default function CartDrawer({
                         <Link
                           href={`/store/${item.product.slug}`}
                           onClick={onClose}
-                          className="block truncate text-sm font-semibold text-zinc-900 hover:text-emerald-600"
+                          className="cart-modal-item-name block truncate text-sm font-black uppercase tracking-[0.04em]"
                         >
                           {item.product.name}
                         </Link>
-                        <p className="text-xs text-zinc-500">
+                        <p className="cart-modal-item-meta text-xs">
                           {item.variant.title ?? item.variant.size}
                         </p>
-                        <p className="mt-1 text-xs font-medium text-zinc-700">
+                        <p className="cart-modal-item-meta mt-1 text-xs font-semibold">
                           Cantidad: {item.quantity}
                         </p>
                       </div>
                     </div>
 
                     <div className="mt-3 flex items-center justify-between gap-3">
-                      <p className="text-sm font-black text-zinc-900">
+                      <p className="cart-modal-item-price text-sm font-black">
                         {formatCurrency(item.lineTotal, item.product.currency)}
                       </p>
                       <form action={removeCartItemAction}>
                         <input type="hidden" name="cartItemId" value={item.id} />
                         <button
                           type="submit"
-                          className="sb-btn-danger rounded-lg px-3 py-1.5 text-xs font-semibold"
+                          className="win-button cart-modal-remove-btn"
                         >
                           Eliminar
                         </button>
@@ -207,10 +219,10 @@ export default function CartDrawer({
               )}
             </div>
 
-            <footer className="space-y-3 border-t border-zinc-300 px-5 py-4">
-              <div className="flex items-center justify-between text-sm">
-                <p className="text-zinc-600">Total</p>
-                <p className="text-lg font-black text-zinc-900">
+            <footer className="cart-modal-footer space-y-3 border-t px-4 py-4 sm:px-5">
+              <div className="cart-modal-total-row flex items-center justify-between text-sm">
+                <p className="cart-modal-total-label">Total</p>
+                <p className="cart-modal-total-value text-lg font-black">
                   {formatCurrency(cart?.subtotal ?? 0, cart?.currency ?? "EUR")}
                 </p>
               </div>
@@ -219,17 +231,17 @@ export default function CartDrawer({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="sb-btn-secondary inline-flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold text-zinc-900"
+                  className="win-button cart-modal-action-btn inline-flex w-full items-center justify-center"
                 >
                   Volver
                 </button>
                 <Link
                   href="/checkout"
                   onClick={onClose}
-                  className={`inline-flex w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white ${
+                  className={`win-button cart-modal-action-btn inline-flex w-full items-center justify-center ${
                     hasItems
-                      ? "sb-btn-primary"
-                      : "pointer-events-none border border-zinc-300 bg-zinc-300"
+                      ? "cart-modal-checkout-btn"
+                      : "cart-modal-action-disabled pointer-events-none"
                   }`}
                   aria-disabled={!hasItems}
                 >
@@ -240,7 +252,7 @@ export default function CartDrawer({
               <Link
                 href="/carrito"
                 onClick={onClose}
-                className="inline-flex text-xs font-semibold text-emerald-600 hover:text-emerald-500"
+                className="cart-modal-full-link inline-flex text-xs font-semibold"
               >
                 Ver carrito completo
               </Link>

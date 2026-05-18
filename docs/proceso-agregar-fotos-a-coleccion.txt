@@ -1,0 +1,132 @@
+GUIA OPERATIVA: Agregar fotos a una coleccion determinada (Fotos)
+
+Fecha: 14/05/2026
+Proyecto: Sugarbayweb
+Alcance: Solo seccion Media > Fotos
+
+------------------------------------------------------------
+1) OBJETIVO
+------------------------------------------------------------
+Anadir una o varias imagenes a una coleccion de fotos existente
+sin crear colecciones duplicadas, sin tocar otras secciones y sin
+romper rutas ni estilos globales.
+
+------------------------------------------------------------
+2) PRECONDICIONES
+------------------------------------------------------------
+- Tener acceso al repositorio local.
+- Tener variables de entorno cargadas (.env), especialmente DATABASE_URL.
+- Confirmar slug o titulo exacto de la coleccion objetivo.
+- Tener lista final de URLs de imagen (ImageKit u origen permitido).
+
+------------------------------------------------------------
+3) COMO FUNCIONA EN ESTE PROYECTO
+------------------------------------------------------------
+- Las colecciones de fotos se guardan en Prisma:
+  - Tabla/Modelo: PhotoAlbum
+  - Tabla/Modelo: Photo
+- La pagina de listado usa PhotoAlbum y su detalle usa slug dinamico:
+  - /media/photos
+  - /media/photos/[slug]
+- El contenido interno de la galeria sale de la relacion PhotoAlbum -> Photo.
+
+------------------------------------------------------------
+4) FLUJO RECOMENDADO (OBLIGATORIO)
+------------------------------------------------------------
+PASO 1. Identificar la coleccion objetivo
+- Buscar por slug preferido (ej: rodaje-1-3-26).
+- Si no existe ese slug, buscar por titulo exacto.
+- Si aparecen varias coincidencias, elegir una sola coleccion canonical.
+
+PASO 2. Evitar duplicados de coleccion
+- No crear PhotoAlbum nuevo si ya existe la coleccion.
+- Usar el slug existente del proyecto.
+
+PASO 3. Definir estrategia de fotos
+- Si se quiere reemplazo total del contenido interno:
+  - borrar fotos existentes de esa coleccion y cargar lista nueva.
+- Si se quiere anadido incremental:
+  - insertar solo fotos nuevas que no existan por imageUrl.
+
+PASO 4. Cargar datos en BD activa (efecto inmediato)
+- Usar operacion idempotente:
+  - localizar album
+  - actualizar metadatos minimos (title/eventDate/isPublished, si aplica)
+  - insertar fotos con sortOrder consistente
+- Regla de portada:
+  - no cambiar coverImageUrl del album salvo instruccion explicita.
+  - si hace falta cover interna, marcar isCover=true solo en una foto.
+
+PASO 5. Reflejar tambien en codigo (seed)
+- Actualizar prisma/seed.ts con la misma coleccion y mismas fotos.
+- Esto evita que en un reseed futuro se pierdan los cambios.
+
+PASO 6. Verificaciones tecnicas
+- Comprobar TypeScript:
+  - npx tsc --noEmit
+- Verificar en BD:
+  - cantidad de fotos esperada en la coleccion objetivo
+  - ninguna de esas URLs asociada a otras colecciones
+
+PASO 7. Verificacion funcional manual
+- Abrir /media/photos
+- Entrar en la tarjeta de la coleccion objetivo
+- Revisar:
+  - fecha correcta
+  - numero de fotos esperado
+  - navegacion/miniaturas/vista principal
+  - comportamiento responsive
+- Validar que otras colecciones no cambiaron.
+
+------------------------------------------------------------
+5) CHECKLIST DE CALIDAD
+------------------------------------------------------------
+- [ ] No se creo una coleccion duplicada.
+- [ ] Se uso slug existente.
+- [ ] Las fotos quedaron solo en la coleccion objetivo.
+- [ ] Se mantuvo coverImageUrl de tarjeta (si no pidieron cambiarla).
+- [ ] Sin cambios en Home, Videos, Conciertos, Tienda, Banda.
+- [ ] Sin cambios en header/footer/estilos globales.
+- [ ] TypeScript sin errores nuevos.
+- [ ] Seed actualizado (si el proyecto usa seed para persistencia de datos demo).
+
+------------------------------------------------------------
+6) ERRORES COMUNES Y MITIGACION
+------------------------------------------------------------
+Error A: "No se ve el cambio en la pagina"
+Causa comun:
+- Se actualizo codigo, pero no la BD activa.
+Mitigacion:
+- Aplicar insercion/actualizacion directa en BD y luego hard refresh.
+
+Error B: "No seed command configured"
+Causa comun:
+- CLI de Prisma no tiene seed configurado para ese comando.
+Mitigacion:
+- Ejecutar el script definido en package.json o usar tsx directo.
+- Mantener tambien actualizacion en prisma/seed.ts.
+
+Error C: fotos duplicadas dentro de la misma coleccion
+Causa comun:
+- Inserciones repetidas sin filtro por imageUrl.
+Mitigacion:
+- Usar upsert logico o filtro previo de URLs existentes.
+
+------------------------------------------------------------
+7) PLANTILLA DE REPORTE FINAL (RESUMEN)
+------------------------------------------------------------
+1. Archivos modificados.
+2. Cambios por archivo.
+3. Coleccion objetivo (slug/titulo/fecha).
+4. Numero de fotos agregadas y origen de URLs.
+5. Donde se aplico (seed, BD activa, ambos).
+6. Validacion de no duplicados.
+7. Errores encontrados y solucion.
+8. Pasos de comprobacion manual.
+
+------------------------------------------------------------
+8) NOTA OPERATIVA
+------------------------------------------------------------
+Cuando el objetivo es "ver el cambio ahora", la actualizacion en BD activa
+es necesaria. Cuando el objetivo es "persistir para futuros reseed", tambien
+debe actualizarse prisma/seed.ts.

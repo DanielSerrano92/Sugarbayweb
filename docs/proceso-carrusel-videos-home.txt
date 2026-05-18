@@ -1,0 +1,107 @@
+1. Objetivo de la tarea
+Cambiar el comportamiento del carrusel de videos de Home para que el clic en un video navegue a su coleccion, no a un detalle individual, y eliminar el soporte de pagina individual de video.
+
+2. Estado inicial del carrusel de videos
+- El carrusel Home estaba en components/home/home-videos-band.tsx.
+- Cada card de video usaba href a /media/videos/${video.slug} (slug del video individual).
+- Eso podia abrir detalle individual segun la logica de app/media/videos/[slug]/page.tsx y lib/repositories/media.ts.
+
+3. Ruta individual de video detectada
+- Ruta detectada: /media/videos/[slug]
+- En estado inicial, esta ruta resolvia dos casos:
+  - Coleccion (si slug coincidia con videoCollection.slug)
+  - Video individual (si slug coincidia con videoItem.slug)
+- El detalle individual venia del fallback en getVideoDetailBySlug.
+
+4. Motivo por el que se elimina la pagina individual
+- Requisito funcional del proyecto: desde Home no se debe abrir detalle individual de video.
+- El flujo deseado es llevar siempre a la coleccion donde vive el video.
+- Mantener detalle individual provocaba rutas y codigo no alineados con ese flujo.
+
+5. Archivos revisados
+- components/home/home-videos-band.tsx
+- app/page.tsx
+- app/media/videos/[slug]/page.tsx
+- app/media/videos/page.tsx
+- lib/repositories/media.ts
+- lib/media/types.ts
+- components/media/video-filters.tsx
+- lib/media/filters.ts
+
+6. Archivos modificados
+- components/home/home-videos-band.tsx
+- lib/repositories/media.ts
+- lib/media/types.ts
+- app/media/videos/[slug]/page.tsx
+- app/media/videos/page.tsx
+- components/media/video-filters.tsx
+- docs/proceso-carrusel-videos-home.txt (nuevo)
+
+7. Cambios realizados paso a paso
+Paso 1: Enlace del carrusel Home
+- Se cambio el href del carrusel de Home para que use collectionSlug en lugar de slug de video.
+- Antes: /media/videos/${video.slug}
+- Ahora: /media/videos/${video.collectionSlug}
+
+Paso 2: Datos del carrusel con relacion a coleccion
+- Se ajusto HomeVideoBandItem en tipos para incluir collectionSlug.
+- En getHomeVideoBandItems se incorporo slug de la coleccion en la consulta y en el mapeo final.
+
+Paso 3: Eliminacion de soporte de detalle individual
+- Se limpio getVideoDetailBySlug para que solo busque y devuelva colecciones.
+- Se elimino el fallback que buscaba video individual por slug.
+- Resultado: un slug de video individual ya no resuelve detalle y termina en notFound (404).
+
+Paso 4: Limpieza de tipos y UI relacionadas
+- Se elimino VideoSingleDetail y VideoDetailResult (union con single) de lib/media/types.ts.
+- Se dejo VideoCatalogCard como kind: "collection".
+- Se elimino opcion "Videos unicos" del filtro de videos.
+- Se ajustaron textos en app/media/videos/page.tsx para eliminar referencias a "video unico".
+
+Paso 5: Pagina /media/videos/[slug]
+- Se simplifico app/media/videos/[slug]/page.tsx para renderizar unicamente detalle de coleccion.
+- Se elimino el bloque visual/funcional del detalle individual.
+
+8. Explicacion de como se obtiene la coleccion del video
+- Cada video viene relacionado con VideoCollection en BD (Prisma: VideoItem -> videoCollectionId).
+- Para Home, se consulta prisma.videoCollection.findMany(...) con sus videos.
+- En el mapeo del carrusel se conserva la info del video (titulo, miniatura, fecha), y se agrega collectionSlug desde la coleccion padre.
+- El enlace final usa ese collectionSlug para navegar a la coleccion.
+
+9. Errores encontrados y como se solucionaron
+- npm run lint:
+  - Aparecio un error preexistente fuera de este alcance en components/home/home-header-carousel.tsx (react-hooks/set-state-in-effect).
+  - Tambien warnings preexistentes de variables no usadas.
+  - No se introdujeron errores nuevos en los archivos modificados de esta tarea.
+- npm run build:
+  - Fallo por entorno sin acceso a Google Fonts (Press Start 2P), no por cambios de logica de videos.
+- Validacion adicional:
+  - Se ejecuto eslint puntual de archivos modificados y paso sin errores.
+
+10. Pruebas realizadas
+Prueba A (codigo): enlace Home
+- Verificado en components/home/home-videos-band.tsx que el href apunta a /media/videos/${video.collectionSlug}.
+
+Prueba B (codigo): ruta individual eliminada
+- Verificado en lib/repositories/media.ts que getVideoDetailBySlug ya no resuelve video individual.
+- Verificado en app/media/videos/[slug]/page.tsx que solo renderiza coleccion.
+- Efecto esperado: slug de video individual antiguo -> notFound (404).
+
+Prueba C (lint especifico de cambios)
+- Comando: npx eslint app/media/videos/[slug]/page.tsx app/media/videos/page.tsx components/home/home-videos-band.tsx components/media/video-filters.tsx lib/media/types.ts lib/repositories/media.ts
+- Resultado: OK sin errores.
+
+Prueba D (lint global)
+- Comando: npm run lint
+- Resultado: falla por error preexistente no relacionado (home-header-carousel) y warnings preexistentes.
+
+Prueba E (build)
+- Comando: npm run build
+- Resultado: falla por no poder descargar fuente Google (entorno/red), no por cambios de videos.
+
+11. Resultado final
+- Clic en video del carrusel Home ahora navega a la coleccion correspondiente.
+- Se elimino el soporte de pagina individual de video en la ruta /media/videos/[slug].
+- Slugs individuales antiguos de video quedan sin resolver (404), cumpliendo el criterio de eliminar el detalle individual.
+- No se cambio el diseño visual del carrusel Home.
+- No se modifico la estructura visual de cards en Home ni de la coleccion de videos.

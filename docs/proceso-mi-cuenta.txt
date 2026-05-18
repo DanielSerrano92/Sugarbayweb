@@ -1,0 +1,474 @@
+Proceso de implementacion de pagina Mi cuenta
+Fecha: 2026-05-17
+
+1. Objetivo de la tarea
+Implementar una pagina de "Mi cuenta" completa, profesional y coherente con el estilo retro/80s/vaporwave/Windows 90 del proyecto, incluyendo:
+- Perfil
+- Mis pedidos
+- Direcciones
+- Seguridad
+- Ayuda / Soporte
+
+Ademas, mantener proteccion de acceso por autenticacion existente, validar en servidor y cliente, y no romper checkout/Stripe/tienda.
+
+2. Estado inicial de la pagina Mi cuenta
+- Existia `app/account/page.tsx` con una vista simple de perfil (solo lectura) y un bloque de accesos rapidos.
+- No existian secciones completas de pedidos, direcciones, seguridad ni soporte.
+- No existian rutas API especificas para gestion de cuenta.
+- No habia formularios de cuenta con guardado/errores/estados detallados.
+
+3. Problemas o carencias detectadas antes del cambio
+- Sin edicion de perfil.
+- Sin historial de pedidos en la zona de cuenta.
+- Sin gestion CRUD de direcciones.
+- Sin cambio de contrasena.
+- Sin flujo de desactivacion/eliminacion de cuenta.
+- Sin canal de soporte desde cuenta.
+- Sin estados completos por seccion (carga/error/vacio/guardando/exito).
+
+4. Arquitectura revisada
+Autenticacion:
+- `proxy.ts` protege `/account` y redirige a `/login`.
+- `lib/auth/dal.ts` usa `requireSession` y `getSessionUser`.
+- `lib/auth/session.ts` maneja cookie de sesion JWT.
+- `lib/auth/actions.ts` maneja login/registro/logout y verifica `isActive`.
+
+Usuario:
+- Modelo `User` en `prisma/schema.prisma` con `firstName`, `lastName`, `email`, `username`, `phone`, `country`, `passwordHash`, `isActive`, etc.
+
+Pedidos:
+- Modelos `Order` y `OrderItem` existentes y usados por checkout.
+- Repositorio de pedidos existente: `lib/repositories/orders.ts`.
+
+Direcciones:
+- Modelo `Address` existente con `type` (`SHIPPING`/`BILLING`), `isDefault`, etc.
+- Checkout ya reutiliza direcciones en `lib/repositories/checkout.ts`.
+
+Seguridad:
+- Hash de contrasena con `bcryptjs`.
+- Login invalida acceso cuando `isActive` es `false`.
+
+Soporte:
+- No existia backend real de soporte ni tabla dedicada.
+- Se implemento validacion + fallback controlado por `SUPPORT_EMAIL`.
+
+Checkout:
+- Reutiliza direcciones existentes y snapshots en pedido.
+- Se mantuvo compatibilidad del formato de direccion.
+
+Prisma/base de datos:
+- No se crearon tablas nuevas.
+- Se reutilizaron `User`, `Order`, `OrderItem`, `Address`, `Cart`, `CartItem`.
+- Sin migraciones nuevas.
+
+API routes/server actions:
+- Se revisaron patrones existentes (`/api/checkout`, `/api/search`, `/api/stripe/webhook`).
+- Se crearon nuevas rutas API de cuenta.
+
+5. Archivos revisados
+- `app/account/page.tsx`
+- `app/account/loading.tsx`
+- `app/account/error.tsx`
+- `proxy.ts`
+- `prisma/schema.prisma`
+- `lib/auth/dal.ts`
+- `lib/auth/session.ts`
+- `lib/auth/actions.ts`
+- `lib/validators/auth.ts`
+- `lib/validators/checkout.ts`
+- `lib/repositories/orders.ts`
+- `lib/repositories/checkout.ts`
+- `components/auth/password-input-with-toggle.tsx`
+- `components/layout/header-client.tsx`
+- `app/globals.css`
+- `app/checkout/page.tsx`
+- `app/api/checkout/route.ts`
+- `.env.example`
+- `lib/env.ts`
+
+6. Archivos modificados
+- `.env.example`
+- `app/account/page.tsx`
+- `components/auth/password-input-with-toggle.tsx`
+- `lib/env.ts`
+
+7. Archivos creados
+- `lib/validators/account.ts`
+- `lib/repositories/account.ts`
+- `app/api/account/profile/route.ts`
+- `app/api/account/orders/route.ts`
+- `app/api/account/addresses/route.ts`
+- `app/api/account/security/password/route.ts`
+- `app/api/account/security/delete/route.ts`
+- `app/api/account/support/route.ts`
+- `components/account/account-dashboard.tsx`
+- `docs/proceso-mi-cuenta.txt`
+
+8. Componentes creados o modificados
+Componentes creados:
+- `components/account/account-dashboard.tsx`
+  - Navegacion por secciones (sidebar desktop + selector movil)
+  - Formularios y estados para Perfil, Direcciones, Seguridad y Soporte
+  - Render de pedidos con estado de vacio
+
+Componentes modificados:
+- `components/auth/password-input-with-toggle.tsx`
+  - Se agrego prop opcional `value` para permitir uso controlado en formularios de seguridad.
+
+9. APIs/server actions creadas o modificadas
+Nuevas API routes:
+- `GET/PATCH /api/account/profile`
+- `GET /api/account/orders`
+- `GET/POST/PATCH/DELETE /api/account/addresses`
+- `POST /api/account/security/password`
+- `POST /api/account/security/delete`
+- `POST /api/account/support`
+
+Todas validan usuario autenticado en servidor con `getSessionUser()`.
+
+10. Modelos Prisma/base de datos revisados o modificados
+Modelos revisados:
+- `User`
+- `Address`
+- `Order`
+- `OrderItem`
+- `Cart`
+- `CartItem`
+
+Modelos modificados:
+- Ninguno.
+
+Migraciones:
+- No se anadieron migraciones.
+
+11. Cambios realizados paso a paso
+Paso 1:
+- Se audito la arquitectura actual (auth, checkout, pedidos, direcciones, Prisma, componentes UI).
+
+Paso 2:
+- Se creo `lib/validators/account.ts` con esquemas Zod para:
+  - actualizar perfil
+  - crear/editar direcciones
+  - cambiar contrasena
+  - confirmar eliminacion de cuenta
+  - soporte
+
+Paso 3:
+- Se creo `lib/repositories/account.ts` para centralizar logica de cuenta:
+  - lectura y actualizacion de perfil
+  - listado de pedidos del usuario
+  - CRUD de direcciones con ownership y direccion predeterminada
+  - cambio de contrasena con bcrypt
+  - desactivacion segura de cuenta (soft delete/anonymizacion parcial)
+
+Paso 4:
+- Se crearon rutas API de cuenta en `app/api/account/*` con validaciones y respuestas de error claras.
+
+Paso 5:
+- Se actualizo `lib/env.ts` y `.env.example` para soportar `SUPPORT_EMAIL` opcional.
+
+Paso 6:
+- Se creo `components/account/account-dashboard.tsx` con toda la UI de Mi cuenta:
+  - secciones obligatorias
+  - formularios y estados
+  - acciones de guardado/edicion/eliminacion
+  - feedback visual coherente con estilo retro.
+
+Paso 7:
+- Se reemplazo contenido de `app/account/page.tsx` para usar el nuevo dashboard y datos iniciales server-side.
+
+Paso 8:
+- Se adapto `PasswordInputWithToggle` para inputs controlados (seguridad).
+
+Paso 9:
+- Se ejecuto lint y build; se corrigio un error de regla React Hooks.
+
+12. Explicacion detallada de la seccion Perfil
+Funcionalidad:
+- Muestra nombre, apellidos, email, telefono, pais, usuario, fecha de nacimiento y fecha de registro.
+- Permite editar campos permitidos: `firstName`, `lastName`, `username`, `email`, `phone`, `country`.
+- Guarda via `PATCH /api/account/profile`.
+
+Estados:
+- Cargando perfil: contemplado en componente con `LoadStatus`.
+- Perfil cargado: render normal.
+- Error al cargar: panel de error con boton Reintentar.
+- Guardando cambios: boton "Guardando...".
+- Cambios guardados: feedback verde.
+- Error al guardar: feedback rojo + errores por campo.
+
+Seguridad:
+- La actualizacion siempre se hace para `session.userId` en servidor.
+- No se expone ni modifica otro usuario.
+- Si `username` o `email` ya pertenecen a otro usuario, el guardado se bloquea con `409` y error de campo.
+
+13. Explicacion detallada de la seccion Mis pedidos
+Funcionalidad:
+- Obtiene solo pedidos del usuario autenticado via `GET /api/account/orders`.
+- Muestra:
+  - numero de pedido
+  - fecha
+  - estado del pedido
+  - estado de pago
+  - total
+  - productos y cantidades
+  - metodo de pago
+  - ciudad/pais de envio
+
+Estado vacio:
+- Si no hay pedidos: "Todavia no tienes pedidos."
+
+Estados:
+- Cargando pedidos (estado disponible en componente).
+- Error al cargar pedidos (panel de error con reintento).
+- Pedidos cargados correctamente.
+
+14. Explicacion detallada de la seccion Direcciones
+Funcionalidad:
+- Lista de direcciones guardadas del usuario.
+- Crear nueva direccion.
+- Editar direccion existente.
+- Eliminar direccion (con confirmacion `window.confirm`).
+- Marcar direccion predeterminada.
+
+Tipo de direccion:
+- Soporta `SHIPPING`, `BILLING` y `BOTH` en formulario.
+- `BOTH` crea/actualiza direccion para ambos tipos manteniendo compatibilidad con checkout.
+
+Compatibilidad checkout:
+- Reutiliza tabla `Address` existente.
+- No se creo modelo paralelo.
+- El checkout sigue leyendo direcciones desde el modelo actual.
+
+Estados:
+- Cargando direcciones (estado disponible).
+- Sin direcciones: "No tienes direcciones guardadas."
+- Error al cargar: panel de error.
+- Guardando direccion: boton "Guardando...".
+- Exito/error de alta/edicion/borrado con feedback.
+
+15. Explicacion detallada de la seccion Seguridad
+Cambiar contrasena:
+- Campos:
+  - contrasena actual
+  - nueva contrasena
+  - repetir nueva contrasena
+- Validaciones:
+  - obligatorias
+  - coincidencia nueva/repetida
+  - nueva distinta a la actual
+  - minimo y complejidad (mayuscula, numero, especial)
+- Se usa `bcrypt.compare` + `bcrypt.hash`.
+- Nunca se devuelven contrasenas ni se loguean.
+
+Eliminar/desactivar cuenta:
+- Zona de peligro diferenciada visualmente.
+- Confirmacion obligatoria escribiendo `ELIMINAR`.
+- Accion ejecuta:
+  - desactivar usuario (`isActive = false`)
+  - limpiar direcciones y carrito
+  - anonimizar email/username para evitar colisiones
+  - mantener pedidos para integridad historica/legal
+  - cerrar sesion
+  - redirigir a Home
+
+16. Explicacion detallada de la seccion Ayuda / Soporte
+Funcionalidad:
+- Texto explicativo de soporte.
+- Formulario con `asunto` y `mensaje`.
+- Validacion de no vacio y longitudes min/max.
+
+Backend soporte:
+- Si existe `SUPPORT_EMAIL`, API responde con `mailto:` preparado.
+- Si no existe `SUPPORT_EMAIL`, se devuelve estado controlado indicando que el canal no esta configurado en ese entorno.
+- La UI muestra feedback claro en ambos casos.
+
+17. Explicacion del codigo implementado
+Componentes principales:
+- `app/account/page.tsx`: pagina protegida y entrega de datos iniciales.
+- `components/account/account-dashboard.tsx`: UI, navegacion interna, formularios, estados y llamadas API.
+- `lib/repositories/account.ts`: logica server-side de cuenta.
+- `lib/validators/account.ts`: validaciones centralizadas.
+
+Funciones principales:
+- `getAccountProfile`, `updateAccountProfile`
+- `listAccountOrders`
+- `listAccountAddresses`, `createAccountAddress`, `updateAccountAddress`, `deleteAccountAddress`
+- `changeAccountPassword`
+- `deactivateAccount`
+- `requestJson` en cliente para manejo uniforme de respuestas/errores.
+
+Estados usados:
+- Carga: `LoadStatus` por seccion (`loading`, `success`, `error`).
+- Guardado/envio: flags como `profileSaving`, `addressSaving`, `passwordSaving`, `supportSaving`.
+- Feedback: `success`, `error`, `warning`.
+- Vacio: listas de pedidos/direcciones vacias con mensajes dedicados.
+
+Validaciones:
+- Zod en servidor para todos los payloads.
+- Validaciones de campo y mensajes legibles.
+- Validacion de unicidad de email y username en perfil contra otros usuarios.
+
+Llamadas API:
+- fetch a `/api/account/*` con JSON y manejo de `fieldErrors`.
+
+Gestion de errores:
+- Errores de validacion con `422`.
+- Errores de autenticacion con `401`.
+- Errores de recursos no encontrados con `404`.
+- Mensajes legibles mostrados en UI.
+
+18. Fragmentos o referencias de codigo importantes
+- `app/account/page.tsx`: pagina protegida + props iniciales.
+- `components/account/account-dashboard.tsx`: tabs, estados y formularios.
+- `lib/validators/account.ts`: reglas de perfil, direcciones, seguridad y soporte.
+- `lib/repositories/account.ts`: ownership, default address, password, deactivate.
+- `app/api/account/addresses/route.ts`: CRUD direcciones con validacion server-side.
+- `app/api/account/security/delete/route.ts`: confirmacion y cierre de sesion.
+- `components/auth/password-input-with-toggle.tsx`: soporte de `value` para modo controlado.
+
+19. Validaciones implementadas
+Perfil:
+- nombre/apellidos obligatorios
+- username obligatorio con formato valido
+- email obligatorio con formato valido
+- pais obligatorio
+- telefono valido si se informa
+- bloqueo de guardado si username/email ya existen en otro usuario
+
+Direcciones:
+- nombre completo obligatorio
+- calle obligatoria
+- ciudad/provincia obligatorias
+- codigo postal valido
+- pais obligatorio
+- telefono valido opcional
+- tipo (`SHIPPING`, `BILLING`, `BOTH`)
+
+Contrasena:
+- actual obligatoria
+- nueva obligatoria con complejidad
+- confirmacion obligatoria y coincidente
+- nueva distinta de actual
+
+Eliminacion:
+- confirmacion exacta con `ELIMINAR`
+
+Soporte:
+- asunto y mensaje obligatorios con minimos
+
+20. Medidas de seguridad aplicadas
+- Todas las rutas de cuenta validan sesion server-side.
+- Todas las consultas/mutaciones filtran por `session.userId`.
+- No se exponen hashes de contrasena ni secretos.
+- No se confia en validacion cliente; Zod valida en servidor.
+- Username y email son editables con validacion server-side de duplicados.
+- Desactivacion de cuenta preserva relaciones de pedidos.
+- Logout tras desactivacion.
+
+21. Decisiones tecnicas tomadas y motivo
+Decision 1:
+- Reutilizar modelos existentes (`User`, `Address`, `Order`, `OrderItem`).
+Motivo:
+- Evitar duplicidad e incompatibilidades con checkout.
+
+Decision 2:
+- Implementar API routes especificas de cuenta.
+Motivo:
+- Separacion clara de responsabilidades y seguridad por endpoint.
+
+Decision 3:
+- Soft delete/desactivacion en lugar de borrado duro.
+Motivo:
+- Mantener integridad referencial e historico de pedidos.
+
+Decision 4:
+- Soporte via `SUPPORT_EMAIL` opcional.
+Motivo:
+- No inventar servicios externos ni credenciales; fallback documentado.
+
+Decision 5:
+- Layout de secciones con sidebar + selector movil.
+Motivo:
+- Mejor usabilidad desktop y responsive limpio en movil.
+
+22. Errores encontrados durante el desarrollo
+Error 1:
+- ESLint (`react-hooks/set-state-in-effect`) por carga inicial con `useEffect`.
+
+Error 2:
+- `npm run build` fallo inicial al descargar Google Font en entorno sin red.
+
+23. Como se soluciono cada error
+Solucion Error 1:
+- Se movio la carga inicial de datos a server component (`app/account/page.tsx`) y se pasaron props iniciales al dashboard.
+- Se mantuvieron funciones de recarga por seccion para reintentos.
+
+Solucion Error 2:
+- Se reejecuto build con permiso de red para descargar la fuente.
+- Build final completado correctamente.
+
+24. Pruebas manuales realizadas
+Pruebas de implementacion realizadas en entorno CLI + verificacion estructural:
+- Verificacion de proteccion de ruta:
+  - `proxy.ts` y `requireSession("/account")` activos.
+- Verificacion de ownership en API:
+  - todas las rutas usan `session.userId`.
+- Verificacion de secciones y formularios:
+  - perfil/pedidos/direcciones/seguridad/soporte implementados.
+- Verificacion de estados:
+  - carga/error/vacio/guardando/exito presentes en codigo.
+- Verificacion de compatibilidad checkout:
+  - reutilizacion de `Address` y sin modelo paralelo.
+
+Pruebas de integridad tecnica:
+- `npm run lint`
+- `npm run build`
+
+25. Resultado de cada prueba
+- Proteccion de acceso: OK (logica existente mantenida).
+- Ownership y permisos en servidor: OK.
+- Render de secciones obligatorias: OK en compilacion.
+- Validaciones de formularios: OK (Zod + mensajes en UI).
+- Checkout/Stripe no modificados en rutas principales: OK.
+- Integridad de build TypeScript: OK.
+
+26. Resultado de `npm run lint`
+Comando:
+- `npm.cmd run lint`
+
+Resultado:
+- Sin errores.
+- 1 warning preexistente no bloqueante:
+  - `lib/media/video.ts:62` -> `parseYouTubeVideoId` definido y no usado.
+
+27. Resultado de `npm run build`
+Comando:
+- `npm.cmd run build`
+
+Resultado:
+- Primer intento: fallo por red al descargar Google Font (`Press Start 2P`).
+- Reintento con permisos de red: build completado correctamente.
+- Estado final: compilacion OK + TypeScript OK + rutas generadas, incluyendo nuevas rutas de cuenta.
+
+28. Funcionalidades pendientes si alguna no puede completarse por falta de backend/modelos
+- No se implemento un sistema propio de ticketing/almacenamiento de soporte en base de datos.
+- El formulario de soporte depende de `SUPPORT_EMAIL` para generar `mailto`.
+- Si `SUPPORT_EMAIL` no esta configurado, el endpoint devuelve mensaje de canal no configurado.
+
+29. Limitaciones conocidas
+- No se ejecuto navegacion visual interactiva real en navegador en esta sesion CLI (desktop/tablet/movil) para UX final pixel-perfect.
+- Para pruebas visuales finales se recomienda QA manual en browser con usuario autenticado y otro no autenticado.
+
+30. Resultado final
+Se implemento una pagina de Mi cuenta completa y profesional, con estilo coherente retro/vaporwave, seguridad server-side, validaciones robustas y secciones funcionales de perfil, pedidos, direcciones, seguridad y soporte, sin romper autenticacion existente ni flujos de checkout/Stripe.
+
+Actualizacion perfil (username + email editables) - 2026-05-17
+- Se habilito la edicion de `username` y `email` en la seccion Perfil.
+- Se amplio `updateProfileSchema` para incluir `username` y `email`.
+- Se amplio `updateAccountProfile` para persistir `username` y `email`.
+- En `PATCH /api/account/profile` se anadio validacion de duplicado contra otros usuarios:
+  - `email` duplicado -> error en campo `email` y respuesta `409`.
+  - `username` duplicado -> error en campo `username` y respuesta `409`.
+- Se anadio manejo defensivo adicional para `P2002` (colision de unicidad en carrera) con mapeo de errores por campo.
+- La UI muestra errores por campo y no pierde los datos escritos cuando el guardado falla.

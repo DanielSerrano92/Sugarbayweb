@@ -1,0 +1,75 @@
+Proceso de cambio de logo en header y footer
+Fecha: 2026-05-17
+
+1. Objetivo de la tarea
+Sustituir el logo actual de la web por el nuevo logo de ImageKit en el Header y en el Footer, sin alterar navegacion ni logica existente.
+
+2. Logo anterior localizado
+- Header: `components/layout/header-client.tsx`, constante `HEADER_LOGO_SRC`.
+  URL anterior: `https://ik.imagekit.io/gq1enkszp/fotos/logo.png`
+- Footer: `components/layout/site-footer.tsx`, constante `FOOTER_LOGO_SRC`.
+  URL anterior: `https://ik.imagekit.io/gq1enkszp/fotos/logo.png`
+
+3. Nueva URL usada
+Se uso exactamente esta URL en ambos componentes:
+`https://ik.imagekit.io/gq1enkszp/fotos/logo2.png?updatedAt=1779020800274`
+
+4. Archivos revisados
+- `components/layout/site-header.tsx`
+- `components/layout/header-client.tsx`
+- `components/layout/site-footer.tsx`
+- `app/globals.css` (clases del logo para proporcion y responsive)
+- `next.config.ts` (configuracion de dominios remotos para `next/image`)
+
+5. Archivos modificados
+- `components/layout/header-client.tsx`
+- `components/layout/site-footer.tsx`
+- `docs/proceso-cambio-logo-header-footer.txt`
+
+6. Cambios realizados paso a paso
+1. Se localizaron los componentes de Header y Footer y sus constantes de logo.
+2. Se verifico que ambos logos estaban definidos por separado (no en una constante compartida).
+3. Se reemplazo la URL anterior por la nueva URL en `HEADER_LOGO_SRC`.
+4. Se reemplazo la URL anterior por la nueva URL en `FOOTER_LOGO_SRC`.
+5. Se actualizo el `alt` del logo en ambos componentes a `Sugarbay logo`.
+6. Se mantuvieron intactos enlaces, estructura, clases y comportamiento del layout.
+
+7. Uso de constante compartida o cambio por separado
+No existia una constante compartida de branding para ambos logos.
+Se actualizo Header y Footer por separado en sus constantes locales.
+
+8. Cambios en `next.config` para ImageKit
+No fue necesario modificar `next.config.ts`.
+`ik.imagekit.io` ya estaba permitido en `images.remotePatterns`.
+
+9. Confirmacion de no cambios en navegacion ni logica
+Confirmado: no se modificaron menus, buscador, carrito, login/registro, rutas ni logica.
+Solo se actualizaron `src` y `alt` de las imagenes de logo.
+
+10. Pruebas manuales realizadas
+- Header:
+  - Se confirmo en codigo que el logo sigue dentro de `Link href="/"` (enlace a Home intacto).
+  - Se mantuvieron clases/tamanos existentes para no romper posicionamiento.
+- Footer:
+  - Se confirmo en codigo que el logo sigue dentro de `Link href="/"` (enlace a Home intacto).
+  - Se mantuvieron clases/tamanos existentes para no romper posicionamiento.
+- Responsive y calidad visual:
+  - Se verifico que no se cambiaron breakpoints ni medidas responsive (`sizes`, `h-[...]`, `sm:`, `lg:`).
+  - Se verifico `object-fit: contain` en `app/globals.css` para evitar deformacion del logo en header.
+  - En footer se mantiene `object-contain` en clases del `Image`.
+Nota: esta validacion fue por inspeccion de codigo y build exitoso; no se abrio navegador interactivo desde este entorno.
+
+11. Resultado de `npm run lint`
+Comando ejecutado: `npm.cmd run lint`
+Resultado: OK con 1 warning preexistente (sin errores).
+Warning detectado:
+- `lib/media/video.ts:62:10` -> `parseYouTubeVideoId` definido y no usado (`@typescript-eslint/no-unused-vars`).
+
+12. Resultado de `npm run build`
+- Primer intento con `npm run build`: fallo por politica de PowerShell (`npm.ps1` bloqueado).
+- Reintento con `npm.cmd run build`: fallo inicial por no poder descargar fuente Google (`Press Start 2P`) en entorno restringido.
+- Reintento final con permisos de red: build completado correctamente.
+Resultado final: build OK (Next.js compilo y genero todas las rutas).
+
+13. Resultado final
+Cambio completado: el nuevo logo de ImageKit fue aplicado en Header y Footer usando la URL solicitada, manteniendo enlaces a Home, comportamiento responsive y sin alterar navegacion ni logica de la aplicacion.

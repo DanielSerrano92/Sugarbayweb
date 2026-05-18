@@ -14,6 +14,12 @@ import type {
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
 
 const MUSIC_PAGE_SIZE = 8;
+const ALBUM_CARD_IMAGE_OVERRIDES: Record<string, string> = {
+  "neon-coastline": "https://ik.imagekit.io/gq1enkszp/fotos/album.png",
+};
+const SONG_CARD_IMAGE_OVERRIDES: Record<string, string> = {
+  "midnight-frequency": "https://ik.imagekit.io/gq1enkszp/fotos/cancion.png",
+};
 
 type MusicReleaseRecord = Prisma.MusicReleaseGetPayload<{
   select: {
@@ -285,11 +291,13 @@ export async function getMusicCatalog(
     const releaseLinks = parseExternalLinks(release.externalLinks);
 
     if (release.releaseType === "ALBUM") {
+      const albumImageUrl = ALBUM_CARD_IMAGE_OVERRIDES[release.slug] ?? release.coverImageUrl;
+
       albumsBySlug[release.slug] = {
         id: release.id,
         slug: release.slug,
         title: release.title,
-        imageUrl: release.coverImageUrl,
+        imageUrl: albumImageUrl,
         releaseDateIso: release.releaseDate.toISOString(),
         releaseType: release.releaseType,
         info: formatAlbumInfo(release),
@@ -312,17 +320,19 @@ export async function getMusicCatalog(
         slug: release.slug,
         title: release.title,
         dateIso: release.releaseDate.toISOString(),
-        imageUrl: release.coverImageUrl,
+        imageUrl: albumImageUrl,
         date: release.releaseDate,
       });
     }
 
     for (const track of release.tracks) {
+      const songImageUrl = SONG_CARD_IMAGE_OVERRIDES[track.slug] ?? release.coverImageUrl;
+
       songsBySlug[track.slug] = {
         id: track.id,
         slug: track.slug,
         title: track.title,
-        imageUrl: release.coverImageUrl,
+        imageUrl: songImageUrl,
         releaseTitle: release.title,
         releaseDateIso: release.releaseDate.toISOString(),
         durationSeconds: track.durationSeconds,
@@ -342,7 +352,7 @@ export async function getMusicCatalog(
         slug: track.slug,
         title: track.title,
         dateIso: release.releaseDate.toISOString(),
-        imageUrl: release.coverImageUrl,
+        imageUrl: songImageUrl,
         date: release.releaseDate,
       });
     }
@@ -380,6 +390,17 @@ export async function getMusicCatalog(
     requiredSongSlugs.add(item.slug);
   }
 
+  if (filters.album && albumsBySlug[filters.album]) {
+    pageAlbumsBySlug[filters.album] = albumsBySlug[filters.album];
+    for (const track of albumsBySlug[filters.album].tracks) {
+      requiredSongSlugs.add(track.slug);
+    }
+  }
+
+  if (filters.song) {
+    requiredSongSlugs.add(filters.song);
+  }
+
   for (const slug of requiredSongSlugs) {
     const song = songsBySlug[slug];
     if (song) {
@@ -398,7 +419,10 @@ export async function getMusicCatalog(
       slug: item.slug,
       title: item.title,
       dateIso: item.dateIso,
-      imageUrl: item.imageUrl,
+      imageUrl:
+        item.kind === "album"
+          ? ALBUM_CARD_IMAGE_OVERRIDES[item.slug] ?? item.imageUrl
+          : item.imageUrl,
     })),
     songsBySlug: pageSongsBySlug,
     albumsBySlug: pageAlbumsBySlug,

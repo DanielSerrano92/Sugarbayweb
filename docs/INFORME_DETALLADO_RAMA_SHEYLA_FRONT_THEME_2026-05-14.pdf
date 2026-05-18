@@ -1,0 +1,277 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Length 4259 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 46.00 787.89 Tm (?# INFORME DETALLADO POR RAMA - sheyla/front-theme) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 767.72 Tm (Fecha de elaboracion: 2026-05-14) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 753.54 Tm (Repositorio: Sugarbayweb) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 739.37 Tm (Rama auditada: `sheyla/front-theme`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 725.19 Tm (Commit de referencia: `15d1d8451557ee0d3722a09891f532dd2bee24b5` \(mensaje:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 711.02 Tm (`feature-front`\)) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 685.84 Tm (1. Objetivo funcional de la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 664.94 Tm (Esta rama implementa la primera base visual y funcional del front-end retro para la) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 650.77 Tm (seccion de conciertos y para el header. El objetivo principal fue dejar de tener una UI) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 636.59 Tm (generica y mover la experiencia a un lenguaje visual Windows 95 / retro synthwave,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 622.42 Tm (manteniendo la navegacion y la logica de negocio.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 597.24 Tm (2. Evidencia Git y trazabilidad) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 576.34 Tm (- Autor del commit: `root <you@example.com>`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 562.17 Tm (- Fecha commit: `2026-04-29T14:58:11+02:00`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 547.99 Tm (- Archivos tocados: 14.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 533.82 Tm (- Churn total: 1.306 lineas anadidas y 323 eliminadas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 519.64 Tm (- Integracion: el commit esta contenido en `main` y en las ramas `sheyla/front-end` y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 505.47 Tm (`sheyla/new-changes`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 485.29 Tm (Archivos modificados:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.12 Tm (- `app/globals.css`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 456.94 Tm (- `app/layout.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 442.77 Tm (- `components/concerts/concert-cards-client.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 428.59 Tm (- `components/concerts/concert-filters.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 414.42 Tm (- `components/concerts/concert-pagination.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 400.24 Tm (- `components/concerts/concerts-catalog-page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 386.07 Tm (- `components/layout/header-client.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 371.89 Tm (- `components/ui/page-hero.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 357.72 Tm (- `lib/repositories/concerts.ts`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 343.54 Tm (- `lib/repositories/safe-query.ts`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 329.37 Tm (- `package-lock.json`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 315.19 Tm (- `public/images/hero-concerts.png`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 301.02 Tm (- `dev-server.err.log` y `dev-server.out.log` \(artefactos de entorno\)) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 275.84 Tm (3. Resumen cuantitativo de cambios) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 254.94 Tm (Top de ficheros por volumen de cambio:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 240.77 Tm (- `app/globals.css`: +647 / -5 \(652\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 226.59 Tm (- `components/concerts/concert-filters.tsx`: +149 / -80 \(229\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 212.42 Tm (- `components/concerts/concert-cards-client.tsx`: +124 / -85 \(209\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 198.24 Tm (- `components/layout/header-client.tsx`: +92 / -50 \(142\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 184.07 Tm (- `lib/repositories/concerts.ts`: +124 / -6 \(130\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 163.89 Tm (Lectura tecnica: la rama no se limito a "skin" visual; combina una capa estetica grande) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 149.72 Tm (con cambios reales de interaccion y consulta de datos en conciertos.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 124.54 Tm (4. Cambios implementados en detalle) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 94.64 Tm (4.1 Sistema visual retro base \(app/globals.css\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 77.44 Tm (Se introduce un sistema de estilos reusable con variables y clases de componente:) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 1 / 5) Tj ET
+endstream
+endobj
+4 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 3 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+5 0 obj
+<< /Length 4295 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Variables CSS de paleta y tipografia: `--sb-bg-main`, `--sb-surface-*`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (`--sb-accent-*`, `--font-retro-ui`, `--font-retro-pixel`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (- Clases de ventana/boton/input estilo Win95:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 745.37 Tm (- `.win-window`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 731.19 Tm (- `.win-titlebar`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 717.02 Tm (- `.win-button`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 702.84 Tm (- `.win-input`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 688.67 Tm (- Clases de tarjetas y paginacion de conciertos:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 674.49 Tm (- `.retro-concert-card`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 660.32 Tm (- `.retro-concert-header`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 646.14 Tm (- `.retro-card-action`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 631.97 Tm (- `.retro-pagination-*`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 617.79 Tm (- Clases de modal de filtros y overlay:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 603.62 Tm (- `.retro-filters-modal`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 589.44 Tm (- `.retro-modal-overlay`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 575.27 Tm (- `.retro-folder-button`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 555.09 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 540.92 Tm (- Se normaliza el look retro en una sola hoja global.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 526.74 Tm (- Se habilita reutilizacion posterior en ramas siguientes.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 503.57 Tm (4.2 Hero de conciertos \(components/ui/page-hero.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 486.37 Tm (Se crea un hero visual con `next/image` \(`/images/hero-concerts.png`\) y overlay oscuro) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 472.19 Tm (para legibilidad:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 458.02 Tm (- Fondo con imagen full-cover.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 443.84 Tm (- Overlay `bg-black/40`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 429.67 Tm (- Texto centrado con jerarquia `eyebrow > title > description`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 409.49 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 395.32 Tm (- Primer encabezado visual consistente de seccion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 381.14 Tm (- Mejora del contraste y legibilidad sobre imagen.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 357.97 Tm (4.3 Catalogo de conciertos \(components/concerts/concerts-catalog-page.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 340.77 Tm (Cambios estructurales:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 326.59 Tm (- Introduccion de `PageHero` al inicio.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 312.42 Tm (- Barra superior de controles retro con:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 298.24 Tm (- `ConcertFilters` en modo `folder-modal`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 284.07 Tm (- `ConcertPagination` personalizada.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 269.89 Tm (- Soporte de navegacion entre upcoming/past con CTA final.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 249.72 Tm (Impacto funcional:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 235.54 Tm (- Se mantiene la logica de filtros y paginacion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 221.37 Tm (- Se cambia el punto de entrada visual de los controles \(mas accesible y compacto\).) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 198.19 Tm (4.4 Filtros con modalidad panel/modal \(components/concerts/concert-filters.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 180.99 Tm (Implementacion clave:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 166.82 Tm (- Prop `mode` con dos variantes: `panel` y `folder-modal`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 152.64 Tm (- Estado local `isOpen` para modal.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 138.47 Tm (- Cierre por `Escape` y por click en overlay.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 124.29 Tm (- Bloqueo de scroll de `body` mientras el modal esta abierto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 110.12 Tm (- Conserva `form method="get"` para que los filtros sigan operando por query params.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 89.94 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 75.77 Tm (- Experiencia mas limpia en pantallas reducidas sin perder semantica ni comportamiento.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 2 / 5) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 5 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+7 0 obj
+<< /Length 4357 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Mejor control de foco contextual para usuario.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 764.72 Tm (4.5 Cards y modal de detalle de concierto) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 748.51 Tm (\(components/concerts/concert-cards-client.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 731.31 Tm (Cambios implementados:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 717.14 Tm (- RediseÒo completo de cards con metadatos de fecha, venue y descripcion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 702.97 Tm (- Iconografia SVG retro integrada.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 688.79 Tm (- Modal de detalle por card controlado con `selectedConcertId`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 674.62 Tm (- Cierre por `Escape` y overlay.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 660.44 Tm (- Bloqueo temporal del scroll de fondo al abrir modal.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 646.27 Tm (- Acciones condicionales por tipo de concierto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 632.09 Tm (- `upcoming`: compra/info segun `actionUrl`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 617.92 Tm (- `past`: accesos a fotos/videos si existen.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 597.74 Tm (Impacto funcional:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 583.57 Tm (- Mejora del descubrimiento de informacion sin navegar a otra pagina.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 569.39 Tm (- Conserva rutas y enlaces existentes.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 546.22 Tm (4.6 Paginacion retro \(components/concerts/concert-pagination.tsx\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 529.02 Tm (Se implementa paginacion con:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 514.84 Tm (- Flechas prev/next.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 500.67 Tm (- Ventana de paginas visibles \(`getVisiblePages`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 486.49 Tm (- Serializacion de filtros sin perder query previa.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 466.32 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 452.14 Tm (- Navegacion paginada mas compacta y visualmente integrada.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 428.97 Tm (4.7 Repositorio de conciertos robusto \(lib/repositories/concerts.ts\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 411.77 Tm (Cambios de datos relevantes:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 397.59 Tm (- Construccion de filtros por fecha y pais con reglas distintas para `upcoming` y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 383.42 Tm (`past`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 369.24 Tm (- Generacion de `googleMapsUrl` por concierto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 355.07 Tm (- Fallback local de conciertos cuando falla DB.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 340.89 Tm (- Enriquecimiento de contenido:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 326.72 Tm (- Matching de albums/fotos/videos por ciudad, slug y proximidad temporal.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 312.54 Tm (- Seleccion de foto de venue cuando existe.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 292.37 Tm (Impacto tecnico:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 278.19 Tm (- Mejor resiliencia si Prisma/DB no responde.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 264.02 Tm (- Mayor valor de contenido por concierto sin cambiar contratos de UI.) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 240.84 Tm (4.8 Fallback transversal a errores de base de datos) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 224.64 Tm (\(lib/repositories/safe-query.ts\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 207.44 Tm (Se crea `withDatabaseFallback` para capturar errores recuperables de Prisma \(`P1001`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 193.27 Tm (`P1017`, `P2021`, `P2022`\) y devolver datos de respaldo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 173.09 Tm (Impacto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 158.92 Tm (- Evita caidas completas de front ante indisponibilidad parcial de DB.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 144.74 Tm (- Facilita demos en entorno local/inestable.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 119.57 Tm (5. Tecnologias y patrones usados en la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 98.67 Tm (- Framework: Next.js App Router \(TypeScript\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 84.49 Tm (- Estilos: Tailwind + capa CSS global personalizada retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 70.32 Tm (- Interactividad: React Client Components con `useState`, `useEffect`, `useMemo`.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 3 / 5) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 7 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+9 0 obj
+<< /Length 4578 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Datos: repositorios Prisma con fallback seguro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- Assets: `next/image` + imagen local en `public/images`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 753.54 Tm (Patrones relevantes:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 739.37 Tm (- Separacion presentacion/logica \(componentes vs repositorios\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 725.19 Tm (- Reutilizacion de clases visuales \(`win-*`, `retro-*`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 711.02 Tm (- Query params como contrato para filtros/paginacion.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 685.84 Tm (6. Responsive, UX y accesibilidad en esta rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 664.94 Tm (Responsive detectado en codigo:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 650.77 Tm (- Grids adaptativos \(`grid-cols-1`, `md:grid-cols-2`, `lg:grid-cols-3`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 636.59 Tm (- Controles con modal para modo compacto \(`folder-modal`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 616.42 Tm (Accesibilidad aplicada:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 602.24 Tm (- `aria-label` en botones de cierre/acciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 588.07 Tm (- `role="dialog"` y `aria-modal="true"` en modales.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 573.89 Tm (- Cierre por teclado \(`Escape`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 559.72 Tm (- Contrastes reforzados en titlebars y botones.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 534.54 Tm (7. Riesgos o deuda tecnica identificada) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 513.64 Tm (- Se versionaron logs de desarrollo \(`dev-server.*.log`\), no deberian formar parte) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 499.47 Tm (funcional de una rama de front.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 485.29 Tm (- `app/globals.css` crece de forma intensa; conviene modularizar en fases posteriores) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.12 Tm (para reducir deuda de mantenimiento.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 456.94 Tm (- No se detectaron tests automaticos asociados a estos cambios.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 431.77 Tm (8. Validaciones realizadas para este informe) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 410.87 Tm (- Inspeccion directa de commit con:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 396.69 Tm (- `git show --name-status --stat`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 382.52 Tm (- `git show --numstat`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 368.34 Tm (- Revision manual de archivos TSX/TS/CSS del commit) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 348.17 Tm (No se pudo ejecutar `npm run lint` en este entorno porque `npm` no esta disponible en la) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 333.99 Tm (sesion actual.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 308.82 Tm (9. Como defender oralmente esta rama) Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 278.92 Tm (9.1 Version de 1 minuto) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 261.72 Tm ("En `sheyla/front-theme` construimos la base visual retro del proyecto: sistema de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 247.54 Tm (colores, tipografias y componentes tipo ventana Win95. Ademas de estilo, mejoramos la) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 233.37 Tm (experiencia de conciertos con filtros en modal, paginacion propia y un modal de detalle) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 219.19 Tm (por concierto. A nivel tecnico, anadimos fallback de base de datos para que la web sea mas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 205.02 Tm (robusta en demo y en entornos con incidencias.") Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 181.84 Tm (9.2 Version tecnica de 3 minutos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 164.64 Tm ("La rama toca 14 archivos y mueve 1.629 lineas de churn. El nucleo es `app/globals.css`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 150.47 Tm (donde se definen tokens visuales y componentes reutilizables \(`win-window`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 136.29 Tm (`win-titlebar`, `win-button`\). En `components/concerts`, reestructuramos el catalogo:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 122.12 Tm (`concert-filters` introduce doble modo panel/modal con bloqueo de scroll y cierre por) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 107.94 Tm (Escape; `concert-cards-client` incorpora detalle en dialogo, acciones condicionales) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 93.77 Tm (upcoming/past y enlaces de contexto; `concert-pagination` encapsula serializacion de query) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 79.59 Tm (params. En datos, `lib/repositories/concerts.ts` integra reglas de filtrado temporal y) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 4 / 5) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 9 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+11 0 obj
+<< /Length 1969 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 46.00 787.89 Tm (mapeo de recursos multimedia por concierto. Para estabilidad, `withDatabaseFallback`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 773.72 Tm (captura errores recuperables de Prisma y evita que la UI se rompa por caidas de DB.") Tj ET
+BT /F2 12.00 Tf 1 0 0 1 46.00 750.54 Tm (9.3 Preguntas tipicas y respuestas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 733.34 Tm (- Pregunta: "Que parte fue solo visual y que parte funcional?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 719.17 Tm (Respuesta: "Visualmente, `globals.css`, `page-hero` y clases retro. Funcionalmente,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 704.99 Tm (filtros/modales de conciertos, paginacion y fallback de repositorio.") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 690.82 Tm (- Pregunta: "Como mantuviste accesibilidad en modales?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 676.64 Tm (Respuesta: "Usamos `role=dialog`, `aria-modal`, botones con `aria-label`, cierre por) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 662.47 Tm (Escape y bloqueo de scroll del fondo.") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 648.29 Tm (- Pregunta: "Que riesgo dejaste abierto?") Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 634.12 Tm (Respuesta: "La hoja global crecio bastante y hay logs versionados; lo razonable es) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 619.94 Tm (modularizar CSS y limpiar artefactos de entorno.") Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 594.77 Tm (10. Conclusiones de la rama) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 573.87 Tm (`sheyla/front-theme` es una rama fundacional: establece lenguaje visual reutilizable y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 559.69 Tm (refuerza la UX de conciertos con patrones de interaccion retro coherentes. Tambien) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 545.52 Tm (introduce una capa de resiliencia en acceso a datos que mejora la estabilidad de la) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 531.34 Tm (aplicacion en escenarios de error.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 5 / 5) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595.28 841.89] /Contents 11 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+13 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R] /Count 5 >>
+endobj
+14 0 obj
+<< /Type /Catalog /Pages 13 0 R >>
+endobj
+xref
+0 15
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000004471 00000 n 
+0000004614 00000 n 
+0000008961 00000 n 
+0000009104 00000 n 
+0000013513 00000 n 
+0000013656 00000 n 
+0000018286 00000 n 
+0000018430 00000 n 
+0000020452 00000 n 
+0000020597 00000 n 
+0000020681 00000 n 
+trailer
+<< /Size 15 /Root 14 0 R >>
+startxref
+20732
+%%EOF

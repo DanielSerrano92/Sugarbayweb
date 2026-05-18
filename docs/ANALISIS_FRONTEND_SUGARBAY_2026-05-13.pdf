@@ -1,0 +1,722 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Length 4331 >>
+stream
+BT /F2 18.00 Tf 1 0 0 1 46.00 781.89 Tm (1. Resumen general del front-end) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 747.59 Tm (El front-end de Sugarbay esta construido con Next.js App Router, React y TypeScript) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 733.42 Tm (estricto, con un sistema visual retro/vaporwave muy personalizado basado en Tailwind CSS +) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 719.24 Tm (una capa extensa de estilos en `app/globals.css`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 699.07 Tm (La arquitectura mezcla:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 678.89 Tm (- Renderizado de servidor para paginas y carga de datos \(catalogos, snapshots, detalle) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 664.72 Tm (de producto, etc.\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 650.54 Tm (- Componentes cliente para interacciones \(header interactivo, modales, buscador global,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 636.37 Tm (carritos, filtros, reproductores, carruseles\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 622.19 Tm (- Server Actions y Route Handlers para autenticacion, carrito, checkout y busqueda.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 602.02 Tm (El proyecto no es un front-end generico: tiene un lenguaje visual coherente \(Windows 95/98) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 587.84 Tm (+ neon/vaporwave\), reutiliza patrones de tarjetas y ventanas, y combina contenido) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 573.67 Tm (editorial \(conciertos, noticias, media, musica\) con e-commerce \(store, cart, checkout\).) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 541.49 Tm (2. Tecnologias utilizadas) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 502.19 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 475.29 Tm (- Framework principal: `next@16.2.1` \(`package.json`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 461.12 Tm (- UI library: `react@19.2.4`, `react-dom@19.2.4`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 446.94 Tm (- Lenguaje: TypeScript con `strict: true` \(`tsconfig.json`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 432.77 Tm (- Estilos:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 418.59 Tm (- Tailwind v4 via `@tailwindcss/postcss` \(`postcss.config.mjs`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 404.42 Tm (- Mucha personalizacion en CSS global \(`app/globals.css`, ~4728 lineas\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 390.24 Tm (- Fuentes:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 376.07 Tm (- Google font `Press_Start_2P` \(`app/layout.tsx`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 361.89 Tm (- Fuentes locales `ByteBounce.ttf` y `Retronoid-BZX3.ttf` \(`app/layout.tsx` +) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 347.72 Tm (`public/fonts`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 333.54 Tm (- Imagenes:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 319.37 Tm (- `next/image` en la mayoria de componentes.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 305.19 Tm (- Host remoto permitido para ImageKit y YouTube thumbnails \(`next.config.ts`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 291.02 Tm (- Validacion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 276.84 Tm (- `zod` para auth y checkout \(`lib/validators/auth.ts`, `lib/validators/checkout.ts`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 262.67 Tm (- Seguridad/auth:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 248.49 Tm (- Session con cookie + `jose`/server auth layer.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 234.32 Tm (- Middleware de rutas protegidas en `proxy.ts`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 220.14 Tm (- E-commerce/payment:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 205.97 Tm (- Stripe \(`app/api/checkout/route.ts`, `app/api/stripe/webhook/route.ts`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 191.79 Tm (`lib/services/stripe.ts`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 177.62 Tm (- ORM y datos:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 163.44 Tm (- Prisma \(`@prisma/client`\) y repositorios `lib/repositories/*`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 149.27 Tm (- Recursos externos:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 135.09 Tm (- ImageKit \(imagenes\), YouTube \(embeds y thumbnails\), Google Maps \(enlaces de venues\),) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 120.92 Tm (Stripe Checkout.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 95.74 Tm (Lo no implementado o no encontrado) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 68.84 Tm (- No hay Framer Motion ni libreria de animacion JS externa.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 1 / 14) Tj ET
+endstream
+endobj
+4 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 3 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+5 0 obj
+<< /Length 3722 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- No hay Redux/Zustand/Context global para estado de UI.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- No hay libreria de formularios tipo React Hook Form \(se usa estado local + Server) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (Actions + Zod\).) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 734.37 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 707.47 Tm (- Incorporar pruebas de UI \(Playwright/Cypress\) para asegurar regresiones visuales.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 693.29 Tm (- Centralizar mas tokens visuales en variables semanticas para reducir CSS monolitico.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 661.12 Tm (3. Estructura de carpetas y archivos importantes) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 621.82 Tm (Estructura principal) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 594.92 Tm (- `app/`: rutas y layouts \(App Router\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 580.74 Tm (- `components/`: componentes por dominio \(`auth`, `cart`, `checkout`, `concerts`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 566.57 Tm (`home`, `layout`, `media`, `music`, `store`, `ui`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 552.39 Tm (- `lib/`: capa de datos, servicios, validadores, utilidades.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 538.22 Tm (- `public/`: assets estaticos y fuentes locales.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 524.04 Tm (- `prisma/`: esquema y seed de datos.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 498.87 Tm (Archivos clave para entender el front-end) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.97 Tm (- Shell global:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 457.79 Tm (- `app/layout.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 443.62 Tm (- `components/layout/site-header.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 429.44 Tm (- `components/layout/header-client.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 415.27 Tm (- `components/layout/site-footer.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 401.09 Tm (- `components/ui/page-shell.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 386.92 Tm (- Estetica y sistema visual:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 372.74 Tm (- `app/globals.css`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 358.57 Tm (- Home:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 344.39 Tm (- `app/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 330.22 Tm (- `components/home/home-videos-band.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 316.04 Tm (- `components/home/home-header-carousel.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 301.87 Tm (- Modales e interaccion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 287.69 Tm (- `components/ui/app-modal.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 273.52 Tm (- `components/layout/global-search.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 259.34 Tm (- `components/auth/auth-modal.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 245.17 Tm (- `components/cart/cart-drawer.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 230.99 Tm (- Store/cart/checkout:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 216.82 Tm (- `app/store/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 202.64 Tm (- `app/store/[slug]/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 188.47 Tm (- `app/store/@modal/\(.\)[slug]/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 174.29 Tm (- `components/store/store-product-detail-panel.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 160.12 Tm (- `components/store/store-product-purchase-form.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 145.94 Tm (- `app/carrito/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 131.77 Tm (- `app/checkout/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 117.59 Tm (- `components/checkout/checkout-flow.tsx`) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 92.42 Tm (Separacion de responsabilidades) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 2 / 14) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 5 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+7 0 obj
+<< /Length 4105 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Paginas \(`app/**/page.tsx`\): seleccionan datos y componen secciones.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- Repositorios \(`lib/repositories/*`\): lectura/transformacion de datos desde Prisma.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (- Componentes visuales \(`components/*`\): presentacion e interaccion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 745.37 Tm (- Validadores \(`lib/validators/*`\): reglas de formulario y mapeo de errores.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 731.19 Tm (- Servicios \(`lib/services/*`\): ImageKit, Stripe, navegacion.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 706.02 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 679.12 Tm (- `app/globals.css` esta muy grande y mezcla muchas responsabilidades; podria separarse) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 664.94 Tm (por dominios \(header, cards, modales, home, checkout, etc.\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 650.77 Tm (- Existe carpeta `components/shop/*` sin referencias activas detectadas, posible codigo) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 636.59 Tm (legado no usado.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 604.42 Tm (4. Diseño visual y sistema estetico) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 565.12 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 538.22 Tm (La identidad visual es coherente con la estetica retro 80s/vaporwave + Windows 95/98:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 518.04 Tm (- Paleta base: violetas, azules electricos, rosas neon sobre fondos oscuros \(`:root` y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 503.87 Tm (`@theme inline` en `app/globals.css`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 489.69 Tm (- Fondo general:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 475.52 Tm (- Gradientes radiales + lineales en `body`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 461.34 Tm (- Rejilla retro por seccion en `.page-background` con imagen `rejilla.png`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 447.17 Tm (- Sistema de ventanas retro:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 432.99 Tm (- `.win-window`, `.win-titlebar`, `.win-button`, `.win-input` \(biselado, bordes duros,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 418.82 Tm (sin redondeo moderno\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 404.64 Tm (- Sistema de cards:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 390.47 Tm (- `.retro-concert-card` como base transversal para) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 376.29 Tm (conciertos/noticias/media/store/account/carrito/checkout.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 362.12 Tm (- Glow y neon:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 347.94 Tm (- sombras `drop-shadow`, `box-shadow` multicapa y pseudo-elementos con blur.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 333.77 Tm (- Tipografia:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 319.59 Tm (- Pixel \(`Press Start 2P`\) para labels/titlebars.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 305.42 Tm (- `ByteBounce` en tabs de header.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 291.24 Tm (- Sans retro para cuerpo y formularios.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 266.07 Tm (Partes de codigo que generan el look) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 239.17 Tm (- Tokens + base: `app/globals.css` \(inicio del archivo\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 224.99 Tm (- Header retro neon: bloque `.sb-header-*` \(aprox lineas 989+\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 210.82 Tm (- Ventanas y botones Win95: `.win-*` \(aprox 1867+\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 196.64 Tm (- Cards neon: `.retro-concert-card` y variantes \(aprox 3457+\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 182.47 Tm (- Home banda de videos + carrusel: `.home-videos-band-*`, `.home-hero-carousel-*` \(aprox) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 168.29 Tm (2590+ y 2843+\).) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 143.12 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 116.22 Tm (- Consolidar variantes repetidas de gradientes para reducir duplicacion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 102.04 Tm (- Definir guias de contraste mas estrictas en textos pequeños de alto tracking.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 3 / 14) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 7 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+9 0 obj
+<< /Length 3760 >>
+stream
+BT /F2 18.00 Tf 1 0 0 1 46.00 787.89 Tm (5. Componentes principales) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 748.59 Tm (Header/Nav) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 721.69 Tm (- Ubicacion: `components/layout/header-client.tsx`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 707.52 Tm (- Funcion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 693.34 Tm (- Renderiza icono busqueda, navegacion, logo central, perfil y carrito.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 679.17 Tm (- Abre menu de perfil, modal auth, drawer carrito, buscador global.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 664.99 Tm (- Estado:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 650.82 Tm (- `visibleCart`, `profileMenuOpen`, `authModalOpen`, `authMode`, `authRedirectTo`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 636.64 Tm (`cartDrawerOpen`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 622.47 Tm (- Comunicacion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 608.29 Tm (- Evento `AUTH_MODAL_OPEN_EVENT` para abrir login/register desde otros componentes.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 594.12 Tm (- Evento `CART_CLEARED_EVENT` para sincronizar badge al completar checkout.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 568.94 Tm (Footer) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 542.04 Tm (- Ubicacion: `components/layout/site-footer.tsx`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 527.87 Tm (- Funcion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 513.69 Tm (- Footer retro con logo, enlaces legales y sociales con glow.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 499.52 Tm (- Estilo:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 485.34 Tm (- Biselado Win95 + neon por icono social + microanimaciones de respiracion.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 460.17 Tm (Hero/Home) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 433.27 Tm (- `PageShell` \(`components/ui/page-shell.tsx`\) monta cabecera de imagen + contenido.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 419.09 Tm (- Home concreta:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 404.92 Tm (- `app/page.tsx` compone:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 390.74 Tm (- banda de videos \(`HomeVideosBand`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 376.57 Tm (- carrusel de destacados \(`HomeHeaderCarousel`\)) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 351.39 Tm (Cards) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 324.49 Tm (- Base reutilizable: `.retro-concert-card`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 310.32 Tm (- Usadas en:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 296.14 Tm (- conciertos \(`components/concerts/concert-cards-client.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 281.97 Tm (- noticias \(`components/band/news-list-client.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 267.79 Tm (- fotos/videos/catalogos media \(`app/media/*/page.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 253.62 Tm (- store \(`components/store/store-product-card.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 239.44 Tm (- cuenta/carrito/checkout \(`app/account/page.tsx`, `app/carrito/page.tsx`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 225.27 Tm (`components/checkout/checkout-flow.tsx`\)) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 200.09 Tm (Modales) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 173.19 Tm (- Sistema generico: `components/ui/app-modal.tsx`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 159.02 Tm (- Modales especificos:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 144.84 Tm (- auth \(`components/auth/auth-modal.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 130.67 Tm (- drawer carrito \(`components/cart/cart-drawer.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 116.49 Tm (- buscador rapido \(`components/layout/global-search.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 102.32 Tm (- detalle tienda interceptado \(`app/store/@modal/\(.\)[slug]/page.tsx`\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 88.14 Tm (- bio/musica \(usan `AppModal`\).) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 4 / 14) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 9 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+11 0 obj
+<< /Length 3741 >>
+stream
+BT /F2 14.00 Tf 1 0 0 1 46.00 787.89 Tm (Formularios) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 760.99 Tm (- Login: `components/auth/login-form.tsx` + `loginAction`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 746.82 Tm (- Registro: `components/auth/register-form.tsx` + `registerAction`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 732.64 Tm (- Checkout: `components/checkout/checkout-flow.tsx` + `/api/checkout`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 718.47 Tm (- Store add to cart: `components/store/store-product-purchase-form.tsx` +) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 704.29 Tm (`addToCartAction`.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 679.12 Tm (Secciones funcionales) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 652.22 Tm (- Conciertos: `components/concerts/*`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 638.04 Tm (- Banda/noticias/bio: `components/band/*`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 623.87 Tm (- Media fotos/videos: `components/media/*`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 609.69 Tm (- Musica catalogo/modales: `components/music/*`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 595.52 Tm (- Store/producto/modal: `components/store/*`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 581.34 Tm (- Carrito/checkout/cuenta: `app/carrito`, `app/checkout`, `app/account`.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 549.17 Tm (6. Dinamismo e interaccion) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 509.87 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 482.97 Tm (- Menus desplegables:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 468.79 Tm (- Dropdown en tabs con children del header \(`header-client.tsx` +) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 454.62 Tm (`.sb-header-dropdown`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 440.44 Tm (- Menu perfil con click fuera para cerrar.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 426.27 Tm (- Modales:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 412.09 Tm (- Apertura/cierre por estado local y eventos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 397.92 Tm (- Cierre por overlay y `Escape`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 383.74 Tm (- Bloqueo de scroll de `body`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 369.57 Tm (- Busqueda global:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 355.39 Tm (- Debounce 250ms.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 341.22 Tm (- Resultados de paginas + productos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 327.04 Tm (- Navegacion por teclado \(flechas/enter/escape\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 312.87 Tm (- Cards interactivas:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 298.69 Tm (- Hover/scale/glow.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 284.52 Tm (- Algunas abren modales \(conciertos, musica, bio\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 270.34 Tm (- Formularios:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 256.17 Tm (- Validacion cliente + servidor en registro y checkout.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 241.99 Tm (- Errores por campo y mensajes de estado.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 227.82 Tm (- Filtros:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 213.64 Tm (- Formularios GET para conciertos, noticias, musica, media, tienda.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 199.47 Tm (- Modal de filtros en vista compacta.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 185.29 Tm (- Paginacion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 171.12 Tm (- Reutilizada por secciones con flechas y paginas visibles.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 156.94 Tm (- Checkout:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 142.77 Tm (- Guardado de borrador en `localStorage`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 128.59 Tm (- Restriccion de metodo \(PayPal UI-only\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 114.42 Tm (- Redireccion a Stripe.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 89.24 Tm (Mejoras posibles) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 5 / 14) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 11 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+13 0 obj
+<< /Length 3850 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Unificar mas la gestion de focus trap entre modales \(hay implementaciones parecidas en) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (varios componentes\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (- Añadir estados skeleton locales en listados antes de respuesta \(actualmente hay) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 745.37 Tm (loading boundaries por ruta, no siempre granular por widget\).) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 713.19 Tm (7. Animaciones, glow y efectos visuales) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 673.89 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 646.99 Tm (- Transiciones CSS:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 632.82 Tm (- hover/active/focus en tabs, botones, cards, iconos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 618.64 Tm (- Keyframes personalizadas en `app/globals.css`:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 604.47 Tm (- `sb-header-shell-neon`, `sb-header-shell-scan`, `sb-header-tab-sheen`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 590.29 Tm (- `sb-concert-neon-breathe`, `sb-concert-neon-orbit`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 576.12 Tm (- `sb-footer-sheen`, `sb-footer-icon-breathe`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 561.94 Tm (- etc.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 547.77 Tm (- Glow/neon:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 533.59 Tm (- `drop-shadow` y `box-shadow` por capas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 519.42 Tm (- Overlays:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 505.24 Tm (- modales con fondos oscuros o vaporwave \(`retro-vapor-overlay`, `retro-modal-overlay`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 491.07 Tm (`global-search-overlay`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 476.89 Tm (- Carruseles/bandas:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 462.72 Tm (- progreso visual en home \(`home-hero-carousel-progress-fill`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 448.54 Tm (`home-videos-band-progress`\).) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 423.37 Tm (Accesibilidad de movimiento) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 396.47 Tm (- Hay bloque `@media \(prefers-reduced-motion: reduce\)` que desactiva varias animaciones.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 371.29 Tm (Mejora importante detectada) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 344.39 Tm (- En `app/globals.css` alrededor de `@keyframes sb-header-logo-float` \(lineas ~5285+\),) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 330.22 Tm (hay una estructura aparentemente incorrecta: se incluyen selectores normales dentro del) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 316.04 Tm (bloque de keyframes. Esto puede romper parseo CSS en cascada y generar comportamiento) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 301.87 Tm (impredecible.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 269.69 Tm (8. Responsive design) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 230.39 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 203.49 Tm (- Se usan breakpoints por clases Tailwind y media queries CSS:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 189.32 Tm (- `max-width: 639px`, `640px`, `767px`, `768px`, `900px`, `1024px`, `1280px`, `1560px`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 175.14 Tm (- Ajustes por seccion:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 160.97 Tm (- Grids de cards cambian columnas en mobile/tablet/desktop.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 146.79 Tm (- Modales limitan alto y usan `overflow-y-auto`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 132.62 Tm (- Home ajusta tamaño de tarjetas/videos por breakpoints.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 118.44 Tm (- Filtros pasan de panel lateral a modal icono en pantallas no grandes.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 93.27 Tm (Hallazgos relevantes) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 66.37 Tm (- El header desktop \(`.sb-header-desktop-nav`\) se oculta en `max-width: 1560px`) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 6 / 14) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 13 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+15 0 obj
+<< /Length 3641 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (\(`app/globals.css`\), y no se detecta en `header-client.tsx` un menu hamburguesa) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (funcional que sustituya la navegacion principal. Esto puede dejar navegacion principal) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (menos visible en pantallas laptop habituales.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 734.37 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 707.47 Tm (- Definir un nav movil explicito \(drawer/menu\) para el rango <1560.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 693.29 Tm (- Revisar consistencia de alturas minimas de cards para evitar huecos visuales en) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 679.12 Tm (datasets cortos.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 646.94 Tm (9. Gestion de estado) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 607.64 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 580.74 Tm (- Estado local con `useState/useEffect/useMemo/useRef` en componentes cliente.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 566.57 Tm (- No hay estado global con Context/Redux/Zustand.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 552.39 Tm (- Eventos de ventana para sincronizacion puntual:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 538.22 Tm (- `sugarbay:auth-modal-open`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 524.04 Tm (- `sugarbay:cart-cleared`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 509.87 Tm (- Formularios server-driven:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 495.69 Tm (- `useActionState` + Server Actions para login/registro/add-to-cart.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 481.52 Tm (- Estado persistente local:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 467.34 Tm (- Checkout draft en `localStorage`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 453.17 Tm (- Sync puntual en `sessionStorage` para evitar clear duplicado post-checkout.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 427.99 Tm (Auth y cart) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 401.09 Tm (- Auth session se resuelve en servidor \(`lib/auth/dal.ts`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 386.92 Tm (- Cart se hidrata desde servidor en header \(`components/layout/site-header.tsx`\), luego) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 372.74 Tm (cliente lo gestiona visualmente.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 347.57 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 320.67 Tm (- Un pequeño estado global de UI \(solo modales y notificaciones\) podria reducir eventos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 306.49 Tm (custom y logica repetida.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 274.32 Tm (10. Routing y navegacion) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 235.02 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 208.12 Tm (- App Router con 24 paginas \(`app/**/page.tsx`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 193.94 Tm (- Redirect roots:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 179.77 Tm (- `/concerts` -> `/concerts/upcoming`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 165.59 Tm (- `/band` -> `/band/news`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 151.42 Tm (- `/media` -> `/media/photos`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 137.24 Tm (- Rutas dinamicas:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 123.07 Tm (- `app/store/[slug]/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 108.89 Tm (- `app/media/photos/[slug]/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 94.72 Tm (- `app/media/videos/[slug]/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 80.54 Tm (- Modal routing avanzado:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 66.37 Tm (- `app/store/@modal/\(.\)[slug]/page.tsx` \(intercepting route\) para abrir detalle de) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 7 / 14) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 15 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+17 0 obj
+<< /Length 3617 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (producto como modal sobre listado.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 762.72 Tm (Diferencia navegacion real vs modal) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 735.82 Tm (- Navegacion real: `Link` a ruta nueva.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 721.64 Tm (- Modal en store: misma entidad puede abrirse como ruta full \(`/store/[slug]`\) o como) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 707.47 Tm (modal interceptado sobre `/store`.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 682.29 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 655.39 Tm (- Gestionar estado activo en tabs del header \(hay clase CSS `.sb-header-tab-active` pero) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 641.22 Tm (no se aplica en JSX actual\).) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 609.04 Tm (11. Imagenes y recursos) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 569.74 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 542.84 Tm (- `next/image` muy extendido.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 528.67 Tm (- URL remotas de ImageKit y thumbnails YouTube.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 514.49 Tm (- `resolveImageUrl\(\)` \(`lib/services/imagekit.ts`\) normaliza rutas relativas/absolutas.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 500.32 Tm (- Control de encuadre:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 486.14 Tm (- `object-cover`, `object-contain`, `object-top`, `object-center` segun caso.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.97 Tm (- Home header usa cabeceras grandes en `PageShell` con `mask-image` para fade inferior.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 446.79 Tm (Rendimiento de imagen) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 419.89 Tm (- Algunas imagenes clave usan `priority`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 405.72 Tm (- En `PageShell`, imagen de cabecera se declara con `unoptimized` \(reduce trabajo de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 391.54 Tm (optimizacion de Next pero puede afectar transferencia/CDN segun origen\).) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 366.37 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 339.47 Tm (- Revisar `unoptimized` en cabeceras para decidir si mantenerlo o volver a pipeline de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 325.29 Tm (`next/image` optimizado.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 311.12 Tm (- Añadir `placeholder`/blur en imagenes grandes para mejor percepcion de carga.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 278.94 Tm (12. Formularios y validaciones) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 239.64 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 212.74 Tm (- Login:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 198.57 Tm (- `components/auth/login-form.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 184.39 Tm (- valida schema en servidor \(`loginSchema`, `lib/validators/auth.ts`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 170.22 Tm (- Registro:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 156.04 Tm (- `components/auth/register-form.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 141.87 Tm (- validacion cliente previa con `registerSchema` + validacion server final.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 127.69 Tm (- reglas avanzadas: edad minima, password fuerte, username anti-similitud.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 113.52 Tm (- Checkout:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 99.34 Tm (- `components/checkout/checkout-flow.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 85.17 Tm (- validacion en cliente \(schema\) + backend en `/api/checkout`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 70.99 Tm (- mapeo de errores por campo con `mapCheckoutIssuesToFieldErrors`.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 8 / 14) Tj ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 17 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+19 0 obj
+<< /Length 3521 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Carrito:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- formularios server action para actualizar cantidad/eliminar.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 748.54 Tm (Relacion con backend) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 721.64 Tm (- Front recoge datos y valida UX.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 707.47 Tm (- Servidor revalida siempre antes de persistir/crear pagos.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 682.29 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 655.39 Tm (- Unificar estilo visual de errores en todos los formularios \(algunos siguen paletas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 641.22 Tm (legacy `sb-*`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 627.04 Tm (- Añadir throttling/anti-abuso visible para auth si se requiere endurecimiento.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 594.87 Tm (13. Accesibilidad) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 555.57 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 528.67 Tm (- Uso correcto de roles/dialog en modales.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 514.49 Tm (- Botones de cierre con `aria-label`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 500.32 Tm (- `aria-expanded`, `aria-controls`, `aria-current`, `aria-live` en varios flujos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 486.14 Tm (- Focus visible global con `:focus-visible`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.97 Tm (- Trap de foco en modales principales.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 457.79 Tm (- Atajos teclado:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 443.62 Tm (- `Ctrl/Cmd + K` para buscador.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 429.44 Tm (- Etiquetado de inputs con `label htmlFor`.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 404.27 Tm (Gaps/mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 377.37 Tm (- Revisar contraste de ciertos textos muy pequeños en fondos complejos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 363.19 Tm (- Confirmar coherencia de heading hierarchy visual vs semantic en algunas cards que usan) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 349.02 Tm (`h2/h3` segun contexto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 334.84 Tm (- Asegurar menu de navegacion alternativo en mobile/laptop si desktop nav se oculta.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 302.67 Tm (14. Rendimiento) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 263.37 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 236.47 Tm (- Uso fuerte de Server Components para paginas de catalogo y carga inicial.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 222.29 Tm (- Client Components solo donde hay interaccion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 208.12 Tm (- `Promise.all` en varias paginas para paralelizar lecturas \(`app/page.tsx`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 193.94 Tm (`app/checkout/page.tsx`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 179.77 Tm (- Route-level loading y error boundaries:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 165.59 Tm (- `17` loading files.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 151.42 Tm (- `10` error boundaries.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 137.24 Tm (- Debounce en buscador y `AbortController` para cancelar requests previas.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 112.07 Tm (Riesgos observados) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 85.17 Tm (- `app/globals.css` muy grande \(coste de mantenimiento y posibles conflictos\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 70.99 Tm (- Varias animaciones activas simultaneas pueden penalizar equipos modestos.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 9 / 14) Tj ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 19 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+21 0 obj
+<< /Length 4046 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- Header nav oculto <1560 puede empujar a mas clics/context switches para navegar.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 762.72 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 735.82 Tm (- Reducir peso CSS global por modulos tematicos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 721.64 Tm (- Introducir lazy-load granular de widgets pesados donde aplique.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 707.47 Tm (- Auditar Web Vitals \(LCP/CLS/INP\) y optimizar cabeceras visuales grandes.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 675.29 Tm (15. Seguridad front-end) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 635.99 Tm (Estado actual \(implementado\)) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 609.09 Tm (- Proteccion de rutas privadas en `proxy.ts` \(`/account`, `/carrito`, `/checkout`\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 594.92 Tm (- Variables sensibles gestionadas en servidor \(`lib/env.ts` + `requireEnv` para Stripe) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 580.74 Tm (secret\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 566.57 Tm (- Validacion cliente + servidor \(no se confia solo en cliente\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 552.39 Tm (- Checkout en backend con Stripe session server-side.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 538.22 Tm (- Webhook Stripe para confirmar estado real de pago.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 513.04 Tm (Riesgos controlados y a vigilar) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 486.14 Tm (- URLs externas \(Mapas, embeds, links externos\): se usa `target="_blank"` y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 471.97 Tm (`rel="noreferrer"` en muchos casos, correcto.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 457.79 Tm (- El cliente nunca debe exponer secretos \(actualmente no se observa uso de secretos en) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 443.62 Tm (cliente, correcto\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 429.44 Tm (- Acciones de carrito y auth dependen de session en servidor \(correcto\).) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 404.27 Tm (Mejoras posibles) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 377.37 Tm (- Considerar cabeceras CSP mas estrictas para embeds.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 363.19 Tm (- Añadir auditoria automatica de dependencias y SAST en CI.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 331.02 Tm (16. Problemas encontrados o posibles puntos debiles) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 294.72 Tm (1. Posible error estructural en CSS:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 280.27 Tm (- `app/globals.css` en `@keyframes sb-header-logo-float` contiene selectores de clase) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 266.10 Tm (dentro del keyframe \(lineas ~5285+\), probable bug de parseo.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 249.92 Tm (2. Navegacion principal en header:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 235.48 Tm (- `.sb-header-desktop-nav` se oculta en `max-width: 1560px` sin evidencia de menu) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 221.30 Tm (alternativo funcional en JSX.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 205.13 Tm (3. Clases CSS aparentemente no utilizadas:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 190.68 Tm (- `.sb-header-menu-btn`, `.sb-header-mobile-item`, `.sb-header-brand-mobile`.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 174.51 Tm (4. Clase activa de tabs no aplicada:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 160.06 Tm (- existe `.sb-header-tab-active`, pero no se aplica en `header-client.tsx`.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 143.89 Tm (5. Codigo potencialmente legado:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 129.44 Tm (- carpeta `components/shop/*` sin imports detectados.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 113.27 Tm (6. Inconsistencias de codificacion de texto:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 98.82 Tm (- algunos literales se muestran con caracteres extraños en salida de terminal \(posible) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 84.65 Tm (encoding/cp\), conviene revisar consistencia UTF-8.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 68.47 Tm (7. Limitacion de verificaciones en este analisis:) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 10 / 14) Tj ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 21 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+23 0 obj
+<< /Length 4113 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- en este entorno no fue posible ejecutar `npm`/`node` para lint/build/test automaticos.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 755.72 Tm (17. Mejoras futuras) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 716.42 Tm (Prioridad alta) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 687.52 Tm (1. Corregir bloque CSS malformado en `app/globals.css` \(keyframes/logo\).) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 671.07 Tm (2. Implementar navegacion responsive real para header en anchos menores.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 654.62 Tm (3. Activar estado visual de ruta activa en tabs del header.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 629.18 Tm (Prioridad media) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 600.28 Tm (1. Refactor de CSS global por modulos \(header/cards/modales/home/checkout\).) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 583.83 Tm (2. Limpieza de codigo no usado \(`components/shop`, clases huerfanas\).) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 567.39 Tm (3. Homogeneizar textos y encoding UTF-8.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 541.94 Tm (Prioridad evolutiva) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 513.04 Tm (1. Testing visual/regresion \(Playwright snapshots\).) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 496.60 Tm (2. Instrumentacion Web Vitals y presupuesto de performance.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 480.15 Tm (3. Mejoras de a11y avanzadas \(auditoria automatica + contraste sistematico\).) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 447.71 Tm (18. Explicacion para defensa oral) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 408.41 Tm (Version de 1 minuto) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 381.51 Tm ("El front-end de Sugarbay esta hecho con Next.js App Router, React 19 y TypeScript) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 367.33 Tm (estricto. Usamos Server Components para cargar catalogos y datos desde Prisma de forma) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 353.16 Tm (eficiente, y Client Components para interacciones como modales, buscador global, carrito y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 338.98 Tm (checkout. A nivel visual, construimos un sistema propio retro-vaporwave con Tailwind y CSS) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 324.81 Tm (global: ventanas estilo Windows 95, bordes biselados, glow neon y layouts responsive. El) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 310.63 Tm (resultado es una web de contenido musical y e-commerce con identidad fuerte, rutas) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 296.46 Tm (dinamicas, filtros, paginacion, autenticacion y pago seguro con Stripe.") Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 271.28 Tm (Version tecnica de 3 minutos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 244.38 Tm ("La app se organiza en `app/`, `components/` y `lib/`. En `app/` definimos rutas y carga) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 230.21 Tm (de datos server-side; en `components/` tenemos UI por dominio \(concerts, band, media,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 216.03 Tm (music, store, auth, cart, checkout\); y en `lib/` va la logica de repositorios, validacion) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 201.86 Tm (y servicios externos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 181.68 Tm (El shell global esta en `app/layout.tsx` con `SiteHeader`, `PageShell` y `SiteFooter`. El) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 167.51 Tm (header cliente gestiona estados de perfil, auth modal y carrito con `useState`, eventos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 153.33 Tm (custom y cierres por click fuera. El buscador rapido usa debounce + `/api/search`, soporta) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 139.16 Tm (teclado y combina paginas y productos.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 118.98 Tm (Visualmente hay dos sistemas: `sb-*` para superficies neon y `win-*` para ventanas retro.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 104.81 Tm (Las cards reutilizan `.retro-concert-card` en conciertos, noticias, media, store, cuenta y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 90.63 Tm (checkout. Los modales usan `AppModal` o variantes especializadas con trap de foco,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 76.46 Tm (`Escape`, overlay y scroll lock.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 11 / 14) Tj ET
+endstream
+endobj
+24 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 23 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+25 0 obj
+<< /Length 5088 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 46.00 787.89 Tm (En datos, las paginas usan repositorios Prisma y `Promise.all`. En formularios, registro y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 773.72 Tm (checkout validan con Zod en cliente y servidor. El carrito usa Server Actions para) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 759.54 Tm (anadir/actualizar/eliminar y revalidacion de rutas. El checkout crea sesion Stripe en) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 745.37 Tm (backend, y webhook actualiza estado de orden. Ademas, rutas privadas \(`/account`,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 731.19 Tm (`/carrito`, `/checkout`\) se protegen desde `proxy.ts`.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 711.02 Tm (Como mejora detectada, hay una anomalia en `globals.css` en un bloque de keyframes y un) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 696.84 Tm (gap responsive en navegacion del header bajo 1560px.") Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 671.67 Tm (Version completa de 5 minutos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 644.77 Tm ("Arquitectonicamente, el proyecto aprovecha bien App Router: pages server para datos y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 630.59 Tm (componentes client solo en puntos interactivos. Esto reduce JS de cliente en listados y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 616.42 Tm (mantiene UX dinamica donde importa.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 596.24 Tm (El home \(`app/page.tsx`\) compone dos piezas: banda de videos auto-scroll con pausa en) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 582.07 Tm (hover/focus y carrusel de destacados de concierto/tienda/noticia. Ambas consumen datos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 567.89 Tm (reales de repositorio, no mocks visuales.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 547.72 Tm (En contenido, cada seccion tiene filtros/paginacion con un patron uniforme: formulario GET) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 533.54 Tm (+ serializacion de query params + UI retro en modal de filtros para compacto. Ese patron) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 519.37 Tm (se repite en conciertos, noticias, musica, fotos, videos y store, lo que mejora) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 505.19 Tm (consistencia.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 485.02 Tm (El store tiene una decision avanzada de UX/routing: detalle de producto como pagina normal) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 470.84 Tm (y como modal interceptado \(`@modal/\(.\)[slug]`\), permitiendo explorar sin perder contexto) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 456.67 Tm (de catalogo. El add-to-cart usa Server Action con estado `auth_required` para disparar) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 442.49 Tm (login modal sin romper flujo.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 422.32 Tm (Auth y checkout estan bien acoplados a seguridad server-side: validacion Zod en ambos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 408.14 Tm (lados, sesion por cookie, proteccion de rutas, creacion de pago en backend y confirmacion) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 393.97 Tm (por webhook.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 373.79 Tm (A nivel estetico, el sistema visual esta muy trabajado: tipografias pixel + display) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 359.62 Tm (custom, titlebars retro, biseles, sombras duras y neon. Hay buena base de accesibilidad:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 345.44 Tm (labels, roles, `aria-*`, focus visible, cierre de modales por teclado y soporte para) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 331.27 Tm (reduced-motion.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 311.09 Tm (En rendimiento, hay buenas practicas como server rendering, `Promise.all`, cancellation de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 296.92 Tm (fetch y boundaries de loading/error por ruta. Como deuda tecnica principal: `globals.css`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 282.74 Tm (es muy grande y tiene una inconsistencia estructural puntual en keyframes; tambien falta) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 268.57 Tm (una estrategia clara de nav responsive bajo 1560px y conviene limpiar codigo/clases) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 254.39 Tm (legacy.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 234.22 Tm (En resumen, el front-end combina identidad visual fuerte, modularidad por dominio y flujos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 220.04 Tm (reales de e-commerce, con una base robusta y mejoras claras para una siguiente iteracion.") Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 187.87 Tm (19. Preguntas posibles del tribunal y respuestas) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 151.57 Tm (1. ¿Por que usaste Next.js App Router?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 137.12 Tm (- Porque permite SSR/RSC de forma nativa, mejor SEO y mejor control de carga de datos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 122.95 Tm (por ruta, manteniendo interactividad solo donde hace falta.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 100.77 Tm (2. ¿Donde se organiza el front-end?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 86.33 Tm (- En `app/` \(rutas/layout\), `components/` \(UI por dominio\), `lib/` \(repositorios,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 72.15 Tm (validaciones, servicios\).) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 12 / 14) Tj ET
+endstream
+endobj
+26 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 25 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+27 0 obj
+<< /Length 4347 >>
+stream
+BT /F2 10.70 Tf 1 0 0 1 46.00 779.89 Tm (3. ¿Como funcionan los componentes principales?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 765.44 Tm (- El shell global monta header/footer/page-shell. Cada seccion compone cards, filtros y) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 751.27 Tm (paginacion. Interacciones avanzadas se encapsulan en cliente \(modales, buscador,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 737.10 Tm (carrito, formularios\).) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 714.92 Tm (4. ¿Donde se gestiona el estado?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 700.48 Tm (- Mayormente local \(`useState/useEffect/useMemo`\) por componente. No hay store global;) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 686.30 Tm (se usan eventos custom para sincronizaciones puntuales \(auth/cart\).) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 664.13 Tm (5. ¿Como se abren los modales?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 649.68 Tm (- Por estado local o por evento global \(`AUTH_MODAL_OPEN_EVENT`\). Se cierran con) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 635.51 Tm (overlay, boton close y `Escape`.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 613.33 Tm (6. ¿Como aplicas glow y estilo retro?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 598.89 Tm (- Con clases `win-*`, `retro-*`, `sb-*` en `app/globals.css`: biseles, titlebars,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 584.71 Tm (sombras multicapa, pseudo-elementos y keyframes custom.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 562.54 Tm (7. ¿Como se consigue responsive?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 548.09 Tm (- Tailwind + media queries personalizadas. Se ajustan grids, tamaños, paddings, modales) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 533.92 Tm (y widgets por breakpoints.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 511.74 Tm (8. ¿Como cargas imagenes?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 497.30 Tm (- Con `next/image` y helper `resolveImageUrl` para ImageKit/URLs externas; en cabeceras) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 483.12 Tm (grandes se usa `PageShell` con control de `object-fit` y mascara inferior.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 460.95 Tm (9. ¿Que partes son dinamicas?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 446.50 Tm (- Busqueda en vivo, dropdowns, modales, carruseles, filtros, paginacion, formularios) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 432.33 Tm (auth/checkout, carrito y flujo Stripe.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 410.15 Tm (10. ¿Como conecta front con DB/API?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 395.71 Tm (- Paginas server llaman repositorios Prisma. En cliente, acciones/formularios consumen) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 381.53 Tm (Server Actions o route handlers \(`/api/search`, `/api/checkout`\).) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 359.36 Tm (11. ¿Diferencia entre server y client components en tu proyecto?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 344.91 Tm (- Server para render inicial y datos; client para eventos, estado local y navegacion) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 330.74 Tm (interactiva.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 308.56 Tm (12. ¿Que mejorarias si tuvieras mas tiempo?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 294.12 Tm (- Corregir keyframes CSS malformado, reforzar nav responsive, modularizar CSS global,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 279.94 Tm (limpiar legado y añadir tests visuales.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 257.77 Tm (13. ¿Problemas reales encontrados?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 243.32 Tm (- Complejidad de estilos globales por el alto nivel de personalizacion, y necesidad de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 229.15 Tm (mantener coherencia responsive/visual en muchas secciones.) Tj ET
+BT /F2 10.70 Tf 1 0 0 1 46.00 206.97 Tm (14. ¿Por que no usaste estado global tipo Redux?) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 192.53 Tm (- El dominio actual se resuelve bien con estado local + server rendering + eventos) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 178.35 Tm (puntuales; mantenerlo simple reduce sobrecarga.) Tj ET
+BT /F2 18.00 Tf 1 0 0 1 46.00 146.18 Tm (20. Conclusion final) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 111.88 Tm (El front-end de Sugarbay esta tecnicamente bien planteado para un proyecto mixto de) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 97.70 Tm (branding musical + e-commerce:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 77.53 Tm (- base moderna \(Next 16 + React 19 + TS strict\),) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 13 / 14) Tj ET
+endstream
+endobj
+28 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 27 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+29 0 obj
+<< /Length 2299 >>
+stream
+BT /F1 10.50 Tf 1 0 0 1 54.00 787.89 Tm (- arquitectura modular por dominio,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 773.72 Tm (- fuerte identidad visual retro/vaporwave coherente,) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 759.54 Tm (- interaccion rica \(modales, filtros, carruseles, buscador, checkout\),) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 745.37 Tm (- y conexion real con backend/Stripe.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 725.19 Tm (No es un prototipo superficial: hay decisiones de producto y arquitectura avanzadas \(modal) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 711.02 Tm (interceptado en store, validacion dual, sincronizacion de carrito post-pago, patrones) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 696.84 Tm (reutilizables de cards/filtros/paginacion\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 676.67 Tm (Los principales puntos de mejora estan localizados y abordables: limpieza y modularizacion) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 662.49 Tm (de CSS global, ajuste de navegacion responsive del header y correccion de una) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 648.32 Tm (inconsistencia puntual en keyframes. Con esas mejoras, la base quedaria aun mas solida) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 46.00 634.14 Tm (para evolucion productiva y escalado.) Tj ET
+BT /F2 14.00 Tf 1 0 0 1 46.00 602.97 Tm (Comprobaciones realizadas para este informe) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 576.07 Tm (- Lectura directa de codigo real \(no inferencias sin fuente de repo\).) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 561.89 Tm (- Revision de rutas, componentes, estilos globales, validaciones, actions y handlers.) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 547.72 Tm (- Conteos utiles:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 533.54 Tm (- `24` paginas `app/**/page.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 519.37 Tm (- `17` `loading.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 505.19 Tm (- `10` `error.tsx`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 491.02 Tm (- `4` route handlers API) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 476.84 Tm (- `39` componentes/archivos con `"use client"`) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 462.67 Tm (- Limitacion del entorno:) Tj ET
+BT /F1 10.50 Tf 1 0 0 1 54.00 448.49 Tm (- no fue posible ejecutar `npm/node` para lint/build/test en esta sesion.) Tj ET
+BT /F1 9.00 Tf 1 0 0 1 455.28 32.00 Tm (Pagina 14 / 14) Tj ET
+endstream
+endobj
+30 0 obj
+<< /Type /Page /Parent 31 0 R /MediaBox [0 0 595.28 841.89] /Contents 29 0 R /Resources << /Font << /F1 1 0 R /F2 2 0 R >> >> >>
+endobj
+31 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R 24 0 R 26 0 R 28 0 R 30 0 R] /Count 14 >>
+endobj
+32 0 obj
+<< /Type /Catalog /Pages 31 0 R >>
+endobj
+xref
+0 33
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000004543 00000 n 
+0000004686 00000 n 
+0000008460 00000 n 
+0000008603 00000 n 
+0000012760 00000 n 
+0000012903 00000 n 
+0000016715 00000 n 
+0000016859 00000 n 
+0000020653 00000 n 
+0000020798 00000 n 
+0000024701 00000 n 
+0000024846 00000 n 
+0000028540 00000 n 
+0000028685 00000 n 
+0000032355 00000 n 
+0000032500 00000 n 
+0000036074 00000 n 
+0000036219 00000 n 
+0000040318 00000 n 
+0000040463 00000 n 
+0000044629 00000 n 
+0000044774 00000 n 
+0000049915 00000 n 
+0000050060 00000 n 
+0000054460 00000 n 
+0000054605 00000 n 
+0000056957 00000 n 
+0000057102 00000 n 
+0000057250 00000 n 
+trailer
+<< /Size 33 /Root 32 0 R >>
+startxref
+57301
+%%EOF

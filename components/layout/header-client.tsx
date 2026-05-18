@@ -85,14 +85,14 @@ function UserIcon() {
 const desktopNavItemClass =
   "sb-header-tab focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40";
 
-const headerMenuItemHoverClass =
-  "font-bytebounce hover:!border-[#8a5dff] hover:!bg-[#7f52ff] hover:!text-white";
 const headerIconLargeClass =
   "sb-header-icon-pop inline-grid h-auto w-auto place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0 [&>svg]:!h-[3.25rem] [&>svg]:!w-[3.25rem] sm:[&>svg]:!h-[3.6rem] sm:[&>svg]:!w-[3.6rem] xl:[&>svg]:!h-[4rem] xl:[&>svg]:!w-[4rem]";
+const profileMenuItemClass =
+  "win-button sb-header-profile-menu-item";
 
 const LEFT_NAVIGATION_HREFS = ["/concerts", "/band/news", "/musica"];
 const RIGHT_NAVIGATION_HREFS = ["/media/photos", "/fanclub", "/store"];
-const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo.png";
+const HEADER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo2.png?updatedAt=1779020800274";
 
 function sortNavigationByOrder(items: NavItem[], order: string[]): NavItem[] {
   return [...items].sort((left, right) => order.indexOf(left.href) - order.indexOf(right.href));
@@ -108,7 +108,7 @@ function HeaderLogoImage() {
   return (
     <Image
       src={HEADER_LOGO_SRC}
-      alt="Sugarbay"
+      alt="Sugarbay logo"
       fill
       priority
       sizes="(max-width: 639px) 70px, (max-width: 1560px) 106px, 156px"
@@ -231,7 +231,7 @@ export default function HeaderClient({
           {getHeaderLabel(item)}
         </Link>
         <div
-          className="sb-header-dropdown pointer-events-none invisible absolute left-1/2 top-full z-40 mt-0 min-w-full w-max -translate-x-1/2 rounded-none p-0 opacity-0 transition-opacity duration-100 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100"
+          className="sb-header-dropdown pointer-events-none invisible absolute left-1/2 top-full z-40 mt-0 w-full min-w-full max-w-full -translate-x-1/2 rounded-none p-0 opacity-0 transition-opacity duration-100 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100"
         >
           {item.children.map((child) => {
             return (
@@ -251,11 +251,13 @@ export default function HeaderClient({
 
   return (
     <>
-      <header className="z-40 w-full">
+      <header className="relative z-40 w-full">
         <div className="sb-header-shell w-full max-w-full rounded-none">
           <div className="sb-header-row relative flex w-full min-w-0 items-center">
             <GlobalSearch
-              className="sb-header-search-pixel sb-header-icon-pop inline-grid h-auto w-auto shrink-0 place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0 [&>span]:hidden [&>svg]:!h-[3.25rem] [&>svg]:!w-[3.25rem] sm:[&>svg]:!h-[3.6rem] sm:[&>svg]:!w-[3.6rem] xl:[&>svg]:!h-[4rem] xl:[&>svg]:!w-[4rem]"
+              className="sb-header-search-pixel sb-header-icon-pop inline-grid h-auto w-auto shrink-0 place-items-center border-0 bg-transparent p-0 text-black shadow-none hover:bg-transparent focus-visible:outline-none focus-visible:ring-0 [&>span]:hidden [&>svg]:origin-center [&>svg]:scale-[1.12] [&>svg]:translate-y-[2px] [&>svg]:!h-[3.25rem] [&>svg]:!w-[3.25rem] sm:[&>svg]:!h-[3.6rem] sm:[&>svg]:!w-[3.6rem] xl:[&>svg]:!h-[4rem] xl:[&>svg]:!w-[4rem]"
+              showFloatingBubble
+              floatingThreshold={120}
             />
 
             <div className="sb-header-desktop-nav min-w-0 flex-1 items-center justify-center">
@@ -296,58 +298,63 @@ export default function HeaderClient({
                 <div
                   id={profileMenuId}
                   role="menu"
-                  className={`sb-window absolute right-0 mt-2 w-56 rounded-xl p-2 ${
+                  className={`win-window sb-header-profile-menu absolute right-0 mt-2 w-56 overflow-hidden p-0 ${
                     profileMenuOpen ? "block" : "hidden"
                   }`}
                 >
-                  {currentUser ? (
-                    <>
-                      <p className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-900">
-                        Hola {currentUser.firstName}
-                      </p>
-                      <Link
-                        href="/account"
-                        role="menuitem"
-                        className={`mt-1 block rounded-lg px-3 py-2 text-sm text-zinc-700 ${headerMenuItemHoverClass}`}
-                      >
-                        Cuenta
-                      </Link>
-                      <form action={logoutAction} className="mt-1">
-                        <button
-                          type="submit"
+                  <div className="sb-header-profile-menu-titlebar px-3 py-1.5">
+                    Perfil
+                  </div>
+                  <div className="sb-header-profile-menu-body p-2">
+                    {currentUser ? (
+                      <>
+                        <p className="sb-header-profile-menu-greeting px-3 py-2 text-sm">
+                          Hola {currentUser.firstName}
+                        </p>
+                        <Link
+                          href="/account"
                           role="menuitem"
-                          className={`block w-full rounded-lg px-3 py-2 text-left text-sm text-zinc-700 ${headerMenuItemHoverClass}`}
+                          className={`${profileMenuItemClass} mt-1`}
                         >
-                          Cerrar sesion
+                          Cuenta
+                        </Link>
+                        <form action={logoutAction} className="mt-1">
+                          <button
+                            type="submit"
+                            role="menuitem"
+                            className={`${profileMenuItemClass} w-full text-left`}
+                          >
+                            Cerrar sesion
+                          </button>
+                        </form>
+                      </>
+                    ) : (
+                      <div className="space-y-1">
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setProfileMenuOpen(false);
+                            openAuthModal("login");
+                          }}
+                          className={`${profileMenuItemClass} w-full text-left`}
+                        >
+                          Login
                         </button>
-                      </form>
-                    </>
-                  ) : (
-                    <div className="space-y-1">
-                      <button
-                        type="button"
-                        role="menuitem"
-                        onClick={() => {
-                          setProfileMenuOpen(false);
-                          openAuthModal("login");
-                        }}
-                        className={`block w-full rounded-lg px-3 py-2 text-left text-sm text-zinc-700 ${headerMenuItemHoverClass}`}
-                      >
-                        Login
-                      </button>
-                      <button
-                        type="button"
-                        role="menuitem"
-                        onClick={() => {
-                          setProfileMenuOpen(false);
-                          openAuthModal("register");
-                        }}
-                        className={`block w-full rounded-lg px-3 py-2 text-left text-sm text-zinc-700 ${headerMenuItemHoverClass}`}
-                      >
-                        Registro
-                      </button>
-                    </div>
-                  )}
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setProfileMenuOpen(false);
+                            openAuthModal("register");
+                          }}
+                          className={`${profileMenuItemClass} w-full text-left`}
+                        >
+                          Registro
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 

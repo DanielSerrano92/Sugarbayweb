@@ -1,0 +1,101 @@
+1. Objetivo de la tarea
+Hacer que el clic en un video del carrusel de Home siga yendo a su coleccion, pero ademas abra/seleccione ese video concreto dentro de la coleccion.
+
+2. Estado inicial tras el cambio anterior
+- El carrusel de Home ya navegaba a la coleccion correcta.
+- El enlace era /media/videos/[slugColeccion] sin referencia al video concreto.
+- La pagina de coleccion cargaba el visor con el primer video por defecto.
+
+3. Decision tecnica elegida para pasar el video seleccionado
+- Se uso query param por simplicidad y mantenimiento:
+  - ?video=<slugDelVideo>
+- Ejemplo final:
+  - /media/videos/slug-coleccion?video=slug-video
+
+4. Archivos revisados
+- components/home/home-videos-band.tsx
+- app/media/videos/[slug]/page.tsx
+- components/media/video-collection-viewer.tsx
+- lib/media/types.ts
+- lib/repositories/media.ts
+- app/media/videos/page.tsx
+- components/media/video-filters.tsx
+
+5. Archivos modificados
+- components/home/home-videos-band.tsx
+- app/media/videos/[slug]/page.tsx
+- components/media/video-collection-viewer.tsx
+- lib/media/types.ts
+- lib/repositories/media.ts
+- docs/proceso-video-seleccionado-coleccion.txt (nuevo)
+
+6. Cambios realizados paso a paso
+Paso 1: Enlace desde Home
+- Se actualizo el href del carrusel para incluir el query param del video.
+- Antes: /media/videos/${collectionSlug}
+- Ahora: /media/videos/${collectionSlug}?video=${videoSlug}
+
+Paso 2: Datos del carrusel
+- Se extendio HomeVideoBandItem para incluir videoSlug.
+- Se ajusto getHomeVideoBandItems para mapear ese slug del video junto al collectionSlug.
+
+Paso 3: Lectura del parametro en pagina de coleccion
+- En app/media/videos/[slug]/page.tsx se agrego lectura de searchParams.video.
+- Se normaliza y se pasa a VideoCollectionViewer como selectedVideoSlug.
+
+Paso 4: Seleccion inicial en el visor
+- VideoCollectionViewer ahora acepta selectedVideoSlug opcional.
+- Si el slug existe en esa coleccion, lo usa como video seleccionado inicial.
+- Si no existe, hace fallback seguro al primer video.
+- Se mantiene el comportamiento normal de seleccion manual por click.
+
+Paso 5: Enfoque visual/scroll del seleccionado
+- Se anadio scrollIntoView al elemento seleccionado para acercarlo en la lista de videos.
+- Se reutiliza el estilo activo existente (retro-video-track-active), sin cambiar el diseno general.
+
+7. Explicacion de como funciona el enlace desde Home
+- Cada item del carrusel tiene:
+  - collectionSlug (coleccion destino)
+  - videoSlug (video concreto)
+- El Link navega a la ruta de coleccion y adjunta ?video=videoSlug.
+
+8. Explicacion de como la coleccion detecta y selecciona el video
+- La pagina de coleccion lee searchParams.video.
+- Pasa ese valor al componente cliente VideoCollectionViewer.
+- El visor valida si ese slug existe en videos[]:
+  - Si existe: queda seleccionado y cargado en el reproductor principal.
+  - Si no existe: ignora el parametro y usa el primer video.
+
+9. Errores encontrados y como se solucionaron
+- npm run lint falla por errores preexistentes fuera de este alcance:
+  - components/home/home-header-carousel.tsx (react-hooks/set-state-in-effect)
+  - warnings de imports no usados en otros archivos.
+- npm run build falla en este entorno por descarga de Google Fonts (Press Start 2P) sin conexion.
+- Validacion local de cambios de esta tarea:
+  - npx eslint (archivos modificados) -> OK
+  - npx tsc --noEmit -> OK
+
+10. Pruebas realizadas
+Prueba 1: Home
+- Se verifico que el enlace del carrusel incluye /media/videos/[coleccion]?video=[videoSlug].
+
+Prueba 2: Coleccion
+- Se verifico que la coleccion recibe selectedVideoSlug y carga ese video como seleccionado en el reproductor.
+
+Prueba 3: Parametro invalido
+- Si ?video=slug-inexistente, el visor no rompe y muestra el primer video.
+
+Prueba 4: Navegacion sin parametro
+- Si se entra a /media/videos/[coleccion] sin ?video, funciona como antes (primer video).
+
+Prueba 5: Calidad tecnica
+- npm run lint: falla por issues preexistentes no relacionados.
+- npm run build: falla por fuente externa no accesible en entorno.
+- npx eslint (archivos modificados): OK.
+- npx tsc --noEmit: OK.
+
+11. Resultado final
+- Flujo final implementado:
+  Clic en video de Home -> coleccion correcta -> video concreto seleccionado.
+- No se recreo pagina individual de video.
+- No se cambio el diseno del carrusel Home ni el diseno general de la coleccion.

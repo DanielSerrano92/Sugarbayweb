@@ -1,11 +1,16 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import RetroBreadcrumb, { type BreadcrumbItem } from "@/components/navigation/retro-breadcrumb";
 
 type PageShellProps = {
   title: string;
   eyebrow?: string;
   description?: string;
   actions?: ReactNode;
+  headerImageSrc?: string;
+  headerOverlay?: ReactNode;
+  breadcrumbItems?: BreadcrumbItem[];
+  toolbarLeft?: ReactNode;
   children: ReactNode;
   contentClassName?: string;
   sectionClassName?: string;
@@ -20,6 +25,10 @@ export default function PageShell({
   eyebrow,
   description,
   actions,
+  headerImageSrc,
+  headerOverlay,
+  breadcrumbItems,
+  toolbarLeft,
   children,
   contentClassName,
   sectionClassName,
@@ -38,6 +47,11 @@ export default function PageShell({
     "page-content-wrapper",
     contentClassName ?? DEFAULT_CONTENT_CLASS_NAME,
   ].join(" ");
+  const hasToolbar = Boolean(toolbarLeft) || Boolean(breadcrumbItems?.length);
+  const toolbarRowClassName = [
+    "page-toolbar-row",
+    toolbarLeft ? "page-toolbar-row-has-left" : "page-toolbar-row-no-left",
+  ].join(" ");
 
   return (
     <section
@@ -49,7 +63,7 @@ export default function PageShell({
     >
       <div className="page-header-image">
         <Image
-          src={PAGE_HEADER_IMAGE_SRC}
+          src={headerImageSrc ?? PAGE_HEADER_IMAGE_SRC}
           alt={`Cabecera ${title}`}
           width={2400}
           height={760}
@@ -58,6 +72,9 @@ export default function PageShell({
           unoptimized
           className="page-header-img"
         />
+        {headerOverlay ? (
+          <div className="page-header-overlay">{headerOverlay}</div>
+        ) : null}
       </div>
       <h1 className="sr-only">{title}</h1>
       {eyebrow || description || actions ? (
@@ -67,7 +84,17 @@ export default function PageShell({
           {actions ? <div>{actions}</div> : null}
         </div>
       ) : null}
-      <div className={contentClasses}>{children}</div>
+      <div className={contentClasses}>
+        {hasToolbar ? (
+          <div className={toolbarRowClassName}>
+            {toolbarLeft ? <div className="page-toolbar-left">{toolbarLeft}</div> : null}
+            {breadcrumbItems?.length ? (
+              <RetroBreadcrumb items={breadcrumbItems} />
+            ) : null}
+          </div>
+        ) : null}
+        {children}
+      </div>
     </section>
   );
 }

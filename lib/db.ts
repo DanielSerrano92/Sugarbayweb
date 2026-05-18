@@ -10,11 +10,24 @@ const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL ?? "",
 });
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function hasSupportRequestDelegate(client: PrismaClient | undefined): client is PrismaClient {
+  if (!client) return false;
+
+  const candidate = client as PrismaClient & { supportRequest?: unknown };
+  return typeof candidate.supportRequest !== "undefined";
+}
+
+function createPrismaClient() {
+  return new PrismaClient({
     adapter,
   });
+}
+
+const reusedPrisma = hasSupportRequestDelegate(globalForPrisma.prisma)
+  ? globalForPrisma.prisma
+  : undefined;
+
+export const prisma = reusedPrisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;

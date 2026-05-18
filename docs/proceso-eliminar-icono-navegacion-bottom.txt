@@ -1,0 +1,62 @@
+﻿OBJETIVO
+Eliminar por completo el icono de navegacion inferior (boton con imagen tipo "Videos/Fotos/Bio/Noticias") de todas las paginas del proyecto y retirar su codigo asociado.
+
+ESTADO INICIAL
+- El proyecto usaba un componente reutilizable (`IconNavigationLink`) para mostrar un bloque de navegacion en la parte inferior de varias paginas.
+- En Conciertos tambien habia un wrapper (`ConcertsNavigationLink`) que delegaba en ese mismo componente.
+
+COMPONENTES Y PAGINAS REVISADAS
+- components/ui/icon-navigation-link.tsx
+- components/concerts/concerts-navigation-link.tsx
+- components/concerts/concerts-catalog-page.tsx
+- app/band/news/page.tsx
+- app/band/bio/page.tsx
+- app/musica/page.tsx
+- app/media/photos/page.tsx
+- app/media/photos/[slug]/page.tsx
+- app/media/videos/page.tsx
+- app/media/videos/[slug]/page.tsx
+
+CAMBIOS REALIZADOS
+1. Eliminacion de usos en paginas
+- Se quitaron todos los imports de `IconNavigationLink`.
+- Se eliminaron todos los bloques JSX que renderizaban el icono de navegacion inferior.
+
+2. Limpieza de conciertos
+- Se elimino el import y uso de `ConcertsNavigationLink` en `components/concerts/concerts-catalog-page.tsx`.
+- Se elimino la variable `navigationLink` que ya no era necesaria.
+
+3. Eliminacion de componentes muertos
+- Se elimino `components/ui/icon-navigation-link.tsx`.
+- Se elimino `components/concerts/concerts-navigation-link.tsx`.
+
+4. Limpieza de codigo residual
+- En `app/musica/page.tsx` se eliminaron variables relacionadas con el enlace inferior que quedaron sin uso (`hasDirectionalSwitch`, `nextType`, `nextLabel`, `switchParams`, `switchHref`).
+
+ARCHIVOS MODIFICADOS
+- app/band/bio/page.tsx
+- app/band/news/page.tsx
+- app/media/photos/[slug]/page.tsx
+- app/media/photos/page.tsx
+- app/media/videos/[slug]/page.tsx
+- app/media/videos/page.tsx
+- app/musica/page.tsx
+- components/concerts/concerts-catalog-page.tsx
+
+ARCHIVOS ELIMINADOS
+- components/ui/icon-navigation-link.tsx
+- components/concerts/concerts-navigation-link.tsx
+
+VERIFICACION
+- Busqueda global de referencias:
+  - `IconNavigationLink`: sin coincidencias.
+  - `ConcertsNavigationLink` / `concerts-navigation-link`: sin coincidencias.
+  - URL de imagen `nav.png`: sin coincidencias.
+- Lint:
+  - `npm run lint` ejecutado correctamente.
+  - Solo queda un warning previo no relacionado en `lib/media/video.ts` (`parseYouTubeVideoId` sin uso).
+
+RESULTADO FINAL
+- El icono de navegacion inferior se elimino de todas las paginas donde aparecia.
+- No quedan rastros de codigo de ese sistema de icono/boton en el proyecto.
+- Se mantuvo intacta la logica del resto de secciones (busqueda, filtros, breadcrumb, carruseles, tienda y rutas).

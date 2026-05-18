@@ -71,15 +71,12 @@ export default function AuthModal({
   if (!open) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-6"
-      aria-hidden={false}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-2 py-2 sm:px-4 sm:py-6">
       <button
         type="button"
         aria-label="Cerrar modal"
         onClick={onClose}
-        className="absolute inset-0 cursor-default"
+        className="retro-vapor-overlay absolute inset-0 cursor-default"
       />
       <section
         ref={dialogRef}
@@ -87,30 +84,29 @@ export default function AuthModal({
         aria-modal="true"
         aria-labelledby="auth-modal-title"
         aria-describedby={description ? "auth-modal-description" : undefined}
-        className="sb-window relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl p-0"
+        className="win-window auth-retro-modal relative z-10 flex w-full max-w-2xl min-h-0 flex-col overflow-hidden p-0"
       >
-        <div className="sb-titlebar flex items-center justify-between gap-3 px-6 py-2">
-          <h2 id="auth-modal-title" className="text-sm font-bold">
+        <div className="win-titlebar flex items-center justify-between gap-3">
+          <h2 id="auth-modal-title" className="min-w-0 truncate pr-2">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="sb-btn-secondary px-3 py-1.5 text-xs font-medium text-white transition"
+            aria-label="Cerrar modal de autenticacion"
+            className="win-button retro-win-close"
           >
-            Cerrar
+            X
           </button>
         </div>
 
-        <div className="px-6 py-5">
-          <div className="mb-4">
-            {description ? (
-              <p id="auth-modal-description" className="text-sm text-zinc-600">
-                {description}
-              </p>
-            ) : null}
-          </div>
-          <div className="max-h-[calc(100dvh-12rem)] overflow-y-auto pr-1">
+        <div className="auth-retro-body min-h-0 flex-1 overflow-y-auto p-3 sm:p-4">
+          {description ? (
+            <p id="auth-modal-description" className="auth-retro-description mb-3 text-sm">
+              {description}
+            </p>
+          ) : null}
+          <div className="auth-retro-content">
             {children}
           </div>
         </div>

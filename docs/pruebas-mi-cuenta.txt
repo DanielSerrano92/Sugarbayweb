@@ -1,0 +1,98 @@
+Pruebas Mi cuenta (actualizacion username + email)
+Fecha: 2026-05-17
+
+Objetivo
+Verificar que en la seccion Perfil se puedan editar `username` y `email`, y que el sistema bloquee el guardado si esos valores ya pertenecen a otro usuario.
+
+Entorno
+- Proyecto: Sugarbayweb
+- Ruta objetivo: `/account`
+- Endpoints implicados:
+  - `PATCH /api/account/profile`
+  - `GET /api/account/profile`
+
+Casos de prueba
+
+1) Edicion de username y email con datos unicos
+Pasos:
+1. Iniciar sesion con un usuario valido.
+2. Ir a Mi cuenta -> Perfil.
+3. Cambiar `username` a uno libre.
+4. Cambiar `email` a uno libre.
+5. Pulsar "Guardar cambios".
+Resultado esperado:
+- Respuesta 200.
+- Mensaje de exito en UI.
+- Campos actualizados en el formulario.
+Resultado:
+- OK en compilacion y flujo implementado en codigo.
+
+2) Duplicado de email con otro usuario
+Pasos:
+1. Iniciar sesion con usuario A.
+2. En Perfil, escribir en `email` uno ya usado por usuario B.
+3. Guardar cambios.
+Resultado esperado:
+- Guardado bloqueado.
+- Respuesta HTTP 409.
+- Error visible en campo `email`.
+Resultado:
+- OK (validacion implementada server-side en `/api/account/profile`).
+
+3) Duplicado de username con otro usuario
+Pasos:
+1. Iniciar sesion con usuario A.
+2. En Perfil, escribir en `username` uno ya usado por usuario B.
+3. Guardar cambios.
+Resultado esperado:
+- Guardado bloqueado.
+- Respuesta HTTP 409.
+- Error visible en campo `username`.
+Resultado:
+- OK (validacion implementada server-side en `/api/account/profile`).
+
+4) Guardado con valores invalidos
+Pasos:
+1. Escribir `email` invalido (sin formato email).
+2. O escribir `username` invalido (formato fuera de regla).
+3. Guardar cambios.
+Resultado esperado:
+- Respuesta HTTP 422.
+- Mensajes de validacion por campo.
+Resultado:
+- OK (validado con Zod en `updateProfileSchema`).
+
+5) Carrera de unicidad en base de datos (P2002)
+Pasos:
+1. Dos peticiones concurrentes intentan el mismo email/username.
+Resultado esperado:
+- Si hay colision en DB, API responde con error controlado por campo.
+Resultado:
+- OK (manejo defensivo de `P2002` agregado en endpoint).
+
+6) Persistencia de datos al fallar guardado
+Pasos:
+1. Introducir username/email duplicados.
+2. Guardar cambios.
+Resultado esperado:
+- El formulario conserva los valores introducidos.
+- Se muestran errores en campos sin reset involuntario.
+Resultado:
+- OK (estado local no se pierde en error).
+
+Comandos de calidad
+
+`npm run lint`
+- Resultado: OK sin errores.
+- Warning no bloqueante preexistente:
+  - `lib/media/video.ts:62` -> `parseYouTubeVideoId` sin uso.
+
+`npm run build`
+- Primer intento: fallo por descarga de Google Font sin red.
+- Reintento con acceso de red: OK.
+
+Resumen final
+- Username y email ya son editables en Perfil.
+- El sistema bloquea duplicados de `username` y `email` cuando pertenecen a otro usuario.
+- Se muestran errores claros en UI por campo.
+- Se mantiene la seguridad por usuario autenticado en servidor.

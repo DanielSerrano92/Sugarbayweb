@@ -14,6 +14,13 @@ import type {
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
 
 const BAND_NEWS_PAGE_SIZE = 6;
+const NEWS_IMAGE_OVERRIDES: Record<string, string> = {
+  "sugarbay-anuncia-single-y-fecha-madrid":
+    "https://ik.imagekit.io/gq1enkszp/fotos/noticia.png",
+};
+const MIDNIGHT_FREQUENCY_SONG_SLUG = "midnight-frequency";
+const NEWS_SINGLE_CARD_SLUG = "sugarbay-anuncia-single-y-fecha-madrid";
+const DISCOMANIACS_NEWS_SLUG = "estreno-video-discomaniacs-mitch-bucano-johnny-funk-feat-wazoo";
 
 type NewsRecord = Prisma.NewsGetPayload<{
   select: {
@@ -79,24 +86,33 @@ function mapBandMember(record: BandMemberRecord): BandMemberView {
 
 function mapBandNews(record: NewsRecord): BandNewsItemView {
   const publishedAt = record.publishedAt ?? record.createdAt;
-  const monthStart = new Date(
-    Date.UTC(publishedAt.getUTCFullYear(), publishedAt.getUTCMonth(), 1),
-  );
-  const monthEnd = new Date(
-    Date.UTC(publishedAt.getUTCFullYear(), publishedAt.getUTCMonth() + 1, 0),
-  );
 
   const relatedLinks = [
-    ...record.tags.slice(0, 2).map((tag) => ({
-      label: `Mas sobre ${tag}`,
-      href: `/band/news?tag=${encodeURIComponent(tag)}`,
-    })),
-    {
-      label: "Noticias del mismo mes",
-      href: `/band/news?from=${monthStart.toISOString().slice(0, 10)}&to=${monthEnd
-        .toISOString()
-        .slice(0, 10)}`,
-    },
+    ...record.tags
+      .slice(0, 2)
+      .filter((tag) => tag.trim().toLowerCase() !== "tour")
+      .filter((tag) =>
+        !(record.slug === NEWS_SINGLE_CARD_SLUG && tag.trim().toLowerCase() === "single")
+      )
+      .filter((tag) =>
+        !(record.slug === DISCOMANIACS_NEWS_SLUG && tag.trim().toLowerCase() === "estreno")
+      )
+      .filter((tag) =>
+        !(record.slug === DISCOMANIACS_NEWS_SLUG && tag.trim().toLowerCase() === "video")
+      )
+      .map((tag) => {
+        if (record.slug === NEWS_SINGLE_CARD_SLUG && tag.trim().toLowerCase() === "single") {
+          return {
+            label: "VER MAS SOBRE ESTE SINGLE",
+            href: `/musica?type=song&song=${encodeURIComponent(MIDNIGHT_FREQUENCY_SONG_SLUG)}`,
+          };
+        }
+
+        return {
+          label: `Mas sobre ${tag}`,
+          href: `/band/news?tag=${encodeURIComponent(tag)}`,
+        };
+      }),
   ];
 
   return {
@@ -106,7 +122,7 @@ function mapBandNews(record: NewsRecord): BandNewsItemView {
     summary: record.summary ?? record.content.slice(0, 160),
     content: record.content,
     publishedAtIso: publishedAt.toISOString(),
-    imageUrl: record.coverImageUrl,
+    imageUrl: NEWS_IMAGE_OVERRIDES[record.slug] ?? record.coverImageUrl,
     tags: record.tags,
     relatedLinks,
   };

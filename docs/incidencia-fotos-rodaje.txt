@@ -1,0 +1,57 @@
+INCIDENCIA: Tarjeta "Rodaje" no visible en la pagina Fotos
+
+Fecha de documentacion: 14/05/2026
+Proyecto: Sugarbayweb
+Seccion afectada: Media > Fotos
+
+1) RESUMEN DEL PROBLEMA
+- Se solicito anadir una nueva coleccion de fotos llamada "Rodaje".
+- El cambio de codigo se realizo, pero en la interfaz no aparecia la nueva tarjeta en /media/photos.
+
+2) SINTOMA OBSERVADO
+- En la pagina de Fotos solo se mostraba la coleccion existente.
+- No aparecia la tarjeta "Rodaje", ni su enlace de detalle.
+
+3) DIAGNOSTICO REALIZADO
+- Se reviso la arquitectura de la seccion Fotos:
+  - La pagina /media/photos consume datos desde Prisma (tabla PhotoAlbum).
+  - El detalle /media/photos/[slug] reutiliza el slug almacenado en base de datos.
+- Se comprobo que el codigo de seed incluia ya la nueva coleccion.
+- Se ejecuto el comando de seed por CLI de Prisma y devolvio:
+  - "No seed command configured".
+- Se consulto la base de datos activa y se confirmo que solo existia un album:
+  - sugarbay-sunset-session-barcelona-gallery
+
+4) CAUSA RAIZ
+- La nueva coleccion se habia agregado en prisma/seed.ts, pero ese seed no se estaba aplicando en la base de datos activa.
+- Por tanto, la app funcionaba correctamente, pero no tenia el registro "Rodaje" en PhotoAlbum.
+
+5) SOLUCION APLICADA
+- Se mantuvo el cambio en codigo (seed actualizado).
+- Adicionalmente, se inserto/actualizo la coleccion directamente en la base de datos activa con un script de ejecucion puntual (upsert), sin borrar datos existentes.
+- Datos cargados:
+  - title: Rodaje
+  - slug: rodaje-1-3-26
+  - eventDate: 2026-03-01T00:00:00.000Z
+  - coverImageUrl: https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/ChatGPT%20Image%2014%20may%202026,%2018_35_07.png?updatedAt=1778780118772
+  - primera foto de la coleccion: misma URL (isCover=true)
+
+6) VERIFICACION
+- Tras la insercion, la base de datos devolvio ambos albumes:
+  1. rodaje-1-3-26 (Rodaje, 1 foto)
+  2. sugarbay-sunset-session-barcelona-gallery
+- Resultado esperado:
+  - La tarjeta "Rodaje" debe mostrarse en /media/photos.
+  - El detalle debe abrir en /media/photos/rodaje-1-3-26.
+
+7) IMPACTO
+- No se modificaron rutas existentes.
+- No se eliminaron colecciones previas.
+- No se tocaron secciones ajenas (Home, Videos, Conciertos, Tienda, Banda).
+- No se alteraron estilos globales ni layout general.
+
+8) RECOMENDACION PREVENTIVA
+- Definir oficialmente el flujo de seed del proyecto para evitar discrepancias entre:
+  - "codigo listo" vs "datos realmente cargados en la BD activa".
+- Si se trabaja con BD remota compartida, usar scripts idempotentes (upsert) para altas puntuales de colecciones.
+

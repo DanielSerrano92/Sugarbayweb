@@ -5,6 +5,7 @@ export type BandNewsQueryParams = {
   from?: string | string[];
   to?: string | string[];
   tag?: string | string[];
+  news?: string | string[];
 };
 
 export type BandNewsFilters = {

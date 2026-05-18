@@ -1,0 +1,192 @@
+PROCESO MENU DE BUSQUEDA DEL HEADER
+
+1. Objetivo de la tarea
+- Convertir el buscador del header en un menu interno con resultados directos.
+- Eliminar la navegacion a pagina de resultados completa.
+- Mantener la busqueda rapida de paginas principales sin cambios de opciones.
+
+2. Estado inicial del menu de busqueda
+- El buscador mostraba busqueda rapida + resultados de productos/paginas segun respuesta del endpoint.
+- Al escribir, aparecia un boton "Ver resultados completos" que redirigia a `/buscar`.
+- Existia una pagina de resultados completa en `app/buscar`.
+
+3. Problema detectado
+- Existia boton de resultado completo.
+- Existia pagina de resultados completa.
+- El comportamiento no cumplia el flujo deseado de resolver todo dentro del menu del header.
+
+4. Archivos revisados
+- `components/layout/global-search.tsx`
+- `app/api/search/route.ts`
+- `lib/repositories/search.ts`
+- `lib/search/types.ts`
+- `lib/search/pages.ts`
+- `lib/utils.ts`
+- `app/musica/page.tsx`
+- `components/music/music-catalog-client.tsx`
+- `lib/music/types.ts`
+- `lib/music/filters.ts`
+- `lib/repositories/music.ts`
+- `app/band/news/page.tsx`
+- `components/band/news-list-client.tsx`
+- `components/concerts/concerts-catalog-page.tsx`
+- `components/concerts/concert-cards-client.tsx`
+
+5. Archivos modificados
+- `components/layout/global-search.tsx`
+- `app/api/search/route.ts`
+- `lib/repositories/search.ts`
+- `lib/search/types.ts`
+- `lib/search/pages.ts`
+- `lib/utils.ts`
+- `app/musica/page.tsx`
+- `components/music/music-catalog-client.tsx`
+- `lib/music/types.ts`
+- `lib/music/filters.ts`
+- `lib/repositories/music.ts`
+- `docs/proceso-menu-busqueda-header.txt`
+
+6. Cambios realizados paso a paso
+1) Se rediseno el contrato de busqueda en backend para devolver:
+   - `quickLinks` (accesos rapidos estaticos).
+   - `items` (resultados dinamicos por tipo).
+2) Se reescribio `lib/repositories/search.ts` para generar resultados directos de:
+   - paginas,
+   - conciertos (proximos y anteriores),
+   - noticias,
+   - canciones,
+   - albumes,
+   - colecciones de fotos,
+   - colecciones de videos,
+   - productos de tienda.
+3) Se aplico coincidencia parcial por campos relevantes y orden por score.
+4) Se aplico normalizacion de texto para busqueda acento-insensible y case-insensitive.
+5) Se adapto `app/api/search/route.ts` al nuevo formato de respuesta.
+6) Se actualizo `components/layout/global-search.tsx` para:
+   - mostrar quick links solo cuando no hay texto,
+   - mostrar resultados dinamicos al escribir,
+   - eliminar boton de resultados completos,
+   - evitar redireccion a `/buscar` al pulsar Enter sin elemento activo.
+7) Se elimino la pagina de resultados completa:
+   - `app/buscar/page.tsx`
+   - `app/buscar/loading.tsx`
+   - `app/buscar/error.tsx`
+8) Se habilito apertura de modal en Musica por query params (`song` y `album`) reutilizando el modal existente.
+9) Se incluyeron detalles seleccionados de song/album en `getMusicCatalog` para que el modal abra aunque el item no este en la pagina visible del catalogo.
+
+7. Que se elimino
+- Boton "Ver resultados completos" del menu de busqueda.
+- Ruta/pagina de resultados completa `/buscar` (archivos eliminados).
+
+8. Que se mantuvo
+- Opciones de busqueda rapida (sin cambios de listado):
+  - Home
+  - Proximos Conciertos
+  - Conciertos anteriores
+  - Noticias de la banda
+  - Bio de la banda
+  - Musica
+  - Fotos
+  - Videos
+  - Tienda
+
+9. Como funciona ahora la busqueda parcial
+- Al escribir en el input, se generan resultados dinamicos dentro del mismo modal.
+- Cada tipo de contenido se filtra por `includes` sobre texto normalizado.
+- La coincidencia puede estar al inicio, en medio o al final del texto.
+- No se requiere coincidencia exacta.
+
+10. Normalizacion de texto
+- Se actualizo `normalizeSearchTerm` para:
+  - convertir a minusculas,
+  - remover diacriticos (tildes) con normalizacion Unicode.
+- Resultado:
+  - mayusculas/minusculas no afectan.
+  - "musica" puede encontrar "Música".
+
+11. Resultados por tipo
+- Conciertos:
+  - Busca por titulo, sala, direccion, ciudad, descripcion y fecha textual.
+  - Enlace directo a proximos o anteriores segun corresponda.
+- Noticias:
+  - Busca por titulo, resumen, contenido y tags.
+  - Enlace a Noticias con `news` para desplegar la noticia.
+- Canciones:
+  - Busca por titulo de track y titulo del release.
+  - Enlace a Musica con `song`.
+- Albumes:
+  - Busca por titulo y descripcion del release.
+  - Enlace a Musica con `album`.
+- Colecciones de fotos:
+  - Busca por titulo, descripcion y slug.
+  - Enlace a `/media/photos/[slug]`.
+- Colecciones de videos:
+  - Busca por titulo, descripcion y slug.
+  - Enlace a `/media/videos/[slug]`.
+- Productos de tienda:
+  - Busca por nombre, descripcion, tags, categoria, subcategoria y tipo de producto.
+  - Enlace a `/store/[slug]`.
+
+12. Caso especial de Media (Musica + Tienda)
+- Si un titulo coincide con Musica y con producto de tienda, aparecen ambos resultados.
+- El resultado de Musica abre modal (song o album) en `/musica`.
+- El resultado de Tienda abre detalle de producto en `/store/[slug]`.
+- Se diferencian visualmente por categoria/etiqueta de resultado.
+
+13. Rutas y parametros usados para abrir modales/desplegables
+- Concierto proximo:
+  - `/concerts/upcoming?concert=<slug>` (+ `page` cuando aplica)
+- Concierto anterior:
+  - `/concerts/past?concert=<slug>` (+ `page` cuando aplica)
+- Noticia:
+  - `/band/news?news=<slug>` (+ `page` cuando aplica)
+- Cancion:
+  - `/musica?song=<slug>`
+- Album:
+  - `/musica?album=<slug>`
+- Fotos (coleccion):
+  - `/media/photos/<slug>`
+- Videos (coleccion):
+  - `/media/videos/<slug>`
+- Producto:
+  - `/store/<slug>`
+
+14. Confirmacion de que no se creo una pagina individual nueva
+- No se crearon paginas individuales nuevas para concierto, noticia, cancion, album o video.
+- Se reutilizo la navegacion y modales/despliegues existentes.
+
+15. Errores encontrados y solucion
+- `eslint` marco regla `react-hooks/set-state-in-effect` en `music-catalog-client`.
+  - Se elimino sincronizacion via `useEffect` y se uso inicializacion por props + `key` en el componente desde `app/musica/page.tsx`.
+- `build` en sandbox fallo por acceso de red a Google Fonts.
+  - Se repitio el build fuera del sandbox (con aprobacion) y finalizo correctamente.
+
+16. Pruebas manuales realizadas
+- Apertura del buscador sin texto:
+  - aparecen solo quick links.
+- Escritura en buscador:
+  - aparecen resultados dinamicos por tipo sin boton de resultados completos.
+- Seleccion de resultados:
+  - conciertos llevan a proximos/anteriores con `concert`.
+  - noticias llevan a `/band/news` con `news`.
+  - canciones/albumes llevan a `/musica` con `song`/`album`.
+  - fotos/videos llevan a su coleccion.
+  - productos llevan al detalle de tienda.
+- Verificacion de no existencia de enlace a `/buscar`.
+
+17. Resultado de `npm run lint`
+- Comando ejecutado: `npm.cmd run lint`
+- Resultado: OK sin errores.
+- Warning preexistente fuera de alcance:
+  - `lib/media/video.ts` -> `parseYouTubeVideoId` sin uso.
+
+18. Resultado de `npm run build`
+- Comando ejecutado: `npm.cmd run build`
+- Primer intento en sandbox: fallo por descarga de Google Fonts.
+- Segundo intento fuera de sandbox: build completado correctamente.
+
+19. Resultado final
+- El buscador del header funciona como menu interno con resultados directos.
+- Se elimino el boton de resultados completos y la ruta `/buscar`.
+- Se mantienen los quick links actuales.
+- La busqueda dinamica ahora cubre conciertos, noticias, musica, fotos, videos y tienda con coincidencia parcial, case-insensitive y acento-insensitive.

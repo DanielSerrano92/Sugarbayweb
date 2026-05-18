@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import PhotoGalleryClient from "@/components/media/photo-gallery-client";
 import EmptyState from "@/components/ui/empty-state";
 import PageShell from "@/components/ui/page-shell";
+import { buildMediaPhotosBreadcrumb } from "@/lib/navigation/breadcrumbs";
 import { getPhotoAlbumDetailBySlug } from "@/lib/repositories/media";
-import { formatDate } from "@/lib/utils";
 
 type PhotoAlbumDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -45,22 +44,8 @@ export default async function PhotoAlbumDetailPage({ params }: PhotoAlbumDetailP
       eyebrow="Media / Fotos"
       title={album.title}
       description={album.description ?? "Detalle completo del album fotografico."}
+      breadcrumbItems={buildMediaPhotosBreadcrumb(album.title)}
     >
-
-      <div className="flex flex-wrap gap-2">
-        <Link
-          href="/media/photos"
-          className="sb-btn-secondary px-3 py-2 text-sm font-semibold text-zinc-200"
-        >
-          Volver a albumes
-        </Link>
-        {album.eventDateIso ? (
-          <p className="sb-panel-soft rounded-xl px-3 py-2 text-sm text-zinc-600">
-            Fecha del evento: {formatDate(album.eventDateIso)}
-          </p>
-        ) : null}
-      </div>
-
       {album.photos.length === 0 ? (
         <EmptyState
           title="Este album no tiene fotos publicadas"
@@ -69,6 +54,7 @@ export default async function PhotoAlbumDetailPage({ params }: PhotoAlbumDetailP
       ) : (
         <PhotoGalleryClient photos={album.photos} />
       )}
+
     </PageShell>
   );
 }

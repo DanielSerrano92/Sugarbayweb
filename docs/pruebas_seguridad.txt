@@ -1,0 +1,75 @@
+Pruebas seguridad - error en inputs de cambiar contrasena
+Fecha: 2026-05-17
+
+1. Objetivo
+Corregir el error que se producia al escribir en los campos de "Cambiar contrasena" dentro de Mi cuenta > Seguridad.
+
+2. Error reportado
+Tipo:
+- `Console TypeError`
+
+Mensaje:
+- `Cannot read properties of null (reading 'value')`
+
+Ubicacion observada:
+- `components/account/account-dashboard.tsx`
+- En los `onChange` de:
+  - contrasena actual
+  - nueva contrasena
+  - repetir nueva contrasena
+
+3. Causa tecnica
+En los handlers se estaba usando `event.currentTarget.value` dentro del callback funcional de `setPasswordForm`.
+Cuando React libera/reutiliza el evento sintetico, `currentTarget` puede quedar en `null`, y al evaluarse despues dentro del updater aparece el error.
+
+4. Solucion aplicada
+Se capturo el valor del input antes de llamar al `setState`:
+- `const value = event.target.value;`
+- Luego se usa `value` dentro del updater en lugar de leer del evento.
+
+5. Archivos modificados
+- `components/account/account-dashboard.tsx`
+
+6. Cambios concretos
+Se actualizaron 3 handlers `onChange` en la seccion Seguridad:
+- `currentPassword`
+- `newPassword`
+- `confirmPassword`
+
+Patron anterior:
+- `currentPassword: event.currentTarget.value`
+
+Patron nuevo:
+- `const value = event.target.value`
+- `currentPassword: value`
+
+7. Pruebas realizadas
+Prueba 1:
+- Escribir caracteres en "Contrasena actual".
+- Resultado: no se reproduce el TypeError.
+
+Prueba 2:
+- Escribir caracteres en "Nueva contrasena".
+- Resultado: no se reproduce el TypeError.
+
+Prueba 3:
+- Escribir caracteres en "Repetir nueva contrasena".
+- Resultado: no se reproduce el TypeError.
+
+Prueba 4:
+- Ejecutar lint.
+- Resultado: OK sin errores de lint.
+
+8. Resultado de calidad
+Comando:
+- `npm run lint`
+
+Resultado:
+- Sin errores.
+- Warning preexistente no relacionado:
+  - `lib/media/video.ts:62` (`parseYouTubeVideoId` sin uso).
+
+9. Resultado final
+El formulario de cambio de contrasena vuelve a funcionar correctamente:
+- ya no lanza `Cannot read properties of null (reading 'value')`
+- se mantiene el comportamiento y validaciones existentes de seguridad.

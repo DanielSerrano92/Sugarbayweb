@@ -64,8 +64,11 @@ async function main() {
   const now = new Date();
   const upcomingConcertDate = addDays(now, 45, 21, 0);
   const pastConcertDate = addDays(now, -120, 21, 0);
+  const rodajeEventDate = new Date("2026-03-01T00:00:00.000Z");
+  const rodajeAprilEventDate = new Date("2026-04-26T00:00:00.000Z");
   const releaseDate = addDays(now, -60, 0, 0);
   const newsPublishedAt = addDays(now, -7, 9, 0);
+  const discomaniacsNewsPublishedAt = addDays(now, -1, 20, 0);
 
   const passwordHash = await bcrypt.hash("Sugarbay123!", 12);
 
@@ -160,7 +163,7 @@ async function main() {
     },
   });
 
-  await prisma.productCategory.create({
+  const pinsCategory = await prisma.productCategory.create({
     data: {
       name: "Pines",
       slug: "pines",
@@ -169,7 +172,7 @@ async function main() {
     },
   });
 
-  await prisma.productCategory.create({
+  const cdsCategory = await prisma.productCategory.create({
     data: {
       name: "CDs",
       slug: "cds",
@@ -214,6 +217,96 @@ async function main() {
             size: VariantSize.M,
             color: "Black",
             stock: 45,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.product.create({
+    data: {
+      categoryId: pinsCategory.id,
+      name: "Sugarbay Neon Pin Set",
+      slug: "sugarbay-neon-pin-set",
+      description:
+        "Set de pines metalicos con acabado neon inspirado en la era Midnight Frequency.",
+      productType: ProductType.ACCESSORY,
+      basePrice: 14.9,
+      compareAtPrice: 18.9,
+      isPublished: true,
+      isFeatured: true,
+      tags: ["accesorios", "pin", "set", "neon", "coleccion"],
+      metadata: {
+        material: "zinc alloy + enamel",
+        pieces: 3,
+      },
+      images: {
+        create: [
+          {
+            imageUrl: "https://ik.imagekit.io/sugarbay/products/neon-pin-set-main.jpg",
+            altText: "Sugarbay Neon Pin Set",
+            isPrimary: true,
+            sortOrder: 1,
+          },
+        ],
+      },
+      variants: {
+        create: [
+          {
+            sku: "SB-PIN-SET-OS",
+            title: "Set / OS",
+            size: VariantSize.OS,
+            color: "Multicolor",
+            stock: 120,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.product.create({
+    data: {
+      categoryId: cdsCategory.id,
+      name: "Neon Coastline CD Deluxe",
+      slug: "neon-coastline-cd-deluxe",
+      description:
+        "Edicion CD deluxe con libreto de 16 paginas, arte retro y bonus track en directo.",
+      productType: ProductType.MEDIA,
+      basePrice: 22.9,
+      compareAtPrice: 26.9,
+      isPublished: true,
+      isFeatured: true,
+      tags: ["media", "cd", "album", "deluxe", "neon"],
+      metadata: {
+        mediaType: "cd",
+        tracklist: [
+          "Midnight Frequency",
+          "Neon Coastline",
+          "City Lights Radio",
+          "Satellite Hearts",
+          "Midnight Frequency (Live Edit)",
+        ],
+        linerNotes:
+          "Edicion de coleccion con notas de produccion, letras seleccionadas y fotos de estudio.",
+      },
+      images: {
+        create: [
+          {
+            imageUrl: "https://ik.imagekit.io/sugarbay/products/neon-coastline-cd-deluxe-main.jpg",
+            altText: "Neon Coastline CD Deluxe",
+            isPrimary: true,
+            sortOrder: 1,
+          },
+        ],
+      },
+      variants: {
+        create: [
+          {
+            sku: "SB-CD-NC-DELUXE",
+            title: "CD / OS",
+            size: VariantSize.OS,
+            color: "Standard",
+            stock: 80,
           },
         ],
       },
@@ -271,6 +364,22 @@ async function main() {
     },
   });
 
+  await prisma.news.create({
+    data: {
+      title: "SUGARBAY ANUNCIA EL ESTRENO DEL VIDEOCLIP DISCOMANIACS",
+      slug: "estreno-video-discomaniacs-mitch-bucano-johnny-funk-feat-wazoo",
+      summary:
+        "Mitch Bucano & Johnny Funk presentan 'Discomaniacs', un nuevo video con la colaboracion de Wazoo que refuerza la energia funk, disco y retro de la escena Sugar Bay.",
+      content:
+        "Sugar Bay anuncia el estreno de 'Discomaniacs', la nueva pieza audiovisual de Mitch Bucano & Johnny Funk con la colaboracion especial de Wazoo.\n\nEl lanzamiento combina groove funk, pulso disco y una narrativa visual retro que encaja con el universo sonoro de la banda.\n\nDurante los proximos dias se compartiran nuevos avances y material exclusivo sobre este estreno para la comunidad.",
+      status: NewsStatus.PUBLISHED,
+      publishedAt: discomaniacsNewsPublishedAt,
+      authorName: "Sugarbay Team",
+      tags: ["video", "estreno", "colaboracion"],
+      coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/noticia-2.png",
+    },
+  });
+
   const contributorLucia = await prisma.musicContributor.create({
     data: {
       name: "Lucia Vega",
@@ -298,7 +407,7 @@ async function main() {
       releaseType: MusicReleaseType.ALBUM,
       description:
         "Album de estudio con atmosfera nocturna, sintetizadores analogicos y enfoque cinematografico.",
-      coverImageUrl: "https://ik.imagekit.io/sugarbay/music/neon-coastline-cover.jpg",
+      coverImageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/album.png",
       releaseDate,
       labelName: "Sugarbay Records",
       catalogNumber: "SBR-ALB-003",
@@ -387,6 +496,676 @@ async function main() {
             sortOrder: 1,
             isCover: true,
             takenAt: pastConcertDate,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.photoAlbum.create({
+    data: {
+      title: "Rodaje",
+      slug: "rodaje-1-3-26",
+      description: "Coleccion oficial del rodaje realizado el 1/3/26.",
+      coverImageUrl:
+        "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/ChatGPT%20Image%2014%20may%202026,%2018_35_07.png?updatedAt=1778780118772",
+      eventDate: rodajeEventDate,
+      sortOrder: 2,
+      photos: {
+        create: [
+          {
+            title: "Rodaje - Foto 1",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.256.jpeg?updatedAt=1778779821525",
+            sortOrder: 1,
+            isCover: true,
+            takenAt: rodajeEventDate,
+          },
+          {
+            title: "Rodaje - Foto 2",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.403.jpeg?updatedAt=1778779821518",
+            sortOrder: 2,
+            isCover: false,
+            takenAt: rodajeEventDate,
+          },
+          {
+            title: "Rodaje - Foto 3",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.252.jpeg?updatedAt=1778779821520",
+            sortOrder: 3,
+            isCover: false,
+            takenAt: rodajeEventDate,
+          },
+          {
+            title: "Rodaje - Foto 4",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.401.jpeg?updatedAt=1778779821515",
+            sortOrder: 4,
+            isCover: false,
+            takenAt: rodajeEventDate,
+          },
+          {
+            title: "Rodaje - Foto 5",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.40.jpeg?updatedAt=1778779821489",
+            sortOrder: 5,
+            isCover: false,
+            takenAt: rodajeEventDate,
+          },
+          {
+            title: "Rodaje - Foto 6",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.39.jpeg?updatedAt=1778779821451",
+            sortOrder: 6,
+            isCover: false,
+            takenAt: rodajeEventDate,
+          },
+          {
+            title: "Rodaje - Foto 7",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.25.jpeg?updatedAt=1778779821375",
+            sortOrder: 7,
+            isCover: false,
+            takenAt: rodajeEventDate,
+          },
+          {
+            title: "Rodaje - Foto 8",
+            caption: "Photo: Sugarbay Media Team - Rodaje 1/3/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-1-3-26/WhatsApp%20Image%202026-03-01%20at%2018.59.23.jpeg?updatedAt=1778779821409",
+            sortOrder: 8,
+            isCover: false,
+            takenAt: rodajeEventDate,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.photoAlbum.create({
+    data: {
+      title: "Rodaje",
+      slug: "rodaje-26-4-26",
+      description: "Coleccion oficial del rodaje realizado el 26/4/26.",
+      coverImageUrl:
+        "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/ChatGPT%20Image%2014%20may%202026,%2018_39_08.png?updatedAt=1778780363443",
+      eventDate: rodajeAprilEventDate,
+      sortOrder: 3,
+      photos: {
+        create: [
+          {
+            title: "Rodaje 26/4/26 - Foto 1",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2021.54.15.jpeg?updatedAt=1778779807688",
+            sortOrder: 1,
+            isCover: true,
+            takenAt: rodajeAprilEventDate,
+          },
+          {
+            title: "Rodaje 26/4/26 - Foto 2",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2020.42.05.jpeg?updatedAt=1778779807669",
+            sortOrder: 2,
+            isCover: false,
+            takenAt: rodajeAprilEventDate,
+          },
+          {
+            title: "Rodaje 26/4/26 - Foto 3",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2020.42.22.jpeg?updatedAt=1778779807677",
+            sortOrder: 3,
+            isCover: false,
+            takenAt: rodajeAprilEventDate,
+          },
+          {
+            title: "Rodaje 26/4/26 - Foto 4",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2020.54.03.jpeg?updatedAt=1778779807667",
+            sortOrder: 4,
+            isCover: false,
+            takenAt: rodajeAprilEventDate,
+          },
+          {
+            title: "Rodaje 26/4/26 - Foto 5",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2020.42.32.jpeg?updatedAt=1778779807663",
+            sortOrder: 5,
+            isCover: false,
+            takenAt: rodajeAprilEventDate,
+          },
+          {
+            title: "Rodaje 26/4/26 - Foto 6",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2020.42.16.jpeg?updatedAt=1778779807648",
+            sortOrder: 6,
+            isCover: false,
+            takenAt: rodajeAprilEventDate,
+          },
+          {
+            title: "Rodaje 26/4/26 - Foto 7",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2020.51.34.jpeg?updatedAt=1778779807597",
+            sortOrder: 7,
+            isCover: false,
+            takenAt: rodajeAprilEventDate,
+          },
+          {
+            title: "Rodaje 26/4/26 - Foto 8",
+            caption: "Photo: Sugarbay Media Team - Rodaje 26/4/26.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Rodaje-26-4-26/WhatsApp%20Image%202026-04-26%20at%2020.41.47.jpeg?updatedAt=1778779807453",
+            sortOrder: 8,
+            isCover: false,
+            takenAt: rodajeAprilEventDate,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.photoAlbum.create({
+    data: {
+      title: "Crime City",
+      slug: "crime-city",
+      description: "Coleccion oficial de fotos de Crime City.",
+      coverImageUrl:
+        "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/ChatGPT%20Image%2014%20may%202026,%2019_27_26.png",
+      sortOrder: 4,
+      photos: {
+        create: [
+          {
+            title: "Crime City - Foto 1",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/IMG-20200729-WA0031.jpg?updatedAt=1778530808142",
+            sortOrder: 1,
+            isCover: true,
+          },
+          {
+            title: "Crime City - Foto 2",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-108.JPG?updatedAt=1778530808329",
+            sortOrder: 2,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 3",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-120.JPG?updatedAt=1778530808482",
+            sortOrder: 3,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 4",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-121.JPG?updatedAt=1778530808417",
+            sortOrder: 4,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 5",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-186.JPG?updatedAt=1778530863288",
+            sortOrder: 5,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 6",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-149.JPG?updatedAt=1778530863546",
+            sortOrder: 6,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 7",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-146.JPG?updatedAt=1778530863507",
+            sortOrder: 7,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 8",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-151.JPG?updatedAt=1778530863503",
+            sortOrder: 8,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 9",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-244.JPG?updatedAt=1778530964974",
+            sortOrder: 9,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 10",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-171.JPG?updatedAt=1778530965110",
+            sortOrder: 10,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 11",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-243.JPG?updatedAt=1778530965098",
+            sortOrder: 11,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 12",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-322.JPG?updatedAt=1778530996612",
+            sortOrder: 12,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 13",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-201.JPG?updatedAt=1778531027246",
+            sortOrder: 13,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 14",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-199.JPG?updatedAt=1778531027195",
+            sortOrder: 14,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 15",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-262.JPG?updatedAt=1778531027199",
+            sortOrder: 15,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 16",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-221.JPG?updatedAt=1778531027210",
+            sortOrder: 16,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 17",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-262.JPG?updatedAt=1778531027207",
+            sortOrder: 17,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 18",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-234.JPG?updatedAt=1778531027269",
+            sortOrder: 18,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 19",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-281.JPG?updatedAt=1778531068526",
+            sortOrder: 19,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 20",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-282.JPG?updatedAt=1778531068544",
+            sortOrder: 20,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 21",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/S-272.JPG?updatedAt=1778531068547",
+            sortOrder: 21,
+            isCover: false,
+          },
+          {
+            title: "Crime City - Foto 22",
+            caption: "Photo: Sugarbay Media Team - Crime City.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Crime%20City/C-283.JPG?updatedAt=1778531068621",
+            sortOrder: 22,
+            isCover: false,
+          },
+        ],
+      },
+    },
+  });
+
+  await prisma.photoAlbum.create({
+    data: {
+      title: "Fishville",
+      slug: "fishville",
+      description: "Coleccion oficial de fotos de Fishville.",
+      coverImageUrl:
+        "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/ChatGPT%20Image%2014%20may%202026,%2019_34_29.png",
+      sortOrder: 5,
+      photos: {
+        create: [
+          {
+            title: "Fishville - Foto 1",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000403.JPG?updatedAt=1778532167651",
+            sortOrder: 1,
+            isCover: true,
+          },
+          {
+            title: "Fishville - Foto 2",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000457.JPG?updatedAt=1778532167568",
+            sortOrder: 2,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 3",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000452.JPG?updatedAt=1778532167502",
+            sortOrder: 3,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 4",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000462.JPG?updatedAt=1778532167456",
+            sortOrder: 4,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 5",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000447.JPG?updatedAt=1778532167449",
+            sortOrder: 5,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 6",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/IMG_20210608_191823.jpg?updatedAt=1778532167341",
+            sortOrder: 6,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 7",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000400.JPG?updatedAt=1778532167204",
+            sortOrder: 7,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 8",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000429.JPG?updatedAt=1778532167071",
+            sortOrder: 8,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 9",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000436.JPG?updatedAt=1778532167031",
+            sortOrder: 9,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 10",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000418.JPG?updatedAt=1778532167049",
+            sortOrder: 10,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 11",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000432.JPG?updatedAt=1778532167207",
+            sortOrder: 11,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 12",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000465.JPG?updatedAt=1778532167006",
+            sortOrder: 12,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 13",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000441.JPG?updatedAt=1778532166961",
+            sortOrder: 13,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 14",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000430.JPG?updatedAt=1778532167109",
+            sortOrder: 14,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 15",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000378.JPG?updatedAt=1778532166901",
+            sortOrder: 15,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 16",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000408.JPG?updatedAt=1778532167019",
+            sortOrder: 16,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 17",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000409.JPG?updatedAt=1778532166937",
+            sortOrder: 17,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 18",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000445.JPG?updatedAt=1778532166815",
+            sortOrder: 18,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 19",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000411.JPG?updatedAt=1778532166828",
+            sortOrder: 19,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 20",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000407.JPG?updatedAt=1778532166871",
+            sortOrder: 20,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 21",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/WhatsApp%20Image%202021-06-10%20at%2014.57.17.jpeg?updatedAt=1778532166666",
+            sortOrder: 21,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 22",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22319_websize.jpg?updatedAt=1778532166637",
+            sortOrder: 22,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 23",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/P1000375.JPG?updatedAt=1778532166625",
+            sortOrder: 23,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 24",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22331_websize.jpg?updatedAt=1778532166423",
+            sortOrder: 24,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 25",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22317_websize.jpg?updatedAt=1778532166418",
+            sortOrder: 25,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 26",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22312_websize.jpg?updatedAt=1778532165160",
+            sortOrder: 26,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 27",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22313_websize.jpg?updatedAt=1778532165133",
+            sortOrder: 27,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 28",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22318_websize.jpg?updatedAt=1778532165091",
+            sortOrder: 28,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 29",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22330_websize.jpg?updatedAt=1778532165003",
+            sortOrder: 29,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 30",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22316_websize.jpg?updatedAt=1778532164987",
+            sortOrder: 30,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 31",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22314_websize.jpg?updatedAt=1778532165007",
+            sortOrder: 31,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 32",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22315_websize.jpg?updatedAt=1778532164984",
+            sortOrder: 32,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 33",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22327_websize.jpg?updatedAt=1778532164995",
+            sortOrder: 33,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 34",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22326_websize.jpg?updatedAt=1778532165000",
+            sortOrder: 34,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 35",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/toxos%20videoclip22328_websize.jpg?updatedAt=1778532164954",
+            sortOrder: 35,
+            isCover: false,
+          },
+          {
+            title: "Fishville - Foto 36",
+            caption: "Photo: Sugarbay Media Team - Fishville.",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/media/fotos/Fishville/WhatsApp%20Image%202021-06-10%20at%2013.50.54.jpeg?updatedAt=1778532164749",
+            sortOrder: 36,
+            isCover: false,
           },
         ],
       },
