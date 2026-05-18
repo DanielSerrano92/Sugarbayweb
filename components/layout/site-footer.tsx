@@ -2,32 +2,30 @@ import Image from "next/image";
 import Link from "next/link";
 
 import FooterCookieTrigger from "./footer-cookie-trigger";
+import FooterHelpTrigger from "./footer-help-trigger";
+import FooterContactTrigger from "./footer-contact-trigger";
 import FooterTermsTrigger from "./footer-terms-trigger";
 
 const FOOTER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo2.png?updatedAt=1779020800274";
-const COPYRIGHT_YEAR = 2026;
+const FOOTER_YEAR = 2026;
 
-const primaryLinks = [
-  { label: "Tienda", href: "/store" },
-  { label: "Conciertos", href: "/concerts/upcoming" },
-  { label: "Fanclub", href: "/fanclub" },
-  { label: "Mi cuenta", href: "/account" },
-] as const;
-
-const legalLinks = [
-  { id: "help", label: "Ayuda", href: "#" },
-  { id: "returns", label: "Devoluciones", href: "#" },
-  { id: "credits", label: "Creditos", href: "#" },
-  { id: "terms", label: "Términos", href: "#" },
-  { id: "privacy", label: "Privacidad", href: "#" },
-  { id: "cookies", label: "Cookies", href: "#" },
-  { id: "accessibility", label: "Accesibilidad", href: "#" },
+const infoLinks = [
+  { id: "help", label: "AYUDA", href: "#" },
+  { id: "terms", label: "TERMINOS Y CONDICIONES", href: "#" },
+  { id: "cookies", label: "COOKIES", href: "#" },
+  { id: "contact", label: "CONTACTO", href: "#" },
 ] as const;
 
 const socialLinks = [
-  { label: "Instagram", href: "#" },
-  { label: "YouTube", href: "#" },
-  { label: "Spotify", href: "#" },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/sugarbaystudios?igsh=ZzM2dGFyeTNuaXVk",
+  },
+  { label: "YouTube", href: "https://www.youtube.com/@SugarBayStudios" },
+  {
+    label: "Spotify",
+    href: "https://open.spotify.com/intl-es/artist/4nutTW6L6naDtwQ7cW2zi1",
+  },
 ] as const;
 
 function InstagramIcon() {
@@ -35,7 +33,7 @@ function InstagramIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-10 w-10 sm:h-11 sm:w-11"
+      className="h-11 w-11 sm:h-12 sm:w-12 md:h-[3.1rem] md:w-[3.1rem] xl:h-[3.35rem] xl:w-[3.35rem]"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.9"
@@ -54,7 +52,7 @@ function YouTubeIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-10 w-10 sm:h-11 sm:w-11"
+      className="h-11 w-11 sm:h-12 sm:w-12 md:h-[3.1rem] md:w-[3.1rem] xl:h-[3.35rem] xl:w-[3.35rem]"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.9"
@@ -72,10 +70,10 @@ function SpotifyIcon() {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className="h-10 w-10 sm:h-11 sm:w-11"
+      className="h-11 w-11 sm:h-12 sm:w-12 md:h-[3.1rem] md:w-[3.1rem] xl:h-[3.35rem] xl:w-[3.35rem]"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.9"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -93,225 +91,107 @@ function SocialIcon({ label }: { label: (typeof socialLinks)[number]["label"] })
   return <SpotifyIcon />;
 }
 
-function PlayIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 20 20"
-      className="h-3.5 w-3.5"
-      fill="currentColor"
-      shapeRendering="crispEdges"
-    >
-      <path d="M4 2.6 16.2 10 4 17.4V2.6Z" />
-    </svg>
-  );
-}
-
-function SpeakerIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-[18px] w-[18px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-      shapeRendering="crispEdges"
-    >
-      <path d="M3 10h4l5-4v12l-5-4H3v-4Z" />
-      <path d="M16 9c1.2.8 2 1.9 2 3s-.8 2.2-2 3" />
-      <path d="M18.6 7c1.9 1.4 3 3.2 3 5s-1.1 3.6-3 5" />
-    </svg>
-  );
-}
-
-function ScreenIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-[18px] w-[18px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="square"
-      strokeLinejoin="miter"
-      shapeRendering="crispEdges"
-    >
-      <rect x="3" y="4" width="18" height="12" />
-      <path d="M8 20h8M12 16v4" />
-    </svg>
-  );
-}
-
 function socialColorClass(label: (typeof socialLinks)[number]["label"]): string {
   if (label === "Instagram") return "text-[#ff56d8]";
-  if (label === "YouTube") return "text-[#ff5f8f]";
+  if (label === "YouTube") return "text-[#ff3030]";
   return "text-[#4dff9a]";
-}
-
-function socialGlowClass(label: (typeof socialLinks)[number]["label"]): string {
-  if (label === "Instagram") {
-    return "[filter:drop-shadow(0_0_7px_rgba(255,86,216,0.92))_drop-shadow(0_0_13px_rgba(255,86,216,0.62))]";
-  }
-  if (label === "YouTube") {
-    return "[filter:drop-shadow(0_0_7px_rgba(255,95,143,0.92))_drop-shadow(0_0_13px_rgba(255,95,143,0.62))]";
-  }
-  return "[filter:drop-shadow(0_0_7px_rgba(77,255,154,0.94))_drop-shadow(0_0_13px_rgba(77,255,154,0.64))]";
 }
 
 export default function SiteFooter() {
   return (
-    <footer className="mt-auto w-full overflow-hidden bg-[linear-gradient(180deg,#07031a_0%,#03010f_100%)] text-zinc-100">
-      <div aria-hidden="true" className="h-[2px] w-full bg-gradient-to-r from-[#ff4ed0] via-[#7f5cff] to-[#42d7ff]" />
-
-      <div className="w-full px-0 pb-0 pt-0">
-        <div className="w-full border-2 border-[#d7d7d7] bg-[#b8b8b8] p-1 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#4a4a4a,0_0_16px_rgba(255,80,214,0.38),0_0_24px_rgba(68,214,255,0.22)]">
-          <div className="border border-[#6d6d6d] bg-[#c8c8c8] p-1 shadow-[inset_1px_1px_0_#ededed,inset_-1px_-1px_0_#696969]">
-            <div className="grid gap-1 lg:grid-cols-[220px_minmax(0,1fr)_220px]">
-              <section className="h-full border border-[#6f6f6f] bg-[#090327] p-1 shadow-[inset_1px_1px_0_rgba(255,255,255,0.2),inset_-1px_-1px_0_rgba(45,20,95,0.9)]">
-                <div className="flex h-full items-center justify-center border border-[#8a76cc] bg-[#0f0733] p-1 shadow-[inset_1px_1px_0_rgba(255,255,255,0.18),inset_-1px_-1px_0_rgba(20,12,56,0.95),0_0_12px_rgba(255,79,213,0.25)]">
-                  <Link
-                    href="/"
-                    aria-label="Ir al inicio de Sugarbay"
-                    className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#62ddff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0733]"
-                  >
-                    <Image
-                      src={FOOTER_LOGO_SRC}
-                      alt="Sugarbay logo"
-                      width={520}
-                      height={180}
-                      sizes="(max-width: 1023px) 165px, 190px"
-                      className="mx-auto h-[64px] w-auto max-w-full object-contain drop-shadow-[0_0_10px_rgba(255,87,218,0.48)] transition duration-200 motion-safe:group-hover:-translate-y-0.5 group-hover:brightness-110 group-hover:drop-shadow-[0_0_14px_rgba(103,232,249,0.6)] sm:h-[72px] lg:h-[78px]"
-                    />
-                  </Link>
-                </div>
-              </section>
-
-              <section className="h-full border border-[#6f6f6f] bg-[#090327] p-1 shadow-[inset_1px_1px_0_rgba(255,255,255,0.2),inset_-1px_-1px_0_rgba(45,20,95,0.9)]">
-                <div className="relative isolate flex h-full flex-col justify-center overflow-hidden border border-[#7e6ec3] bg-[#0d0630] px-2 py-1.5 shadow-[inset_1px_1px_0_rgba(255,255,255,0.18),inset_-1px_-1px_0_rgba(25,14,73,0.92)] before:pointer-events-none before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:content-[''] before:bg-gradient-to-r before:from-transparent before:via-[#67e7ff]/25 before:to-transparent before:opacity-0 before:animate-[sb-footer-sheen_5.8s_ease-in-out_infinite] motion-reduce:before:animate-none sm:px-4">
-                  <nav aria-label="Navegacion principal del pie de pagina" className="sr-only">
-                    <ul>
-                      {primaryLinks.map((link) => (
-                        <li key={link.href}>
-                          <Link href={link.href}>{link.label}</Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-
-                  <nav aria-label="Enlaces legales del pie de pagina" className="flex justify-center">
-                    <ul className="mx-auto flex w-full max-w-[58rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[0.74rem] font-bold uppercase tracking-[0.08em] text-[#f4f0ff] sm:text-[0.82rem] lg:justify-between lg:gap-x-4">
-                      {legalLinks.map((link) => (
-                        <li key={link.id} className="flex min-h-[1.7rem] items-center justify-center">
-                          <span
-                            className="mr-1.5 h-1.5 w-1.5 bg-[#ff55cf] shadow-[0_0_8px_rgba(255,85,207,0.9)]"
-                            aria-hidden="true"
-                          />
-                          {link.id === "terms" ? (
-                            <FooterTermsTrigger
-                              label={link.label}
-                              className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
-                            />
-                          ) : link.id === "cookies" ? (
-                            <FooterCookieTrigger
-                              label={link.label}
-                              className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
-                            />
-                          ) : (
-                            <Link
-                              href={link.href}
-                              className="leading-none transition-[color,text-shadow,transform] duration-200 [text-shadow:0_0_9px_rgba(255,96,220,0.22)] motion-safe:hover:-translate-y-[1px] hover:text-[#ff9de7] hover:[text-shadow:0_0_10px_rgba(255,104,218,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630]"
-                            >
-                              {link.label}
-                            </Link>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-
-                </div>
-              </section>
-
-              <section className="h-full border border-[#6f6f6f] bg-[#090327] p-1 shadow-[inset_1px_1px_0_rgba(255,255,255,0.2),inset_-1px_-1px_0_rgba(45,20,95,0.9)]">
-                <div className="flex h-full items-center border border-[#7e6ec3] bg-[#0d0630] p-1 shadow-[inset_1px_1px_0_rgba(255,255,255,0.18),inset_-1px_-1px_0_rgba(25,14,73,0.92)]">
-                  <div className="flex w-full items-center justify-between gap-1">
-                    {socialLinks.map((link, index) => (
-                      <Link
-                        key={link.label}
-                        href={link.href}
-                        aria-label={`${link.label} de Sugarbay`}
-                        className="group inline-flex h-[56px] w-[56px] items-center justify-center border border-[#858585] bg-[linear-gradient(180deg,#e6e6e6_0%,#c8c8c8_100%)] p-[3px] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] transition-transform duration-200 motion-safe:hover:-translate-y-[2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7ce8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0630] sm:h-[62px] sm:w-[62px]"
-                      >
-                        <span
-                          className={`flex h-full w-full items-center justify-center border border-[#4b3f7c] bg-[linear-gradient(180deg,#150747_0%,#090327_100%)] shadow-[inset_1px_1px_0_rgba(176,146,255,0.5),inset_-1px_-1px_0_rgba(16,8,52,0.96),0_0_8px_rgba(126,92,255,0.35)] transition-[filter,transform,box-shadow] duration-200 motion-safe:animate-[sb-footer-icon-breathe_4.8s_ease-in-out_infinite] motion-reduce:animate-none motion-safe:group-hover:scale-[1.06] motion-safe:group-hover:brightness-110 ${socialColorClass(link.label)} ${socialGlowClass(link.label)}`}
-                          style={{ animationDelay: `${index * 140}ms` }}
-                        >
-                          <SocialIcon label={link.label} />
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            </div>
-
-            <div className="mt-1.5 border-t border-[#757575] pt-1.5">
-              <div className="grid gap-1.5 lg:grid-cols-[220px_minmax(0,1fr)_220px]">
-              <div className="border border-[#767676] bg-[linear-gradient(180deg,#e0e0e0_0%,#cdcdcd_100%)] p-1 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#858585]">
+    <footer className="mt-auto w-full bg-[#bdbdbd] text-[#101010]">
+      <div className="w-full border-y border-[#d6d6d6] bg-[#bdbdbd] px-2 py-2.5 sm:px-3 sm:py-3">
+        <div className="w-full border border-[#696969] bg-[linear-gradient(180deg,#d4d4d4_0%,#c6c6c6_100%)] p-1 shadow-[inset_1px_1px_0_#f8f8f8,inset_-1px_-1px_0_#878787]">
+          <div className="w-full border border-[#737373] bg-[linear-gradient(180deg,#d5d5d5_0%,#c9c9c9_100%)] shadow-[inset_1px_1px_0_#f2f2f2,inset_-1px_-1px_0_#8b8b8b]">
+            <div className="grid min-h-[132px] w-full grid-cols-1 xl:min-h-[146px] xl:grid-cols-[auto_minmax(0,1fr)_auto]">
+              <section className="flex min-w-0 items-center justify-center gap-3.5 border-b border-[#878787] px-4 py-4 sm:gap-4 sm:px-5 xl:justify-start xl:border-b-0 xl:border-r xl:pr-6">
                 <Link
                   href="/"
-                  className="flex min-h-[2.5rem] items-center justify-center border border-[#7f7f7f] bg-[linear-gradient(180deg,#efefef_0%,#d4d4d4_100%)] px-2 py-0.5 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#9a9a9a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff]"
-                  aria-label="Inicio Sugarbay"
+                  aria-label="Ir al inicio de Sugarbay"
+                  className="group inline-flex shrink-0 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#62ddff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
                 >
-                  <span className="font-retro-pixel text-[0.62rem] font-black uppercase tracking-[0.08em] text-[#ff45cf] [text-shadow:0_0_7px_rgba(255,69,207,0.72),0_0_13px_rgba(186,118,255,0.55)] sm:text-[0.68rem]">
-                    &copy; {COPYRIGHT_YEAR} Sugarbay
-                  </span>
+                  <Image
+                    src={FOOTER_LOGO_SRC}
+                    alt="Sugarbay logo"
+                    width={520}
+                    height={180}
+                    sizes="(max-width: 1023px) 190px, 250px"
+                    className="h-[64px] w-auto object-contain drop-shadow-[0_0_8px_rgba(255,87,218,0.32)] transition duration-200 motion-safe:group-hover:brightness-110 sm:h-[74px] md:h-[80px] xl:h-[88px]"
+                  />
                 </Link>
-              </div>
+                <p className="truncate font-retro-pixel text-[1.02rem] font-black uppercase tracking-[0.05em] text-[#121212] sm:text-[1.15rem] md:text-[1.3rem] xl:text-[1.48rem]">
+                  SUGARBAY
+                </p>
+              </section>
 
-              <div className="border border-[#6d6d6d] bg-[#0b0330] p-1 shadow-[inset_1px_1px_0_rgba(255,255,255,0.18),inset_-1px_-1px_0_rgba(31,14,79,0.92)]">
-                <div className="flex min-h-[2.5rem] items-center justify-between gap-3 border border-[#7864c3] bg-[#120640] px-2.5">
-                  <div aria-hidden="true" className="flex items-end gap-1">
-                    {[8, 12, 16, 10, 20, 12, 17, 9].map((height, index) => (
-                      <span
-                        key={`eq-${index}`}
-                        className="w-1 bg-gradient-to-t from-[#3fa9ff] via-[#8f5eff] to-[#ff57d0]"
-                        style={{ height }}
-                      />
+              <section className="flex min-w-0 items-center justify-center border-b border-[#878787] px-4 py-3.5 xl:border-b-0 xl:px-5">
+                <nav aria-label="Enlaces del pie de pagina" className="w-full">
+                  <ul className="mx-auto flex w-full max-w-[1100px] flex-wrap items-center justify-center gap-x-2 gap-y-2 font-retro-pixel text-[0.74rem] font-black uppercase tracking-[0.03em] text-[#141414] sm:text-[0.84rem] md:text-[0.9rem] lg:gap-x-2.5 lg:text-[0.96rem] xl:text-[1.03rem]">
+                    {infoLinks.map((link, index) => (
+                      <li
+                        key={link.id}
+                        className={[
+                          "inline-flex items-center whitespace-nowrap",
+                          index > 0
+                            ? "before:mx-2 before:h-5 before:w-px before:bg-[#bb35ce] before:content-['']"
+                            : "",
+                        ].join(" ")}
+                      >
+                        {link.id === "help" ? (
+                          <FooterHelpTrigger
+                            label={link.label}
+                            className="leading-none transition-[color,text-shadow] duration-200 hover:text-[#9a00b0] hover:[text-shadow:0_0_8px_rgba(255,95,223,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
+                          />
+                        ) : link.id === "terms" ? (
+                          <FooterTermsTrigger
+                            label={link.label}
+                            className="leading-none transition-[color,text-shadow] duration-200 hover:text-[#9a00b0] hover:[text-shadow:0_0_8px_rgba(255,95,223,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
+                          />
+                        ) : link.id === "cookies" ? (
+                          <FooterCookieTrigger
+                            label={link.label}
+                            className="leading-none transition-[color,text-shadow] duration-200 hover:text-[#9a00b0] hover:[text-shadow:0_0_8px_rgba(255,95,223,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
+                          />
+                        ) : link.id === "contact" ? (
+                          <FooterContactTrigger
+                            label={link.label}
+                            className="leading-none transition-[color,text-shadow] duration-200 hover:text-[#9a00b0] hover:[text-shadow:0_0_8px_rgba(255,95,223,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
+                          />
+                        ) : (
+                          <Link
+                            href={link.href}
+                            className="leading-none transition-[color,text-shadow] duration-200 hover:text-[#9a00b0] hover:[text-shadow:0_0_8px_rgba(255,95,223,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
+                          >
+                            {link.label}
+                          </Link>
+                        )}
+                      </li>
                     ))}
-                  </div>
-                  <p className="min-w-0 truncate text-center font-retro-pixel text-[0.64rem] uppercase tracking-[0.08em] sm:text-[0.7rem]">
-                    <span className="text-[#ff79dd] [text-shadow:0_0_8px_rgba(255,121,221,0.75),0_0_14px_rgba(255,85,207,0.55)]">
-                      Now playing:
-                    </span>{" "}
-                    <span className="text-[#b986ff] [text-shadow:0_0_8px_rgba(185,134,255,0.8),0_0_14px_rgba(129,88,255,0.6)]">
-                      Midnight Frequency
-                    </span>
+                  </ul>
+                  <p className="mt-2 text-center font-retro-pixel text-[0.74rem] font-black uppercase tracking-[0.03em] text-[#151515] sm:text-[0.84rem] md:text-[0.9rem] lg:text-[0.96rem] xl:text-[1.03rem]">
+                    @SUGARBAY {FOOTER_YEAR}
                   </p>
-                  <span className="text-[#b986ff]" aria-hidden="true">
-                    <PlayIcon />
-                  </span>
-                </div>
-              </div>
+                </nav>
+              </section>
 
-              <div className="border border-[#767676] bg-[linear-gradient(180deg,#e0e0e0_0%,#cdcdcd_100%)] p-1 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#858585]">
-                <div className="grid min-h-[2.5rem] grid-cols-[1fr_1fr_auto] items-center border border-[#7f7f7f] bg-[linear-gradient(180deg,#efefef_0%,#d4d4d4_100%)] px-2 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#9a9a9a]">
-                  <span className="inline-flex items-center justify-center text-[#262626]" aria-hidden="true">
-                    <SpeakerIcon />
-                  </span>
-                  <span className="inline-flex items-center justify-center text-[#1f2e5f]" aria-hidden="true">
-                    <ScreenIcon />
-                  </span>
-                  <span className="pl-1 font-retro-pixel text-[0.72rem] uppercase tracking-[0.08em] text-[#111]">
-                    23:45
-                  </span>
-                </div>
-              </div>
-            </div>
+              <section className="flex items-center justify-center gap-3.5 px-4 py-4 xl:border-l xl:border-[#878787] xl:pl-5 xl:pr-5">
+                {socialLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    aria-label={`${link.label} de Sugarbay`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex h-[70px] w-[70px] items-center justify-center border border-[#858585] bg-[linear-gradient(180deg,#ededed_0%,#cdcdcd_100%)] p-[4px] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#747474] transition-transform duration-200 motion-safe:hover:-translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc] sm:h-[78px] sm:w-[78px] md:h-[84px] md:w-[84px] xl:h-[92px] xl:w-[92px]"
+                  >
+                    <span
+                      className={`flex h-full w-full items-center justify-center border border-[#6e6e6e] bg-[linear-gradient(180deg,#ececec_0%,#d6d6d6_100%)] shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#949494] transition duration-200 motion-safe:group-hover:brightness-105 ${socialColorClass(link.label)}`}
+                    >
+                      <SocialIcon label={link.label} />
+                    </span>
+                  </Link>
+                ))}
+              </section>
             </div>
           </div>
         </div>
