@@ -1,0 +1,85 @@
+﻿1. Objetivo de la tarea
+Corregir el bug por el cual el modal de login no se vuelve a abrir al reintentar "Anadir al carrito" sin sesion, despues de haber cerrado el modal previamente.
+
+2. Descripcion del bug
+En usuarios no autenticados, el primer clic en "Anadir al carrito" abre login modal correctamente, pero tras cerrar el modal, un segundo clic en el mismo producto ya no vuelve a abrir el login.
+
+3. Pasos para reproducir el error
+1. Entrar sin sesion iniciada.
+2. Ir a un producto con boton "Anadir al carrito".
+3. Clicar "Anadir al carrito" (se abre login modal).
+4. Cerrar el modal sin autenticar.
+5. Volver a clicar "Anadir al carrito".
+6. Resultado previo al fix: no se abre nada.
+
+4. Causa tecnica encontrada
+El efecto que abre el modal de login dependia de valores primitivos (`state.status`, `state.redirectTo`, `authRedirectTo`).
+Cuando el segundo intento devolvia otra vez `auth_required` con el mismo `redirectTo`, esas dependencias no cambiaban y el `useEffect` no se ejecutaba de nuevo.
+
+5. Archivos revisados
+- `components/shop/add-to-cart-form.tsx`
+- `components/store/store-product-purchase-form.tsx`
+- `components/layout/header-client.tsx`
+- `components/auth/auth-modal-panel.tsx`
+- `components/auth/auth-modal.tsx`
+- `lib/auth/events.ts`
+- `lib/cart/actions.ts`
+
+6. Archivos modificados
+- `components/shop/add-to-cart-form.tsx`
+- `components/store/store-product-purchase-form.tsx`
+
+7. Cambios realizados paso a paso
+1. Se reviso el flujo de estado de `useActionState` en ambos formularios de anadir al carrito.
+2. Se detecto que el efecto de apertura de login solo dependia de campos que podian repetirse sin cambios entre intentos.
+3. Se actualizaron dependencias de efectos para reaccionar a cada nueva respuesta de accion (`state` completo).
+4. Se aplico el mismo criterio al efecto de exito para mantener consistencia de disparo por respuesta.
+
+8. Como se corrige el estado del modal de login
+El modal sigue abriendose por evento (`dispatchAuthModalOpen`) pero ahora el efecto se vuelve a ejecutar en cada nueva respuesta `auth_required`, aunque `status` y `redirectTo` repitan valor.
+
+9. Como se limpia el estado al cerrar login
+El cierre del modal sigue gestionado por `HeaderClient` (`onClose`), que deja `authModalOpen` en `false` y limpia `authRedirectTo`.
+No se introducen flags adicionales; el estado queda listo para reintentos.
+
+10. Como se evita que el boton quede bloqueado
+Los botones de anadir usan `useFormStatus().pending`.
+Al terminar la Server Action, `pending` vuelve a `false` y el boton se rehabilita.
+No se dejo ningun loading persistente.
+
+11. Confirmacion de que no se redirige a pagina de login
+Se mantiene flujo modal por evento custom (`dispatchAuthModalOpen`).
+No se introdujo navegacion a `/login` desde los formularios de carrito.
+
+12. Confirmacion de que usuario autenticado sigue pudiendo anadir al carrito
+No se cambio la logica de alta en carrito para usuarios autenticados.
+Cuando `addToCartAction` devuelve `success`, se mantiene el flujo actual (refresh + apertura de modal carrito cuando aplica).
+
+13. Errores encontrados durante la correccion
+1. `npm run build` falla en sandbox sin red por descarga de Google Fonts (`Press Start 2P`).
+
+14. Como se solucionaron
+1. Se ejecuto `npm run build` con permisos de red autorizados para validar compilacion real.
+
+15. Pruebas manuales realizadas
+- Verificacion tecnica del flujo de estados y dependencias en los dos formularios afectados.
+- Verificacion de que no se altero el flujo modal de autenticacion.
+- Validacion de compilacion/lint tras cambios.
+
+16. Resultado de cada prueba
+1. Dependencias del efecto de login: corregidas para disparo en reintento.
+2. Flujo modal de login: se mantiene por evento (sin redireccion a pagina).
+3. Flujo autenticado de carrito: sin cambios funcionales.
+4. Calidad de codigo: lint y build correctos (build con red autorizada).
+
+17. Resultado de `npm run lint`
+- OK (sin errores).
+- Warning preexistente:
+  - `lib/media/video.ts:62` -> `parseYouTubeVideoId` definido y no usado.
+
+18. Resultado de `npm run build`
+- OK (compilacion correcta con acceso de red).
+- En sandbox sin red: falla la descarga de Google Fonts.
+
+19. Resultado final
+El bug queda corregido: cada intento de "Anadir al carrito" sin sesion vuelve a abrir el modal de login, incluso despues de cerrarlo previamente, sin recargar pagina y sin romper el flujo de carrito para usuarios autenticados.

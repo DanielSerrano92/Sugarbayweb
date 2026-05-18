@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import AuthModalPanel, { type AuthMode } from "@/components/auth/auth-modal-panel";
@@ -12,7 +13,7 @@ import {
   AUTH_MODAL_OPEN_EVENT,
   type AuthModalOpenEventDetail,
 } from "@/lib/auth/events";
-import { CART_CLEARED_EVENT } from "@/lib/cart/events";
+import { CART_CLEARED_EVENT, CART_DRAWER_OPEN_EVENT } from "@/lib/cart/events";
 import { mainNavigation, type NavItem } from "@/lib/services/navigation";
 
 type HeaderClientProps = {
@@ -122,6 +123,9 @@ export default function HeaderClient({
   cart,
   currentUser,
 }: HeaderClientProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [visibleCart, setVisibleCart] = useState(cart);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -144,6 +148,29 @@ export default function HeaderClient({
   useEffect(() => {
     setVisibleCart(cart);
   }, [cart]);
+
+  useEffect(() => {
+    if (pathname !== "/store") return;
+    if (searchParams.get("cart") !== "open") return;
+
+    setCartDrawerOpen(true);
+
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.delete("cart");
+
+    const nextQuery = nextParams.toString();
+    const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+    router.replace(nextUrl, { scroll: false });
+  }, [pathname, router, searchParams]);
+
+  useEffect(() => {
+    const handleCartDrawerOpen = () => {
+      setCartDrawerOpen(true);
+    };
+
+    window.addEventListener(CART_DRAWER_OPEN_EVENT, handleCartDrawerOpen);
+    return () => window.removeEventListener(CART_DRAWER_OPEN_EVENT, handleCartDrawerOpen);
+  }, []);
 
   useEffect(() => {
     function handleCartCleared() {

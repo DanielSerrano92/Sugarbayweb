@@ -86,8 +86,8 @@ const SEARCH_PAGES: SearchPageEntry[] = [
   {
     id: "cart",
     title: "Carrito",
-    href: "/carrito",
-    description: "Revisa productos antes de checkout.",
+    href: "/store?cart=open",
+    description: "Abre el carrito modal para revisar productos antes de checkout.",
     keywords: ["carrito", "cart", "compra"],
   },
   {

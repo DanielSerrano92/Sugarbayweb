@@ -832,7 +832,7 @@ export default function CheckoutFlow({
               {isSubmitting ? "Redirigiendo a Stripe..." : "Continuar a pago seguro"}
             </button>
 
-            <Link href="/carrito" className="retro-card-action w-full">
+            <Link href="/store?cart=open" className="retro-card-action w-full">
               Volver al carrito
             </Link>
           </div>

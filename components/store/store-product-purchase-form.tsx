@@ -1,11 +1,12 @@
 "use client";
 
 import { useActionState, useEffect, useMemo } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFormStatus } from "react-dom";
 
 import { dispatchAuthModalOpen } from "@/lib/auth/events";
 import { addToCartAction, type AddToCartActionState } from "@/lib/cart/actions";
+import { dispatchCartDrawerOpen } from "@/lib/cart/events";
 import type { StoreProductDetail } from "@/lib/store/types";
 
 type StoreProductPurchaseFormProps = {
@@ -50,6 +51,7 @@ function SubmitButton() {
 export default function StoreProductPurchaseForm({
   product,
 }: StoreProductPurchaseFormProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [state, formAction] = useActionState(addToCartAction, initialState);
@@ -70,7 +72,16 @@ export default function StoreProductPurchaseForm({
       mode: "login",
       redirectTo: state.redirectTo ?? authRedirectTo,
     });
-  }, [authRedirectTo, state.redirectTo, state.status]);
+  }, [authRedirectTo, state]);
+
+  useEffect(() => {
+    if (state.status !== "success") return;
+
+    router.refresh();
+    if (!state.redirectTo) {
+      dispatchCartDrawerOpen();
+    }
+  }, [router, state]);
 
   if (product.variants.length === 0) {
     return (
@@ -104,7 +115,7 @@ export default function StoreProductPurchaseForm({
   return (
     <form action={formAction} className="retro-concert-meta-item space-y-3">
       <input type="hidden" name="productId" value={product.id} />
-      <input type="hidden" name="redirectTo" value="/carrito" />
+      <input type="hidden" name="redirectTo" value="/store?cart=open" />
       <input type="hidden" name="authRedirectTo" value={authRedirectTo} />
 
       {showSizeSelector ? (

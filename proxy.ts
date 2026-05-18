@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { SESSION_COOKIE_NAME } from "@/lib/auth/constants";
 
-const protectedRoutes = ["/account", "/cuenta", "/carrito", "/checkout"];
+const protectedRoutes = ["/account", "/cuenta", "/checkout"];
 
 function isProtectedPath(pathname: string): boolean {
   return protectedRoutes.some(
@@ -34,7 +34,6 @@ export const config = {
   matcher: [
     "/account/:path*",
     "/cuenta/:path*",
-    "/carrito/:path*",
     "/checkout/:path*",
   ],
 };
