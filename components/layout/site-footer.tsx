@@ -10,10 +10,10 @@ const FOOTER_LOGO_SRC = "https://ik.imagekit.io/gq1enkszp/fotos/logo2.png?update
 const FOOTER_YEAR = 2026;
 
 const infoLinks = [
-  { id: "help", label: "AYUDA", href: "#" },
-  { id: "terms", label: "TERMINOS Y CONDICIONES", href: "#" },
-  { id: "cookies", label: "COOKIES", href: "#" },
-  { id: "contact", label: "CONTACTO", href: "#" },
+  { id: "help", label: "AYUDA" },
+  { id: "terms", label: "TERMINOS Y CONDICIONES" },
+  { id: "cookies", label: "COOKIES" },
+  { id: "contact", label: "CONTACTO" },
 ] as const;
 
 const socialLinks = [
@@ -157,14 +157,7 @@ export default function SiteFooter() {
                             label={link.label}
                             className="leading-none transition-[color,text-shadow] duration-200 hover:text-[#9a00b0] hover:[text-shadow:0_0_8px_rgba(255,95,223,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
                           />
-                        ) : (
-                          <Link
-                            href={link.href}
-                            className="leading-none transition-[color,text-shadow] duration-200 hover:text-[#9a00b0] hover:[text-shadow:0_0_8px_rgba(255,95,223,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]"
-                          >
-                            {link.label}
-                          </Link>
-                        )}
+                        ) : null}
                       </li>
                     ))}
                   </ul>

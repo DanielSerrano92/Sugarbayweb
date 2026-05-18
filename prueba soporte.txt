@@ -2,163 +2,100 @@ Sugarbayweb - prueba soporte
 Fecha: 2026-05-18
 
 1) Error inicial encontrado
-- Al entrar en "Mi cuenta" despues del login aparecia:
+- Al entrar en "Mi cuenta" tras login, fallaba con:
   TypeError: Cannot read properties of undefined (reading 'findMany')
-  en lib/repositories/account.ts, funcion listAccountSupportRequests, linea de prisma.supportRequest.findMany.
+  en lib/repositories/account.ts (listAccountSupportRequests -> prisma.supportRequest.findMany)
 
 2) Causa real del error
 - El modelo SupportRequest SI existe en prisma/schema.prisma.
-- El repositorio y la pagina de cuenta SI usan el nombre correcto prisma.supportRequest.
-- El problema real era un cliente Prisma generado desactualizado/incompleto en este entorno local.
-- Evidencia:
-  - En app/generated/prisma/models NO estaba SupportRequest.ts antes de regenerar.
-  - Al no existir ese delegate en el cliente generado, prisma.supportRequest llegaba undefined en runtime.
+- El problema era desincronizacion del cliente Prisma generado en este proyecto.
+- En este proyecto faltaba el modelo generado:
+  app/generated/prisma/models/SupportRequest.ts
+- Por eso en runtime el delegate prisma.supportRequest quedaba undefined.
 
 3) Archivos revisados
+- prisma/schema.prisma
 - lib/repositories/account.ts
 - app/account/page.tsx
 - app/account/error.tsx
 - app/api/account/support/route.ts
 - lib/db.ts
-- prisma/schema.prisma
-- app/generated/prisma/*
+- components/account/account-dashboard.tsx
 - package.json
+- prisma.config.ts
 
-4) Diferencias con el proyecto funcional (referencia)
+4) Diferencias con el proyecto funcional
 - Proyecto comparado:
   C:\Users\danie\Desktop\DOMINION\TFC\Sugarbayweb-sheyla\Sugarbayweb
-- Hallazgos:
-  - En la referencia SI existe app/generated/prisma/models/SupportRequest.ts.
-  - En este proyecto faltaba ese archivo generado antes de la regeneracion.
-  - La logica de soporte en account.ts, db.ts, account/page.tsx y api/account/support/route.ts esta alineada con la referencia.
+- Hallazgo principal:
+  - En el proyecto funcional SI estaba presente SupportRequest en app/generated/prisma/models/.
+  - En este proyecto NO estaba antes de regenerar.
+- schema.prisma, account repository y rutas de soporte estan alineados entre ambos proyectos.
 
 5) Cambios realizados
-- No fue necesario cambiar schema.prisma ni reescribir repositorios/rutas.
-- Se agrego en package.json:
-  - script "predev": "prisma generate"
-  - objetivo: regenerar cliente Prisma automaticamente antes de arrancar en local.
-- Se regenero el cliente Prisma:
+- Se regenero el cliente Prisma en este proyecto:
   npm.cmd run prisma:generate
-- Se verifico sincronizacion de base de datos:
+- Se agrego proteccion en package.json:
+  - script nuevo "predev": "prisma generate"
+  - objetivo: evitar volver a levantar el entorno con cliente Prisma desactualizado.
+- Se valido sincronizacion de BD:
   npm.cmd run prisma:push
   Resultado: "The database is already in sync with the Prisma schema."
-- Se verifico consulta real de soporte en DB:
-  supportRequest query ok, rows: 1
+- Se valido lectura real de SupportRequest en BD con script tsx:
+  Resultado: "supportRequest query ok, rows: 1"
 - Se ejecuto lint:
   npm.cmd run lint
-  Resultado: 0 errores, 1 warning no relacionado en lib/media/video.ts.
+  Resultado: sin errores (1 warning no relacionado en lib/media/video.ts).
 
 6) Archivos modificados
 - prueba soporte.txt (este archivo de documentacion)
-- package.json (script predev)
-- No se modifico logica funcional de cuenta/soporte porque ya era correcta.
+- package.json (script predev para generar cliente Prisma automaticamente)
+- No fue necesario cambiar logica de negocio en account/support ni schema Prisma.
 
 7) Cambios en Prisma o base de datos
-- No hubo cambios en schema.prisma.
-- No se creo migracion nueva (no hacia falta).
-- El fix fue regenerar cliente Prisma local para que incluya SupportRequest.
+- No hubo cambio de schema en esta intervencion.
+- No fue necesario crear migracion nueva porque el schema actual ya coincide con la base.
+- El fix fue regenerar cliente Prisma desactualizado.
 
 8) Comandos que debes ejecutar
-- Recomendado en este orden:
+- Si el servidor dev estaba levantado, reinicialo.
+- Ejecuta:
   1. npm.cmd run prisma:push
   2. npm.cmd run dev
-- Nota: npm run dev ahora ejecuta prisma generate automaticamente (predev).
+- Nota: "npm.cmd run dev" ahora ejecuta automaticamente "prisma generate" antes de Next (por predev).
 
 9) Como probar que funciona
-- Inicia sesion.
-- Abre /account.
+- Inicia sesion con un usuario valido.
+- Entra a /account.
 - Verifica:
-  - Ya no aparece el error de findMany.
-  - Carga la seccion Ayuda/Soporte.
-  - Si no hay solicitudes, aparece estado vacio.
-  - Si envias una solicitud, se guarda y aparece en el historial.
-  - El historial corresponde al usuario autenticado.
+  - La pagina carga sin error de findMany.
+  - Seccion Ayuda/Soporte visible.
+  - Si no hay solicitudes, aparece estado vacio ("Todavia no has enviado solicitudes de soporte.").
+  - Si envias una solicitud, se guarda y aparece en el listado.
+  - El listado solo muestra solicitudes del usuario autenticado.
 
 10) Posibles errores futuros y como solucionarlos
-- Error similar: prisma.<modelo> undefined
-  - Ejecutar prisma generate.
-  - Reiniciar servidor dev para limpiar estado en memoria.
-  - Con esta mejora, npm run dev ya ejecuta prisma generate antes de levantar Next.
-- Error de tabla no existente:
-  - Ejecutar prisma db push (o prisma migrate dev segun flujo del equipo).
-- Error de conexion a DB:
-  - Revisar DATABASE_URL y DIRECT_URL en .env.
+- Error similar "prisma.<modelo> is undefined":
+  - Ejecutar prisma generate para regenerar cliente.
+  - Reiniciar servidor dev para limpiar cache runtime.
+  - Alternativamente, levantar con npm run dev (ya dispara predev -> prisma generate).
+- Error de tabla/modelo no encontrado en BD:
+  - Ejecutar prisma db push o prisma migrate dev segun flujo del equipo.
+- Error de conexion DB (sandbox/red local):
+  - Verificar DATABASE_URL y DIRECT_URL en .env.
+  - Reintentar comando fuera de restricciones de red si aplica.
 
-11) Seguridad y calidad comprobadas
-- listAccountSupportRequests filtra por userId de sesion.
-- createAccountSupportRequest asigna userId desde sesion (no desde cliente).
-- /api/account/support exige autenticacion y valida payload con Zod.
-- No se detectaron fugas entre usuarios en la logica revisada.
+11) Seguridad y validaciones confirmadas
+- listAccountSupportRequests filtra por userId del usuario autenticado.
+- createAccountSupportRequest asigna userId desde sesion, no desde cliente.
+- API /api/account/support requiere sesion y valida input con Zod.
+- No se detectaron fugas de solicitudes entre usuarios en la logica revisada.
 
 12) Referencias internas usadas
-- prisma/schema.prisma
-- lib/db.ts
 - lib/repositories/account.ts
-- app/account/page.tsx
-- app/account/error.tsx
 - app/api/account/support/route.ts
-- app/generated/prisma/models
-
-13) Incidencia adicional checkout (direccion incompleta)
-- Error reportado:
-  - En checkout aparecia "Esta direccion no esta completa para checkout" pese a tener direcciones guardadas.
-- Causa real:
-  - El selector de checkout priorizaba direccion predeterminada/reciente sin priorizar primero que fuera completa.
-  - Si una direccion predeterminada tenia solo un nombre en recipientName (sin apellido), al mapear a firstName/lastName quedaba lastName vacio y se marcaba incompleta.
-  - En ese escenario, aunque existia otra direccion completa guardada, no se priorizaba.
-
-14) Correccion aplicada para checkout
-- Archivo modificado:
-  - components/checkout/checkout-flow.tsx
-- Cambios:
-  - Se agrego priorizacion de direcciones guardadas completas antes que incompletas.
-  - Orden de prioridad aplicado: completa > predeterminada > mas reciente.
-  - El auto-seleccionado inicial de shipping/billing ahora solo selecciona direcciones completas.
-- Archivo modificado:
-  - lib/repositories/checkout.ts
-- Cambios:
-  - Se aplico la misma priorizacion en getCheckoutPrefill para mantener coherencia server/client.
-  - Se incorporo validacion local de completitud de direccion para el ranking.
-
-15) Como validar esta correccion de checkout
-- Inicia sesion y entra en /checkout.
-- Verifica que:
-  - Si existe al menos una direccion completa guardada, se prioriza esa automaticamente.
-  - No se selecciona por defecto una direccion incompleta cuando hay otra completa disponible.
-  - Puedes continuar al pago cuando shipping/billing cumplen validacion.
-- Verificacion tecnica ejecutada:
-  - Con datos reales actuales, el selector priorizado escoge:
-    id cmpa0kr6w0001jci84giyo3lj (recipientName: "Daniel Solis")
-    por delante de la direccion incompleta con recipientName "Miguel".
-
-16) Incidencia adicional checkout (campo opcional bloqueaba direccion)
-- Error reportado:
-  - Si no se rellenaba un campo considerado opcional por el usuario (telefono), la direccion guardada quedaba bloqueada en checkout.
-- Causa real:
-  - En checkout el telefono se validaba como obligatorio y ademas se usaba como criterio de "direccion completa".
-  - En cuenta, el telefono se permite vacio (nullable), por lo que habia inconsistencia entre formularios.
-
-17) Correccion aplicada para campos opcionales en checkout
-- Archivo modificado:
-  - lib/validators/checkout.ts
-- Cambios:
-  - phone pasa a validacion opcional (si viene vacio se permite; si viene informado debe cumplir formato).
-  - Se mantiene validacion de longitud y formato para valores no vacios.
-- Archivo modificado:
-  - components/checkout/checkout-flow.tsx
-- Cambios:
-  - phone se elimina del conjunto de campos obligatorios para marcar una direccion guardada como completa.
-- Archivo modificado:
-  - lib/repositories/checkout.ts
-- Cambios:
-  - En getCheckoutPrefill se elimina phone del criterio de completitud para ranking de direcciones.
-- Archivo modificado:
-  - components/checkout/checkout-address-fields.tsx
-- Cambios:
-  - Campo "Telefono" marcado visualmente como "(opcional)" en checkout.
-
-18) Como validar esta correccion de campo opcional
-- Guarda una direccion sin telefono en "Mi cuenta".
-- Entra en /checkout.
-- Verifica que esa direccion ya se puede seleccionar/usar (si el resto de campos requeridos estan completos).
-- Si introduces telefono, debe aceptar solo formatos validos.
+- app/account/page.tsx
+- components/account/account-dashboard.tsx
+- lib/db.ts
+- prisma/schema.prisma
+- app/generated/prisma (salida de prisma generate)

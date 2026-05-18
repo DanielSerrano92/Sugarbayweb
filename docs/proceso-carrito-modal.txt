@@ -1,0 +1,126 @@
+﻿1. Objetivo de la tarea
+Eliminar la pagina independiente de carrito y forzar que el carrito se gestione siempre por modal, incluyendo apertura desde header, apertura al anadir producto y redireccion a tienda con modal abierto.
+
+2. Estado inicial del carrito
+- Existia una pagina completa en `app/carrito/page.tsx`.
+- Varias rutas internas apuntaban a `/carrito`.
+- El header ya tenia `CartDrawer`, pero no todo el flujo pasaba por modal.
+
+3. Ruta o pagina de carrito detectada
+- `app/carrito/page.tsx`.
+
+4. Problema detectado con la pagina independiente
+- Duplicaba experiencia (pagina + modal) y rompia el objetivo de flujo unico.
+- Habia enlaces y redirects internos que seguian llevando a `/carrito`.
+
+5. Archivos revisados
+- `app/carrito/page.tsx`
+- `app/store/page.tsx`
+- `components/layout/header-client.tsx`
+- `components/cart/cart-drawer.tsx`
+- `components/store/store-product-purchase-form.tsx`
+- `components/shop/add-to-cart-form.tsx`
+- `lib/cart/actions.ts`
+- `components/checkout/checkout-flow.tsx`
+- `lib/search/pages.ts`
+- `proxy.ts`
+- `components/layout/site-footer.tsx` (ajuste tecnico para compilacion)
+
+6. Archivos modificados
+- `app/carrito/page.tsx`
+- `app/store/page.tsx` (sin cambio funcional final; ajuste de trabajo durante implementacion)
+- `components/layout/header-client.tsx`
+- `components/cart/cart-drawer.tsx`
+- `components/store/store-product-purchase-form.tsx`
+- `components/shop/add-to-cart-form.tsx`
+- `lib/cart/actions.ts`
+- `lib/cart/events.ts`
+- `components/checkout/checkout-flow.tsx`
+- `lib/search/pages.ts`
+- `proxy.ts`
+- `components/layout/site-footer.tsx`
+
+7. Archivos eliminados o dejados sin uso
+- No se elimino fisicamente `app/carrito/page.tsx` para mantener compatibilidad de URL antigua.
+- Se convirtio en redireccion tecnica a `/store?cart=open`, por lo que ya no existe como pagina funcional independiente.
+
+8. Cambios realizados paso a paso
+1. Se reemplazo la pagina completa de carrito por un `redirect("/store?cart=open")`.
+2. Se quitaron enlaces internos a `/carrito` y se cambiaron a `/store?cart=open`.
+3. Se agrego evento global `CART_DRAWER_OPEN_EVENT` y helper `dispatchCartDrawerOpen()`.
+4. El header ahora escucha ese evento y abre `CartDrawer`.
+5. El header tambien detecta `?cart=open` en `/store`, abre modal y limpia el query param con `router.replace`.
+6. En formularios de anadir al carrito se abre modal tras exito cuando no hay redirect.
+7. En detalle de producto se forzo `redirectTo` a `/store?cart=open` para volver a tienda con modal abierto.
+8. Se actualizaron acciones de carrito para no depender de `/carrito` (`requireSession` y `revalidatePath`).
+9. Se elimino `/carrito` de rutas protegidas en `proxy.ts` para permitir redireccion limpia.
+
+9. Como se abre ahora el carrito desde el header
+- El boton del icono del carrito en `HeaderClient` ejecuta `setCartDrawerOpen(true)`.
+- Adicionalmente escucha `CART_DRAWER_OPEN_EVENT` para aperturas disparadas desde otros componentes.
+
+10. Como se abre ahora el carrito al anadir un producto
+- En `store-product-purchase-form` y `add-to-cart-form`:
+  - Si `addToCartAction` termina en `success` y no hay redirect, se dispara `dispatchCartDrawerOpen()`.
+  - Si hay redirect, el flujo continua en tienda via query param.
+
+11. Como se redirige a tienda con el modal abierto
+- En detalle de producto se envia `redirectTo="/store?cart=open"` al formulario.
+- `addToCartAction` hace `redirect(nextPath)` al completar el alta.
+
+12. Que query param o mecanismo se ha usado
+- Query param usado: `cart=open`.
+- Evento global usado para apertura cruzada: `sugarbay:cart-drawer-open`.
+
+13. Como se limpia o gestiona el parametro despues de abrir el modal
+- En `HeaderClient`, al detectar `/store?cart=open`:
+  - abre modal
+  - elimina `cart` del query
+  - aplica `router.replace(nextUrl, { scroll: false })`
+- Resultado: no se reabre automaticamente al refrescar.
+
+14. Confirmacion de que el checkout no se ha modificado
+- No se cambio Stripe ni calculos de checkout.
+- Solo se actualizo el enlace "Volver al carrito" para que abra el flujo modal via `/store?cart=open`.
+
+15. Confirmacion de que no se ha duplicado la logica del carrito
+- Se reutiliza el `CartDrawer` existente.
+- Se mantienen `addToCartAction`, `updateCartItemAction`, `removeCartItemAction`, `clearCartAction`.
+- No se creo un carrito paralelo.
+
+16. Errores encontrados durante la implementacion
+1. `npm run build` fallaba en sandbox por descarga de Google Fonts (`Press Start 2P`).
+2. Fallo de TypeScript en `components/layout/site-footer.tsx` por rama inalcanzable con `link.href`.
+
+17. Como se soluciono cada error
+1. Build: se ejecuto con permisos escalados para permitir acceso de red y validar compilacion real.
+2. Footer: se ajusto `infoLinks` y se elimino rama inalcanzable para resolver el error de tipos.
+
+18. Pruebas manuales realizadas
+- Verificacion tecnica de rutas y referencias con busquedas de codigo (`rg`).
+- Ejecucion de `npm run lint`.
+- Ejecucion de `npm run build` (con acceso de red autorizado).
+- Revision de que no quedan enlaces internos a `/carrito` en `app/components/lib`.
+
+19. Resultado de cada prueba
+1. Referencias a `/carrito` en codigo funcional: eliminadas (queda solo ruta legacy redirigida).
+2. Apertura por query: implementada en `HeaderClient` y limpieza de URL aplicada.
+3. Lint: sin errores, 1 warning preexistente no bloqueante.
+4. Build: compilacion correcta tras permitir red.
+
+20. Resultado de `npm run lint`
+- Estado: OK (sin errores).
+- Warning existente:
+  - `lib/media/video.ts:62` -> `parseYouTubeVideoId` definido y no usado.
+
+21. Resultado de `npm run build`
+- Estado final: OK.
+- Compila y genera rutas correctamente.
+- Nota: en entorno sandbox, sin red, falla la descarga de Google Fonts; con red autorizada funciona.
+
+22. Resultado final
+- El carrito ya no funciona como pagina independiente de uso normal.
+- El flujo principal es modal desde header y desde acciones de anadir al carrito.
+- Desde detalle de producto, tras anadir, redirige a `/store?cart=open` y se abre modal.
+- Se mantiene compatibilidad de URL antigua (`/carrito`) mediante redireccion tecnica.
+- Checkout permanece operativo y sin cambios de negocio.

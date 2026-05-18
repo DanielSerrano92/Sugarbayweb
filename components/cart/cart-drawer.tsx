@@ -250,11 +250,11 @@ export default function CartDrawer({
               </div>
 
               <Link
-                href="/carrito"
+                href="/store?cart=open"
                 onClick={onClose}
                 className="cart-modal-full-link inline-flex text-xs font-semibold"
               >
-                Ver carrito completo
+                Ver carrito en tienda
               </Link>
             </footer>
           </>

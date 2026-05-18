@@ -106,9 +106,14 @@ function splitRecipientName(
   }
 
   const [firstName, ...rest] = trimmed.split(/\s+/);
+  const normalizedFirstName = firstName ?? "";
+  const normalizedLastName = rest.join(" ").trim();
+
   return {
-    firstName: firstName ?? "",
-    lastName: rest.join(" "),
+    // Las direcciones de cuenta usan "Nombre completo" en un solo campo.
+    // Si viene una sola palabra, evitamos bloquear checkout por apellido vacio.
+    firstName: normalizedFirstName,
+    lastName: normalizedLastName || normalizedFirstName,
   };
 }
 
@@ -861,7 +866,7 @@ export default function CheckoutFlow({
               {isSubmitting ? "Redirigiendo a Stripe..." : "Continuar a pago seguro"}
             </button>
 
-            <Link href="/carrito" className="retro-card-action w-full">
+            <Link href="/store?cart=open" className="retro-card-action w-full">
               Volver al carrito
             </Link>
           </div>

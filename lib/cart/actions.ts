@@ -38,7 +38,6 @@ function normalizeRedirect(value: string | undefined): string | null {
 function revalidateCartSurfaces() {
   revalidatePath("/");
   revalidatePath("/store");
-  revalidatePath("/carrito");
   revalidatePath("/checkout");
 }
 
@@ -103,7 +102,7 @@ export async function updateCartItemAction(formData: FormData) {
 
   if (!parsed.success) return;
 
-  const session = await requireSession("/carrito");
+  const session = await requireSession("/store?cart=open");
   await updateCartItemQuantity(
     session.userId,
     parsed.data.cartItemId,
@@ -119,13 +118,13 @@ export async function removeCartItemAction(formData: FormData) {
 
   if (!parsed.success) return;
 
-  const session = await requireSession("/carrito");
+  const session = await requireSession("/store?cart=open");
   await removeCartItem(session.userId, parsed.data.cartItemId);
   revalidateCartSurfaces();
 }
 
 export async function clearCartAction() {
-  const session = await requireSession("/carrito");
+  const session = await requireSession("/store?cart=open");
   await clearCartForUser(session.userId);
   revalidateCartSurfaces();
 }

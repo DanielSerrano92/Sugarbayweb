@@ -1,10 +1,11 @@
 "use client";
 
 import { useActionState, useEffect, useMemo } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { dispatchAuthModalOpen } from "@/lib/auth/events";
 import { addToCartAction, type AddToCartActionState } from "@/lib/cart/actions";
+import { dispatchCartDrawerOpen } from "@/lib/cart/events";
 
 import AddToCartButton from "./add-to-cart-button";
 
@@ -25,6 +26,7 @@ export default function AddToCartForm({
   redirectTo,
   compact,
 }: AddToCartFormProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [state, formAction] = useActionState(addToCartAction, initialState);
@@ -40,7 +42,16 @@ export default function AddToCartForm({
       mode: "login",
       redirectTo: state.redirectTo ?? authRedirectTo,
     });
-  }, [authRedirectTo, state.redirectTo, state.status]);
+  }, [authRedirectTo, state]);
+
+  useEffect(() => {
+    if (state.status !== "success") return;
+
+    router.refresh();
+    if (!state.redirectTo) {
+      dispatchCartDrawerOpen();
+    }
+  }, [router, state]);
 
   return (
     <form action={formAction} className="inline-flex flex-col gap-1">
