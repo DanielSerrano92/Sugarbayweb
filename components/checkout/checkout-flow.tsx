@@ -107,9 +107,14 @@ function splitRecipientName(
   }
 
   const [firstName, ...rest] = trimmed.split(/\s+/);
+  const normalizedFirstName = firstName ?? "";
+  const normalizedLastName = rest.join(" ").trim();
+
   return {
-    firstName: firstName ?? "",
-    lastName: rest.join(" "),
+    // Las direcciones de cuenta usan "Nombre completo" en un solo campo.
+    // Si viene una sola palabra, evitamos bloquear checkout por apellido vacio.
+    firstName: normalizedFirstName,
+    lastName: normalizedLastName || normalizedFirstName,
   };
 }
 

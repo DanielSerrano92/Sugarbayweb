@@ -41,9 +41,12 @@ function splitRecipientName(
   }
 
   const [firstName, ...rest] = trimmed.split(/\s+/);
+  const normalizedFirstName = firstName ?? "";
+  const normalizedLastName = rest.join(" ").trim();
+
   return {
-    firstName: firstName ?? "",
-    lastName: rest.join(" "),
+    firstName: normalizedFirstName,
+    lastName: normalizedLastName || normalizedFirstName,
   };
 }
 
@@ -156,7 +159,12 @@ async function upsertDefaultAddress(params: {
   address: CheckoutAddress;
 }) {
   const { tx, userId, type, address } = params;
-  const recipientName = `${address.firstName} ${address.lastName}`.trim();
+  const normalizedFirstName = address.firstName.trim();
+  const normalizedLastName = address.lastName.trim();
+  const recipientName =
+    normalizedFirstName.toLowerCase() === normalizedLastName.toLowerCase()
+      ? normalizedFirstName
+      : `${normalizedFirstName} ${normalizedLastName}`.trim();
   const region = encodeStoredRegion(address);
 
   await tx.address.updateMany({
