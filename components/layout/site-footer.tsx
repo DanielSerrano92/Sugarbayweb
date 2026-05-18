@@ -102,7 +102,7 @@ export default function SiteFooter() {
     "inline-flex items-center rounded-[2px] px-3 py-1.5 leading-none transition-[color,text-shadow,text-decoration-color,transform] duration-200 motion-safe:hover:scale-[1.1] hover:text-[#c000d8] hover:underline hover:decoration-[#e154ef] hover:underline-offset-[3px] hover:[text-shadow:0_0_10px_rgba(255,95,223,0.52)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2fa8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cccccc]";
 
   return (
-    <footer className="mt-auto w-full bg-[#bdbdbd] text-[#101010]">
+    <footer className="mt-auto w-full shrink-0 bg-[#bdbdbd] text-[#101010]">
       <div className="w-full border-y border-[#d6d6d6] bg-[#bdbdbd] px-[1px] py-[2px] sm:px-[2px] sm:py-[3px]">
         <div className="w-full border border-[#696969] bg-[linear-gradient(180deg,#d4d4d4_0%,#c6c6c6_100%)] p-[2px] shadow-[inset_1px_1px_0_#f8f8f8,inset_-1px_-1px_0_#878787]">
           <div className="w-full border border-[#737373] bg-[linear-gradient(180deg,#d5d5d5_0%,#c9c9c9_100%)] shadow-[inset_1px_1px_0_#f2f2f2,inset_-1px_-1px_0_#8b8b8b]">

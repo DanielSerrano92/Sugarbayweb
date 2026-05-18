@@ -2285,6 +2285,82 @@ p {
     background: #f8da73;
   }
 
+  .bio-folder-launcher {
+    cursor: pointer;
+    transition:
+      transform 0.18s ease,
+      filter 0.2s ease;
+  }
+
+  .bio-folder-icon {
+    width: 222px;
+    height: 156px;
+    border-width: 3px;
+    box-shadow:
+      inset -2px -2px 0 #be9733,
+      inset 2px 2px 0 #fff5bf,
+      0 0 11px rgb(255 98 225 / 24%);
+    transition:
+      transform 0.18s ease,
+      filter 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .bio-folder-icon::before {
+    left: 22px;
+    top: -19px;
+    width: 70px;
+    height: 20px;
+    border-width: 3px;
+  }
+
+  .bio-folder-launcher:hover .bio-folder-icon,
+  .bio-folder-launcher:focus-visible .bio-folder-icon {
+    transform: translateY(-3px) scale(1.03);
+    filter:
+      brightness(1.04)
+      drop-shadow(0 0 8px rgb(255 82 220 / 34%))
+      drop-shadow(0 0 9px rgb(88 214 255 / 30%));
+    box-shadow:
+      inset -2px -2px 0 #be9733,
+      inset 2px 2px 0 #fff5bf,
+      0 0 13px rgb(255 82 220 / 30%);
+  }
+
+  .bio-folder-launcher:hover,
+  .bio-folder-launcher:focus-visible {
+    transform: translateY(-2px);
+    filter: drop-shadow(0 0 8px rgb(93 220 255 / 28%));
+  }
+
+  @media (min-width: 640px) {
+    .bio-folder-icon {
+      width: 286px;
+      height: 202px;
+    }
+
+    .bio-folder-icon::before {
+      left: 28px;
+      top: -22px;
+      width: 90px;
+      height: 24px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .bio-folder-icon {
+      width: 356px;
+      height: 250px;
+    }
+
+    .bio-folder-icon::before {
+      left: 34px;
+      top: -26px;
+      width: 108px;
+      height: 28px;
+    }
+  }
+
   .retro-modal-overlay {
     position: absolute;
     inset: 0;

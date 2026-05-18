@@ -281,6 +281,15 @@ const MEMBER_PROFILES: MemberProfile[] = [
 const DEFAULT_MEMBER_PROFILE_ID =
   MEMBER_PROFILES.find((profile) => profile.group === "MAIN")?.id ?? MEMBER_PROFILES[0]?.id ?? "";
 
+const MODAL_MENU_BUTTON_BASE_CLASS =
+  "win-button inline-flex min-h-[2.95rem] w-full items-center justify-start border px-3 py-1.5 text-left font-retro-pixel text-[0.66rem] font-black uppercase leading-[1.35] tracking-[0.03em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f80ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#cfcfcf] sm:min-h-[2.62rem] sm:text-[0.58rem] lg:min-h-[2.28rem] lg:px-2.5 lg:py-1 lg:text-[0.54rem] lg:leading-[1.15] lg:tracking-[0.05em]";
+
+const MODAL_MENU_BUTTON_ACTIVE_CLASS =
+  "border-[#4e6f9e] bg-[linear-gradient(180deg,#b7d6ff_0%,#9fc5f3_52%,#8ab4e9_100%)] text-[#111111] [text-shadow:0_1px_0_rgba(255,255,255,0.45)] shadow-[inset_1px_1px_0_#e9f3ff,inset_-1px_-1px_0_#5f86bb]";
+
+const MODAL_MENU_BUTTON_IDLE_CLASS =
+  "border-[#8a8a8a] bg-[linear-gradient(180deg,#efefef_0%,#d7d7d7_100%)] text-[#101010] hover:border-[#6670ae] hover:bg-[linear-gradient(180deg,#f4f4f4_0%,#dedede_100%)]";
+
 type FolderLauncherProps = {
   label: string;
   ariaLabel: string;
@@ -292,14 +301,16 @@ function FolderLauncher({ label, ariaLabel, onOpen }: FolderLauncherProps) {
     <button
       type="button"
       onClick={onOpen}
-      className="retro-folder-button group mx-auto flex w-full max-w-[17rem] flex-col items-center justify-start gap-[1.35rem] px-2 pb-2 pt-6 text-center sm:gap-[1.55rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/85 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1b1538]"
+      className="retro-folder-button bio-folder-launcher group mx-auto flex w-full max-w-[32rem] flex-col items-center justify-start gap-10 px-3 pb-6 pt-4 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/85 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1b1538] sm:gap-11"
       aria-label={ariaLabel}
     >
       <span
-        className="retro-folder-icon pointer-events-none origin-bottom scale-[3.35] drop-shadow-[0_0_12px_rgba(255,95,225,0.34)] transition-transform duration-150 group-hover:scale-[3.38] sm:scale-[3.75] sm:group-hover:scale-[3.78]"
+        className="retro-folder-icon bio-folder-icon pointer-events-none"
         aria-hidden="true"
       />
-      <span className="relative z-10 font-retro-pixel text-[0.9rem] font-black uppercase tracking-[0.08em] text-[#f5f2ff] [text-shadow:0_0_8px_rgba(96,223,255,0.35),0_0_10px_rgba(255,101,225,0.28)] sm:text-[1rem]">
+      <span
+        className="relative z-10 mt-1 font-retro-pixel text-[1.42rem] font-black uppercase tracking-[0.08em] leading-[1.05] text-[#060606] [text-shadow:0_1px_0_#ffffff,0_0_8px_rgba(255,96,223,0.24),0_0_8px_rgba(94,223,255,0.2)] sm:mt-3 sm:text-[1.68rem] lg:text-[1.9rem]"
+      >
         {label}
       </span>
     </button>
@@ -312,6 +323,8 @@ export default function BandBioModals() {
     DEFAULT_BIOGRAPHY_SECTION_ID,
   );
   const [activeMemberProfileId, setActiveMemberProfileId] = useState(DEFAULT_MEMBER_PROFILE_ID);
+  const [isBiographyMobileMenuOpen, setIsBiographyMobileMenuOpen] = useState(false);
+  const [isMembersMobileMenuOpen, setIsMembersMobileMenuOpen] = useState(false);
 
   const activeBiographySection =
     BIOGRAPHY_SECTIONS.find((section) => section.id === activeBiographySectionId) ??
@@ -321,17 +334,29 @@ export default function BandBioModals() {
 
   function handleOpenBiographyModal() {
     setActiveBiographySectionId(DEFAULT_BIOGRAPHY_SECTION_ID);
+    setIsBiographyMobileMenuOpen(false);
     setOpenModal("biography");
   }
 
   function handleOpenMembersModal() {
     setActiveMemberProfileId(DEFAULT_MEMBER_PROFILE_ID);
+    setIsMembersMobileMenuOpen(false);
     setOpenModal("members");
+  }
+
+  function handleCloseBiographyModal() {
+    setIsBiographyMobileMenuOpen(false);
+    setOpenModal(null);
+  }
+
+  function handleCloseMembersModal() {
+    setIsMembersMobileMenuOpen(false);
+    setOpenModal(null);
   }
 
   return (
     <>
-      <section className="mx-auto mt-20 grid max-w-[58rem] grid-cols-1 justify-items-center gap-14 sm:mt-24 sm:grid-cols-2 sm:gap-24 lg:mt-28 lg:gap-32" aria-label="Accesos de biografia y miembros">
+      <section className="mx-auto mt-24 mb-28 grid w-full max-w-[82rem] grid-cols-1 justify-items-center gap-x-16 gap-y-24 sm:mt-28 sm:mb-32 sm:grid-cols-2 sm:gap-x-24 sm:gap-y-[4.5rem] lg:mt-36 lg:mb-40 lg:gap-x-[7.5rem]" aria-label="Accesos de biografia y miembros">
         <FolderLauncher
           label={"BIOGRAF\u00CDA"}
           ariaLabel="Abrir biografia"
@@ -347,12 +372,12 @@ export default function BandBioModals() {
       {openModal === "biography" ? (
         <AppModal
           title="Biografia"
-          onClose={() => setOpenModal(null)}
+          onClose={handleCloseBiographyModal}
           maxWidth="1040px"
           overlayOpacity={0.62}
           variant="win95"
-          bodyClassName="retro-bio-read-modal-body p-3 sm:p-4 lg:p-5"
-          heightMode="content"
+          bodyClassName="retro-bio-read-modal-body overflow-x-hidden p-3 sm:p-4 lg:p-5"
+          heightMode="fixed"
         >
           <div className="retro-bio-read-modal-shell">
             <section className="retro-bio-read-modal-hero">
@@ -363,26 +388,50 @@ export default function BandBioModals() {
               </p>
             </section>
 
-            <section className="grid gap-3 lg:grid-cols-[13.6rem_minmax(0,1fr)] lg:gap-3.5" aria-label="Contenido de biografia">
-              <aside className="border-2 border-black bg-[linear-gradient(180deg,#d8d8d8_0%,#cecece_100%)] p-2 shadow-[inset_2px_2px_0_#ffffff,inset_-2px_-2px_0_#808080] sm:p-2.5 lg:sticky lg:top-0 lg:max-h-[30rem] lg:overflow-y-auto lg:pr-2">
-                <p className="m-0 font-retro-pixel text-[0.58rem] font-black uppercase tracking-[0.08em] text-[#3d3d3d]">
+            <section className="grid gap-3 overflow-x-hidden lg:grid-cols-[13.6rem_minmax(0,1fr)] lg:gap-3.5" aria-label="Contenido de biografia">
+              <button
+                type="button"
+                onClick={() => setIsBiographyMobileMenuOpen((current) => !current)}
+                className="win-button flex min-h-[2.65rem] w-full items-center justify-between gap-2 px-3 py-1.5 text-left font-retro-pixel text-[0.62rem] font-black uppercase tracking-[0.05em] text-[#161616] lg:hidden"
+                aria-expanded={isBiographyMobileMenuOpen}
+                aria-controls="bio-mobile-sections"
+              >
+                <span>Secciones</span>
+                <span>{isBiographyMobileMenuOpen ? "Cerrar" : "Abrir"}</span>
+              </button>
+
+              <aside
+                id="bio-mobile-sections"
+                className={[
+                  "border-2 border-black bg-[linear-gradient(180deg,#d8d8d8_0%,#cecece_100%)] p-2.5 shadow-[inset_2px_2px_0_#ffffff,inset_-2px_-2px_0_#808080]",
+                  isBiographyMobileMenuOpen ? "block max-h-[14.8rem] overflow-y-auto" : "hidden",
+                  "lg:block lg:max-h-[30rem] lg:overflow-y-auto lg:pr-2 lg:sticky lg:top-0",
+                ].join(" ")}
+              >
+                <p className="m-0 font-retro-pixel text-[0.66rem] font-black uppercase tracking-[0.06em] text-[#353535] sm:text-[0.58rem] sm:tracking-[0.08em]">
                   Secciones
                 </p>
                 <nav className="mt-2" aria-label="Menu lateral de biografia">
-                  <ul className="m-0 flex list-none gap-1.5 overflow-x-auto p-0 pb-1 lg:grid lg:grid-cols-1 lg:gap-1.5 lg:overflow-visible lg:pb-0">
+                  <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:gap-1.5" role="tablist" aria-label="Secciones de biografia">
                     {BIOGRAPHY_SECTIONS.map((section) => {
                       const isActive = section.id === activeBiographySection?.id;
                       return (
-                        <li key={section.id} className="shrink-0 lg:shrink">
+                        <li key={section.id}>
                           <button
                             type="button"
-                            onClick={() => setActiveBiographySectionId(section.id)}
+                            onClick={() => {
+                              setActiveBiographySectionId(section.id);
+                              setIsBiographyMobileMenuOpen(false);
+                            }}
                             aria-pressed={isActive}
+                            aria-selected={isActive}
+                            aria-current={isActive ? "true" : undefined}
+                            role="tab"
                             className={[
-                              "win-button inline-flex h-[2.1rem] min-w-[10.7rem] items-center justify-start overflow-hidden text-ellipsis whitespace-nowrap px-2.5 py-1 text-left font-retro-pixel text-[0.54rem] font-black uppercase tracking-[0.05em] transition-colors lg:flex lg:w-full lg:min-w-0",
+                              MODAL_MENU_BUTTON_BASE_CLASS,
                               isActive
-                                ? "bg-[#d6d6d6] text-[#121212] shadow-[inset_-1px_-1px_0_#f8f8f8,inset_1px_1px_0_#7e7e7e]"
-                                : "text-black hover:bg-[#dddddd]",
+                                ? MODAL_MENU_BUTTON_ACTIVE_CLASS
+                                : MODAL_MENU_BUTTON_IDLE_CLASS,
                             ].join(" ")}
                           >
                             {section.label}
@@ -401,7 +450,7 @@ export default function BandBioModals() {
                   </h4>
 
                   <div className="grid gap-2.5 after:block after:clear-both after:content-['']">
-                    <figure className="m-0 border-2 border-black bg-[linear-gradient(180deg,#dbdbdb_0%,#cecece_100%)] p-1.5 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#8a8a8a] sm:mx-auto sm:max-w-[14rem] md:float-right md:ml-4 md:mb-2 md:w-[12.25rem] md:max-w-none">
+                    <figure className="m-0 mx-auto w-full max-w-[10.75rem] border-2 border-black bg-[linear-gradient(180deg,#dbdbdb_0%,#cecece_100%)] p-1.5 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#8a8a8a] sm:max-w-[14rem] md:float-right md:ml-4 md:mb-2 md:w-[12.25rem] md:max-w-none">
                       <div className="retro-news-image-frame relative aspect-[1/1] w-full overflow-hidden border-2 border-[#8f80d5] bg-[#ececf3]">
                         <Image
                           src={resolveImageUrl(activeBiographySection.imageUrl)}
@@ -435,12 +484,12 @@ export default function BandBioModals() {
       {openModal === "members" ? (
         <AppModal
           title="Miembros"
-          onClose={() => setOpenModal(null)}
+          onClose={handleCloseMembersModal}
           maxWidth="1040px"
           overlayOpacity={0.62}
           variant="win95"
-          bodyClassName="retro-bio-members-modal-body p-3 sm:p-4 lg:p-5"
-          heightMode="content"
+          bodyClassName="retro-bio-members-modal-body overflow-x-hidden p-3 sm:p-4 lg:p-5"
+          heightMode="fixed"
         >
           <div className="retro-bio-members-modal-shell">
             <section className="retro-bio-members-modal-hero">
@@ -451,28 +500,52 @@ export default function BandBioModals() {
               </p>
             </section>
 
-            <section className="grid gap-3 lg:grid-cols-[13.6rem_minmax(0,1fr)] lg:gap-3.5" aria-label="Contenido de miembros">
-              <aside className="border-2 border-black bg-[linear-gradient(180deg,#d8d8d8_0%,#cecece_100%)] p-2 shadow-[inset_2px_2px_0_#ffffff,inset_-2px_-2px_0_#808080] sm:p-2.5 lg:sticky lg:top-0 lg:max-h-[30rem] lg:overflow-y-auto lg:pr-2">
+            <section className="grid gap-3 overflow-x-hidden lg:grid-cols-[13.6rem_minmax(0,1fr)] lg:gap-3.5" aria-label="Contenido de miembros">
+              <button
+                type="button"
+                onClick={() => setIsMembersMobileMenuOpen((current) => !current)}
+                className="win-button flex min-h-[2.65rem] w-full items-center justify-between gap-2 px-3 py-1.5 text-left font-retro-pixel text-[0.62rem] font-black uppercase tracking-[0.05em] text-[#161616] lg:hidden"
+                aria-expanded={isMembersMobileMenuOpen}
+                aria-controls="members-mobile-sections"
+              >
+                <span>Miembros</span>
+                <span>{isMembersMobileMenuOpen ? "Cerrar" : "Abrir"}</span>
+              </button>
+
+              <aside
+                id="members-mobile-sections"
+                className={[
+                  "border-2 border-black bg-[linear-gradient(180deg,#d8d8d8_0%,#cecece_100%)] p-2.5 shadow-[inset_2px_2px_0_#ffffff,inset_-2px_-2px_0_#808080]",
+                  isMembersMobileMenuOpen ? "block max-h-[15.4rem] overflow-y-auto" : "hidden",
+                  "lg:block lg:max-h-[30rem] lg:overflow-y-auto lg:pr-2 lg:sticky lg:top-0",
+                ].join(" ")}
+              >
                 {(["MAIN", "COLLAB"] as const).map((group, groupIndex) => (
                   <section key={group} className={groupIndex > 0 ? "mt-3 border-t border-[#8e8e8e] pt-2.5" : ""}>
-                    <p className="m-0 font-retro-pixel text-[0.55rem] font-black uppercase tracking-[0.08em] text-[#3d3d3d]">
+                    <p className="m-0 font-retro-pixel text-[0.64rem] font-black uppercase tracking-[0.06em] text-[#353535] sm:text-[0.55rem] sm:tracking-[0.08em]">
                       {MEMBER_GROUP_LABEL[group]}
                     </p>
                     <nav className="mt-1.5" aria-label={`Menu ${MEMBER_GROUP_LABEL[group]}`}>
-                      <ul className="m-0 flex list-none gap-1.5 overflow-x-auto p-0 pb-1 lg:grid lg:grid-cols-1 lg:gap-1.5 lg:overflow-visible lg:pb-0">
+                      <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:gap-1.5" role="tablist" aria-label={`Opciones ${MEMBER_GROUP_LABEL[group]}`}>
                         {MEMBER_PROFILES.filter((profile) => profile.group === group).map((profile) => {
                           const isActive = profile.id === activeMemberProfile?.id;
                           return (
-                            <li key={profile.id} className="shrink-0 lg:shrink">
+                            <li key={profile.id}>
                               <button
                                 type="button"
-                                onClick={() => setActiveMemberProfileId(profile.id)}
+                                onClick={() => {
+                                  setActiveMemberProfileId(profile.id);
+                                  setIsMembersMobileMenuOpen(false);
+                                }}
                                 aria-pressed={isActive}
+                                aria-selected={isActive}
+                                aria-current={isActive ? "true" : undefined}
+                                role="tab"
                                 className={[
-                                  "win-button inline-flex h-[2.1rem] min-w-[10.7rem] items-center justify-start overflow-hidden text-ellipsis whitespace-nowrap px-2.5 py-1 text-left font-retro-pixel text-[0.54rem] font-black uppercase tracking-[0.05em] transition-colors lg:flex lg:w-full lg:min-w-0",
+                                  MODAL_MENU_BUTTON_BASE_CLASS,
                                   isActive
-                                    ? "bg-[#d6d6d6] text-[#121212] shadow-[inset_-1px_-1px_0_#f8f8f8,inset_1px_1px_0_#7e7e7e]"
-                                    : "text-black hover:bg-[#dddddd]",
+                                    ? MODAL_MENU_BUTTON_ACTIVE_CLASS
+                                    : MODAL_MENU_BUTTON_IDLE_CLASS,
                                 ].join(" ")}
                               >
                                 {profile.name}
@@ -496,7 +569,7 @@ export default function BandBioModals() {
                   </p>
 
                   <div className="grid gap-2.5 after:block after:clear-both after:content-['']">
-                    <figure className="m-0 border-2 border-black bg-[linear-gradient(180deg,#dbdbdb_0%,#cecece_100%)] p-1.5 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#8a8a8a] sm:mx-auto sm:max-w-[14rem] md:float-right md:ml-4 md:mb-2 md:w-[12.25rem] md:max-w-none">
+                    <figure className="m-0 mx-auto w-full max-w-[10.75rem] border-2 border-black bg-[linear-gradient(180deg,#dbdbdb_0%,#cecece_100%)] p-1.5 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#8a8a8a] sm:max-w-[14rem] md:float-right md:ml-4 md:mb-2 md:w-[12.25rem] md:max-w-none">
                       <div className="retro-news-image-frame relative aspect-[1/1] w-full overflow-hidden border-2 border-[#8f80d5] bg-[#ececf3]">
                         <Image
                           src={resolveImageUrl(activeMemberProfile.imageUrl)}
