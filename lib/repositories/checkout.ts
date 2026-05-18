@@ -10,6 +10,16 @@ import {
 } from "@/lib/validators/checkout";
 
 const REGION_SEPARATOR = " | ";
+const requiredCheckoutAddressFields: Array<keyof CheckoutAddressInput> = [
+  "firstName",
+  "lastName",
+  "address1",
+  "city",
+  "province",
+  "region",
+  "country",
+  "postalCode",
+];
 
 type UserAddressRecord = {
   id: string;
@@ -99,6 +109,10 @@ function mapAddressRecordToCheckout(address: UserAddressRecord): CheckoutAddress
   };
 }
 
+function isCheckoutAddressComplete(value: CheckoutAddressInput): boolean {
+  return requiredCheckoutAddressFields.every((field) => value[field].trim().length > 0);
+}
+
 function withUserDefaults(
   value: CheckoutAddressInput,
   user: {
@@ -124,11 +138,18 @@ function pickPreferredAddress(
   const candidates = addresses.filter((address) => address.type === type);
   if (candidates.length === 0) return null;
 
-  candidates.sort((a, b) => {
-    if (a.isDefault === b.isDefault) {
-      return b.updatedAt.getTime() - a.updatedAt.getTime();
+  candidates.sort((left, right) => {
+    const leftComplete = isCheckoutAddressComplete(mapAddressRecordToCheckout(left));
+    const rightComplete = isCheckoutAddressComplete(mapAddressRecordToCheckout(right));
+
+    if (leftComplete !== rightComplete) {
+      return leftComplete ? -1 : 1;
     }
-    return a.isDefault ? -1 : 1;
+
+    if (left.isDefault === right.isDefault) {
+      return right.updatedAt.getTime() - left.updatedAt.getTime();
+    }
+    return left.isDefault ? -1 : 1;
   });
 
   return candidates[0] ?? null;

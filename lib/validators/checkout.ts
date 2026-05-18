@@ -13,6 +13,15 @@ const requiredText = (label: string, min = 2, max = 120) =>
 const optionalText = (max = 120) =>
   z.string().trim().max(max, `El campo no puede superar ${max} caracteres`);
 
+const optionalPhoneText = z
+  .string()
+  .trim()
+  .max(20, "El telefono es demasiado largo")
+  .refine((value) => value.length === 0 || phonePattern.test(value), {
+    message: "Introduce un telefono valido",
+  })
+  .default("");
+
 export const checkoutAddressSchema = z.object({
   firstName: requiredText("El nombre", 2, 70),
   lastName: requiredText("El apellido", 2, 120),
@@ -28,12 +37,7 @@ export const checkoutAddressSchema = z.object({
     .min(3, "El codigo postal es obligatorio")
     .max(12, "El codigo postal es demasiado largo")
     .regex(postalCodePattern, "Introduce un codigo postal valido"),
-  phone: z
-    .string()
-    .trim()
-    .min(7, "El telefono es obligatorio")
-    .max(20, "El telefono es demasiado largo")
-    .regex(phonePattern, "Introduce un telefono valido"),
+  phone: optionalPhoneText,
 });
 
 const relaxedCheckoutAddressSchema = z.object({
@@ -46,7 +50,7 @@ const relaxedCheckoutAddressSchema = z.object({
   region: z.string().trim().max(90).default(""),
   country: z.string().trim().max(70).default(""),
   postalCode: z.string().trim().max(12).default(""),
-  phone: z.string().trim().max(20).default(""),
+  phone: optionalPhoneText,
 });
 
 export const checkoutPayloadSchema = z

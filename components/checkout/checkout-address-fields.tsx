@@ -214,6 +214,7 @@ export default function CheckoutAddressFields({
             value={values.phone}
             error={errors[`${section}.phone`]}
             autoComplete={section === "shipping" ? "shipping tel" : "billing tel"}
+            optional
             disabled={disabled}
             onFieldChange={onFieldChange}
           />

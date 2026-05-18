@@ -95,7 +95,6 @@ const requiredAddressFieldKeys: Array<keyof CheckoutAddressInput> = [
   "region",
   "country",
   "postalCode",
-  "phone",
 ];
 
 function splitRecipientName(
@@ -192,15 +191,33 @@ function isAddressComplete(value: CheckoutAddressInput): boolean {
   return requiredAddressFieldKeys.every((field) => value[field].trim().length > 0);
 }
 
-function pickDefaultAddress(
+function isSavedAddressComplete(address: SavedAddressRecord): boolean {
+  return isAddressComplete(mapAddressToCheckoutForm(address));
+}
+
+function pickPreferredSavedAddress(
   addresses: SavedAddressRecord[],
   type: SavedAddressType,
 ): SavedAddressRecord | null {
   const candidates = addresses.filter((address) => address.type === type);
   if (candidates.length === 0) return null;
 
-  const defaultAddress = candidates.find((address) => address.isDefault);
-  return defaultAddress ?? candidates[0] ?? null;
+  const rankedCandidates = [...candidates].sort((left, right) => {
+    const leftComplete = isSavedAddressComplete(left);
+    const rightComplete = isSavedAddressComplete(right);
+
+    if (leftComplete !== rightComplete) {
+      return leftComplete ? -1 : 1;
+    }
+
+    if (left.isDefault !== right.isDefault) {
+      return left.isDefault ? -1 : 1;
+    }
+
+    return new Date(right.updatedAt).getTime() - new Date(left.updatedAt).getTime();
+  });
+
+  return rankedCandidates[0] ?? null;
 }
 
 function formatSavedAddressLine(address: SavedAddressRecord): string {
@@ -482,19 +499,25 @@ export default function CheckoutFlow({
     const shippingCandidates = savedAddresses.filter((address) => address.type === "SHIPPING");
     const billingCandidates = savedAddresses.filter((address) => address.type === "BILLING");
 
-    const matchedShipping = shippingCandidates.find((address) =>
-      areAddressInputsEquivalent(mapAddressToCheckoutForm(address), shipping),
+    const matchedShipping = shippingCandidates.find(
+      (address) =>
+        isSavedAddressComplete(address) &&
+        areAddressInputsEquivalent(mapAddressToCheckoutForm(address), shipping),
     );
 
     if (matchedShipping) {
       setShippingMode("saved");
       setSelectedShippingAddressId(matchedShipping.id);
     } else {
-      const defaultShipping = pickDefaultAddress(savedAddresses, "SHIPPING");
-      if (defaultShipping && !isAddressComplete(shipping)) {
-        setShipping(mapAddressToCheckoutForm(defaultShipping));
+      const preferredShipping = pickPreferredSavedAddress(savedAddresses, "SHIPPING");
+      if (
+        preferredShipping &&
+        isSavedAddressComplete(preferredShipping) &&
+        !isAddressComplete(shipping)
+      ) {
+        setShipping(mapAddressToCheckoutForm(preferredShipping));
         setShippingMode("saved");
-        setSelectedShippingAddressId(defaultShipping.id);
+        setSelectedShippingAddressId(preferredShipping.id);
       } else {
         setShippingMode("manual");
         setSelectedShippingAddressId(null);
@@ -502,19 +525,25 @@ export default function CheckoutFlow({
     }
 
     if (!useSameAddress) {
-      const matchedBilling = billingCandidates.find((address) =>
-        areAddressInputsEquivalent(mapAddressToCheckoutForm(address), billing),
+      const matchedBilling = billingCandidates.find(
+        (address) =>
+          isSavedAddressComplete(address) &&
+          areAddressInputsEquivalent(mapAddressToCheckoutForm(address), billing),
       );
 
       if (matchedBilling) {
         setBillingMode("saved");
         setSelectedBillingAddressId(matchedBilling.id);
       } else {
-        const defaultBilling = pickDefaultAddress(savedAddresses, "BILLING");
-        if (defaultBilling && !isAddressComplete(billing)) {
-          setBilling(mapAddressToCheckoutForm(defaultBilling));
+        const preferredBilling = pickPreferredSavedAddress(savedAddresses, "BILLING");
+        if (
+          preferredBilling &&
+          isSavedAddressComplete(preferredBilling) &&
+          !isAddressComplete(billing)
+        ) {
+          setBilling(mapAddressToCheckoutForm(preferredBilling));
           setBillingMode("saved");
-          setSelectedBillingAddressId(defaultBilling.id);
+          setSelectedBillingAddressId(preferredBilling.id);
         } else {
           setBillingMode("manual");
           setSelectedBillingAddressId(null);
