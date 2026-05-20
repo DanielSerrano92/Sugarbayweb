@@ -6,6 +6,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import CheckoutAddressFields from "@/components/checkout/checkout-address-fields";
 import { resolveImageUrl } from "@/lib/services/imagekit";
+import {
+  resolveStoreProductImageFitClass,
+  resolveStoreProductImageUrl,
+} from "@/lib/store/product-image-overrides";
 import { formatCurrency } from "@/lib/utils";
 import {
   checkoutPayloadSchema,
@@ -21,6 +25,7 @@ type CheckoutFlowItem = {
   lineTotal: number;
   product: {
     name: string;
+    slug?: string | null;
     currency: string;
     coverImage: string | null;
   };
@@ -788,36 +793,48 @@ export default function CheckoutFlow({
         <div className="retro-concert-header">Resumen del pedido</div>
         <div className="retro-concert-body">
           <div className="space-y-3">
-            {cart.items.map((item) => (
-              <article
-                key={item.id}
-                className="retro-concert-meta-item checkout-retro-item flex items-center gap-3"
-              >
-                <div className="checkout-retro-item-image relative h-16 w-16 shrink-0 overflow-hidden">
-                  <Image
-                    src={resolveImageUrl(item.product.coverImage)}
-                    alt={item.product.name}
-                    fill
-                    className="object-cover object-center"
-                    sizes="64px"
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black uppercase tracking-[0.03em] text-[#171717]">
-                    {item.product.name}
+            {cart.items.map((item) => {
+              const productImageUrl = resolveStoreProductImageUrl(
+                item.product.slug ?? null,
+                item.product.coverImage,
+                item.product.name,
+              );
+              const productImageFitClass = resolveStoreProductImageFitClass(
+                item.product.slug ?? null,
+                item.product.name,
+              );
+
+              return (
+                <article
+                  key={item.id}
+                  className="retro-concert-meta-item checkout-retro-item flex items-center gap-3"
+                >
+                  <div className="checkout-retro-item-image relative h-16 w-16 shrink-0 overflow-hidden">
+                    <Image
+                      src={resolveImageUrl(productImageUrl)}
+                      alt={item.product.name}
+                      fill
+                      className={productImageFitClass}
+                      sizes="64px"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-black uppercase tracking-[0.03em] text-[#171717]">
+                      {item.product.name}
+                    </p>
+                    <p className="checkout-retro-item-meta text-xs">
+                      {item.variant.title ?? item.variant.size}
+                    </p>
+                    <p className="checkout-retro-item-meta text-xs">
+                      {item.quantity} x {formatCurrency(item.unitPrice, item.product.currency)}
+                    </p>
+                  </div>
+                  <p className="checkout-retro-item-price text-sm font-black">
+                    {formatCurrency(item.lineTotal, item.product.currency)}
                   </p>
-                  <p className="checkout-retro-item-meta text-xs">
-                    {item.variant.title ?? item.variant.size}
-                  </p>
-                  <p className="checkout-retro-item-meta text-xs">
-                    {item.quantity} x {formatCurrency(item.unitPrice, item.product.currency)}
-                  </p>
-                </div>
-                <p className="checkout-retro-item-price text-sm font-black">
-                  {formatCurrency(item.lineTotal, item.product.currency)}
-                </p>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
 
           <dl className="checkout-retro-totals space-y-2 text-sm">

@@ -23,6 +23,7 @@
   --font-retro-pixel: "Press Start 2P", "VT323", "Courier New", monospace;
   --font-bytebounce: "ByteBounce", "Trebuchet MS", "Segoe UI", "Tahoma", "Verdana", sans-serif;
   --font-retronoid: "Retronoid-BZX3", "Trebuchet MS", "Segoe UI", "Tahoma", "Verdana", sans-serif;
+  --sb-mobile-gutter: clamp(0.9rem, 4.2vw, 1.2rem);
 }
 
 @theme inline {
@@ -409,6 +410,7 @@ p {
   .page-content-wrapper.store-catalog-content {
     width: 100%;
     max-width: 100%;
+    --store-products-right-offset: 1.75rem;
   }
 
   .store-catalog-layout {
@@ -417,6 +419,37 @@ p {
 
   .store-catalog-sidebar {
     justify-self: start;
+  }
+
+  .store-catalog-products {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding-right: var(--store-products-right-offset);
+  }
+
+  @media (max-width: 1023px) {
+    .page-content-wrapper.store-catalog-content {
+      --store-products-right-offset: 0rem;
+    }
+
+    .store-catalog-products {
+      padding-left: clamp(1rem, 4vw, 1.5rem);
+      padding-right: clamp(1rem, 4vw, 1.5rem);
+    }
+
+    .page-content-wrapper.store-detail-page-content,
+    .page-content-wrapper.checkout-content {
+      padding-left: clamp(1rem, 4vw, 1.5rem);
+      padding-right: clamp(1rem, 4vw, 1.5rem);
+    }
+  }
+
+  .store-catalog-products .store-results-shell,
+  .store-catalog-products .store-products-grid {
+    width: 100%;
+    max-width: none;
+    justify-content: stretch;
   }
 
   .store-catalog-sidebar .store-filters-window {
@@ -2093,12 +2126,25 @@ p {
     line-height: 1;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 767px) {
+    .page-content-wrapper {
+      padding-top: 1.05rem;
+      padding-bottom: 1.25rem;
+      padding-left: var(--sb-mobile-gutter);
+      padding-right: var(--sb-mobile-gutter);
+    }
+
     .page-toolbar-row,
     .page-toolbar-row-no-left,
     .page-toolbar-row-has-left {
+      align-items: stretch;
       justify-content: flex-start;
-      gap: 0.5rem;
+      gap: 0.56rem;
+      width: 100%;
+    }
+
+    .page-toolbar-left {
+      width: 100%;
     }
 
     .retro-breadcrumb-shell {
@@ -2117,9 +2163,15 @@ p {
     }
 
     .concert-top-controls {
+      width: 100%;
       flex-wrap: wrap;
       justify-content: flex-start;
-      gap: 0.3rem;
+      align-items: stretch;
+      gap: 0.36rem;
+    }
+
+    .concert-top-controls > * {
+      min-width: 0;
     }
 
     .concert-top-controls-right {
@@ -3669,9 +3721,14 @@ p {
 
   @media (max-width: 767px) {
     .page-header-overlay {
-      bottom: 5.6rem;
-      padding-left: 0.55rem;
-      padding-right: 0.55rem;
+      bottom: clamp(5.1rem, 12vw, 5.6rem);
+      padding-left: var(--sb-mobile-gutter);
+      padding-right: var(--sb-mobile-gutter);
+    }
+
+    .home-videos-band-window,
+    .home-hero-carousel-window {
+      width: 100%;
     }
 
     .home-videos-band {
@@ -3692,11 +3749,11 @@ p {
 
     .home-videos-band-track {
       gap: 0.46rem;
-      padding: 0.64rem;
+      padding: 0.64rem var(--sb-mobile-gutter);
     }
 
     .home-videos-band-progress-wrap {
-      padding: 0.48rem 0.64rem 0.62rem;
+      padding: 0.48rem var(--sb-mobile-gutter) 0.62rem;
     }
 
     .home-videos-band-item {
@@ -3719,7 +3776,7 @@ p {
 
     .home-hero-carousel-body {
       gap: 0.66rem;
-      padding: 0.74rem 0.74rem 0.82rem;
+      padding: 0.74rem var(--sb-mobile-gutter) 0.82rem;
     }
 
     .home-hero-carousel-content {
@@ -5446,6 +5503,49 @@ p {
     }
   }
 
+  @media (max-width: 767px) {
+    .page-content-wrapper.store-catalog-content,
+    .page-content-wrapper.store-detail-page-content,
+    .page-content-wrapper.checkout-content {
+      padding-left: var(--sb-mobile-gutter);
+      padding-right: var(--sb-mobile-gutter);
+    }
+
+    .store-catalog-products {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .retro-concert-body {
+      gap: 0.86rem;
+      padding: 0.82rem 0.84rem 0.94rem;
+    }
+
+    .retro-concert-title-block {
+      padding: 0.14rem 0.18rem 0.58rem;
+    }
+
+    .retro-concert-meta {
+      gap: 0.56rem;
+    }
+
+    .auth-retro-modal,
+    .cart-modal-window,
+    .retro-filters-modal,
+    .global-search-window {
+      width: min(100%, calc(100vw - (var(--sb-mobile-gutter) * 2)));
+    }
+
+    .cart-modal-footer .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .checkout-address-choice {
+      gap: 0.52rem;
+      padding: 0.52rem 0.56rem;
+    }
+  }
+
   @media (max-width: 639px) {
     .retro-fanclub-main-card {
       min-height: 24.8rem;
@@ -5499,15 +5599,50 @@ p {
   }
 
   @media (min-width: 1024px) {
+    .page-content-wrapper.store-catalog-content .page-toolbar-row {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      column-gap: 1.2rem;
+      row-gap: 0.85rem;
+      align-items: start;
+      justify-content: start;
+    }
+
+    .page-content-wrapper.store-catalog-content .page-toolbar-left {
+      grid-column: 2;
+      grid-row: 1;
+      flex: 0 0 auto;
+      justify-content: flex-start;
+      min-width: 0;
+    }
+
+    .page-content-wrapper.store-catalog-content .retro-breadcrumb-shell {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+    }
+
     .page-content-wrapper.store-catalog-content {
       margin-right: auto;
       margin-left: 0;
       padding-left: 0.5rem;
-      padding-right: 1rem;
+      padding-right: 2rem;
+      --store-products-right-offset: clamp(8rem, 14vw, 12rem);
     }
 
     .store-catalog-layout {
       gap: 1.2rem;
+    }
+
+    .store-catalog-products {
+      width: 100%;
+      margin-right: 0;
+      padding-right: var(--store-products-right-offset);
+      justify-self: stretch;
+    }
+
+    .page-content-wrapper.store-catalog-content .retro-breadcrumb-shell {
+      margin-right: var(--store-products-right-offset);
     }
 
     .retro-fanclub-main-card {
@@ -5525,9 +5660,24 @@ p {
   }
 
   @media (min-width: 1280px) {
+    .page-content-wrapper.store-catalog-content .page-toolbar-row {
+      grid-template-columns: 340px minmax(0, 1fr);
+    }
+
     .page-content-wrapper.store-catalog-content {
       padding-left: 0.25rem;
-      padding-right: 1.25rem;
+      padding-right: 2rem;
+      --store-products-right-offset: clamp(9rem, 12vw, 13.5rem);
+    }
+
+    .store-catalog-products {
+      width: 100%;
+      margin-right: 0;
+      padding-right: var(--store-products-right-offset);
+    }
+
+    .page-content-wrapper.store-catalog-content .retro-breadcrumb-shell {
+      margin-right: var(--store-products-right-offset);
     }
   }
 }

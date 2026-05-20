@@ -1,0 +1,33 @@
+INCIDENCIA TFG - IMAGENES DE PRODUCTO NO CONSISTENTES ENTRE VISTAS
+
+1) Problema
+- Las imagenes de producto se veian bien en unas vistas (catalogo) y mal/rotas en otras (detalle, carrito, checkout, pedidos).
+- El mismo producto no mantenia la misma imagen en todo el flujo.
+
+2) Causa raiz
+- La imagen no se resolvia desde un punto unico.
+- Cada capa consumia fuentes distintas (coverImage, snapshot, nombre de producto, etc.).
+- El primer ajuste se aplico solo a componentes de Tienda, no al resto del journey.
+
+3) Solucion aplicada
+- Se centralizo la logica en:
+  - lib/store/product-image-overrides.ts
+- Se anadio:
+  - override por slug
+  - fallback por nombre de producto
+  - politica de fit por producto objetivo
+
+4) Capas corregidas
+- Tienda (cards y detalle)
+- Carrito (modal y vista en tienda)
+- Checkout (resumen)
+- Repositorios de carrito y pedidos
+- API de checkout (imagenes para Stripe)
+- Historial de pedidos en cuenta
+
+5) Resultado
+- Imagen consistente del producto en todas las secciones correspondientes.
+- Sin cambios en layout, filtros, logica de carrito, precios o flujo de compra.
+
+Documento detallado:
+- docs/tfg-incidencia-imagenes-producto-transversal.md

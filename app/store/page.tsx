@@ -85,7 +85,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
           />
         </div>
 
-        <div className="lg:col-start-2">
+        <div className="store-catalog-products min-w-0 lg:col-start-2">
           <div className={`store-results-shell ${hasNoProducts ? "store-results-shell-empty" : ""}`}>
             {hasNoProducts ? (
               <article className="retro-concert-card store-empty-results-card w-full overflow-hidden">
@@ -108,7 +108,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
                 </div>
               </article>
             ) : (
-              <div className="store-products-grid grid gap-5">
+              <div className="store-products-grid grid w-full gap-5">
                 {catalog.products.map((product) => (
                   <StoreProductCard key={product.id} product={product} />
                 ))}

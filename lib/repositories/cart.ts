@@ -1,6 +1,7 @@
 import type { AddressType, Prisma, VariantSize } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
+import { resolveStoreProductImageUrl } from "@/lib/store/product-image-overrides";
 
 const cartWithItemsInclude = {
   items: {
@@ -106,7 +107,11 @@ function mapCart(cart: CartRecord): CartView {
         name: item.product.name,
         slug: item.product.slug,
         currency: item.product.currency,
-        coverImage: item.product.images[0]?.imageUrl ?? null,
+        coverImage: resolveStoreProductImageUrl(
+          item.product.slug,
+          item.product.images[0]?.imageUrl ?? null,
+          item.product.name,
+        ),
       },
       variant: {
         id: item.productVariant.id,

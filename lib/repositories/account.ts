@@ -11,6 +11,7 @@ import type {
 import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/db";
+import { resolveStoreProductImageUrl } from "@/lib/store/product-image-overrides";
 import type {
   ProfileUpdateInput,
   SupportRequestInput,
@@ -262,7 +263,11 @@ export async function listAccountOrders(userId: string): Promise<AccountOrder[]>
       quantity: item.quantity,
       unitPrice: decimalToNumber(item.unitPrice),
       lineTotal: decimalToNumber(item.lineTotal),
-      imageUrl: item.imageUrlSnapshot,
+      imageUrl: resolveStoreProductImageUrl(
+        null,
+        item.imageUrlSnapshot,
+        item.productNameSnapshot,
+      ),
     })),
   }));
 }

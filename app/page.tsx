@@ -10,6 +10,7 @@ import { getHomeVideoBandItems } from "@/lib/repositories/media";
 import PageShell from "@/components/ui/page-shell";
 import { getHomeSnapshot } from "@/lib/repositories/site";
 import { resolveImageUrl } from "@/lib/services/imagekit";
+import { resolveStoreProductImageUrl } from "@/lib/store/product-image-overrides";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -65,6 +66,12 @@ export default async function HomePage() {
 
   const featuredProduct = featuredProducts[0];
   if (featuredProduct) {
+    const featuredProductImageUrl = resolveStoreProductImageUrl(
+      featuredProduct.slug,
+      featuredProduct.coverImageUrl,
+      featuredProduct.name,
+    );
+
     heroSlides.push({
       id: `home-store-${featuredProduct.id}`,
       kind: "store",
@@ -78,8 +85,8 @@ export default async function HomePage() {
       mainHref: `/store/${featuredProduct.slug}`,
       buttonHref: "/store",
       buttonLabel: "Tienda",
-      imageUrl: featuredProduct.coverImageUrl
-        ? resolveImageUrl(featuredProduct.coverImageUrl)
+      imageUrl: featuredProductImageUrl
+        ? resolveImageUrl(featuredProductImageUrl)
         : HOME_CAROUSEL_STORE_IMAGE,
       imageAlt: `Producto destacado: ${featuredProduct.name}`,
     });

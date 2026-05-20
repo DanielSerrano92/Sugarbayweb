@@ -1,0 +1,31 @@
+INFORME RESUMEN TFG - AJUSTE MARGEN DERECHO TIENDA
+
+1) Objetivo
+- Ajustar solo el margen lateral derecho de la zona de productos en Tienda.
+- Mantener sin cambios filtros y margen lateral izquierdo.
+
+2) Archivos modificados (implementacion)
+- app/store/page.tsx
+- app/globals.css
+
+3) Problemas en la implementacion
+- Reglas CSS de Tienda distribuidas entre base y media queries.
+- Valores fijos distintos por breakpoint, con resultado visual inconsistente.
+- Restriccion de no tocar filtros ni margen izquierdo, obligando a resolver solo en columna de productos.
+
+4) Pasos del desarrollo
+- Revision de estructura en store/page.tsx.
+- Localizacion de reglas de layout en globals.css.
+- Creacion/uso de wrapper de productos dedicado.
+- Unificacion del margen derecho con variable CSS scoped.
+- Alineacion del breadcrumb con el mismo offset derecho.
+- Ajuste responsive final para desktop.
+
+5) Estado final
+- Ajuste aplicado solo a productos/cards de Tienda.
+- Filtros intactos.
+- Margen izquierdo intacto.
+- Se mantiene estructura [filtros][productos] y 2 cards por fila en desktop.
+
+Documento detallado:
+- docs/tfg-ajuste-margen-derecho-tienda.md

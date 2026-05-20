@@ -13,6 +13,9 @@ import {
   getStoreProductBySlug,
 } from "@/lib/repositories/store";
 
+const STORE_DETAIL_HEADER_IMAGE_SRC =
+  "https://ik.imagekit.io/gq1enkszp/fotos/tienda.png?tr=w-2400,h-760,cm-extract,fo-top&updatedAt=1778429706881";
+
 type StoreProductPageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -66,7 +69,8 @@ export default async function StoreProductPage({ params }: StoreProductPageProps
         category: rootStoreCategory,
         productName: product.name,
       })}
-      contentClassName="space-y-8"
+      headerImageSrc={STORE_DETAIL_HEADER_IMAGE_SRC}
+      contentClassName="space-y-8 store-detail-page-content"
     >
       <StoreProductDetailPanel product={product} />
 

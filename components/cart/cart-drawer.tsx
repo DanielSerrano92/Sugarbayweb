@@ -7,6 +7,10 @@ import { useEffect, useRef } from "react";
 import { dispatchAuthModalOpen } from "@/lib/auth/events";
 import { removeCartItemAction } from "@/lib/cart/actions";
 import { resolveImageUrl } from "@/lib/services/imagekit";
+import {
+  resolveStoreProductImageFitClass,
+  resolveStoreProductImageUrl,
+} from "@/lib/store/product-image-overrides";
 import { formatCurrency } from "@/lib/utils";
 
 type CartDrawerItem = {
@@ -167,55 +171,67 @@ export default function CartDrawer({
                   Tu carrito esta vacio. Explora la tienda y anade productos.
                 </p>
               ) : (
-                cartItems.map((item) => (
-                  <article
-                    key={item.id}
-                    className="cart-modal-item p-3"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="cart-modal-item-image relative h-16 w-16 shrink-0 overflow-hidden">
-                        <Image
-                          src={resolveImageUrl(item.product.coverImage)}
-                          alt={item.product.name}
-                          fill
-                          className="object-cover object-center"
-                          sizes="64px"
-                        />
+                cartItems.map((item) => {
+                  const productImageUrl = resolveStoreProductImageUrl(
+                    item.product.slug,
+                    item.product.coverImage,
+                    item.product.name,
+                  );
+                  const productImageFitClass = resolveStoreProductImageFitClass(
+                    item.product.slug,
+                    item.product.name,
+                  );
+
+                  return (
+                    <article
+                      key={item.id}
+                      className="cart-modal-item p-3"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="cart-modal-item-image relative h-16 w-16 shrink-0 overflow-hidden">
+                          <Image
+                            src={resolveImageUrl(productImageUrl)}
+                            alt={item.product.name}
+                            fill
+                            className={productImageFitClass}
+                            sizes="64px"
+                          />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <Link
+                            href={`/store/${item.product.slug}`}
+                            onClick={onClose}
+                            className="cart-modal-item-name block truncate text-sm font-black uppercase tracking-[0.04em]"
+                          >
+                            {item.product.name}
+                          </Link>
+                          <p className="cart-modal-item-meta text-xs">
+                            {item.variant.title ?? item.variant.size}
+                          </p>
+                          <p className="cart-modal-item-meta mt-1 text-xs font-semibold">
+                            Cantidad: {item.quantity}
+                          </p>
+                        </div>
                       </div>
 
-                      <div className="min-w-0 flex-1">
-                        <Link
-                          href={`/store/${item.product.slug}`}
-                          onClick={onClose}
-                          className="cart-modal-item-name block truncate text-sm font-black uppercase tracking-[0.04em]"
-                        >
-                          {item.product.name}
-                        </Link>
-                        <p className="cart-modal-item-meta text-xs">
-                          {item.variant.title ?? item.variant.size}
+                      <div className="mt-3 flex items-center justify-between gap-3">
+                        <p className="cart-modal-item-price text-sm font-black">
+                          {formatCurrency(item.lineTotal, item.product.currency)}
                         </p>
-                        <p className="cart-modal-item-meta mt-1 text-xs font-semibold">
-                          Cantidad: {item.quantity}
-                        </p>
+                        <form action={removeCartItemAction}>
+                          <input type="hidden" name="cartItemId" value={item.id} />
+                          <button
+                            type="submit"
+                            className="win-button cart-modal-remove-btn"
+                          >
+                            Eliminar
+                          </button>
+                        </form>
                       </div>
-                    </div>
-
-                    <div className="mt-3 flex items-center justify-between gap-3">
-                      <p className="cart-modal-item-price text-sm font-black">
-                        {formatCurrency(item.lineTotal, item.product.currency)}
-                      </p>
-                      <form action={removeCartItemAction}>
-                        <input type="hidden" name="cartItemId" value={item.id} />
-                        <button
-                          type="submit"
-                          className="win-button cart-modal-remove-btn"
-                        >
-                          Eliminar
-                        </button>
-                      </form>
-                    </div>
-                  </article>
-                ))
+                    </article>
+                  );
+                })
               )}
             </div>
 
