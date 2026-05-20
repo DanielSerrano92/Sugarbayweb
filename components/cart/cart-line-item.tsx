@@ -3,6 +3,10 @@ import Link from "next/link";
 
 import type { CartItemView } from "@/lib/repositories/cart";
 import { resolveImageUrl } from "@/lib/services/imagekit";
+import {
+  resolveStoreProductImageFitClass,
+  resolveStoreProductImageUrl,
+} from "@/lib/store/product-image-overrides";
 import { formatCurrency } from "@/lib/utils";
 import {
   removeCartItemAction,
@@ -14,6 +18,16 @@ type CartLineItemProps = {
 };
 
 export default function CartLineItem({ item }: CartLineItemProps) {
+  const productImageUrl = resolveStoreProductImageUrl(
+    item.product.slug,
+    item.product.coverImage,
+    item.product.name,
+  );
+  const productImageFitClass = resolveStoreProductImageFitClass(
+    item.product.slug,
+    item.product.name,
+  );
+
   return (
     <article className="retro-concert-card min-h-0 overflow-hidden">
       <div className="retro-concert-header">Producto</div>
@@ -21,10 +35,10 @@ export default function CartLineItem({ item }: CartLineItemProps) {
         <div className="grid gap-4 sm:grid-cols-[120px_1fr]">
           <div className="cart-modal-item-image relative h-28 w-full overflow-hidden sm:h-24">
             <Image
-              src={resolveImageUrl(item.product.coverImage)}
+              src={resolveImageUrl(productImageUrl)}
               alt={item.product.name}
               fill
-              className="object-cover object-center"
+              className={productImageFitClass}
               sizes="120px"
             />
           </div>

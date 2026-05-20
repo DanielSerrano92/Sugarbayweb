@@ -2,6 +2,10 @@ import Image from "next/image";
 
 import StoreProductPurchaseForm from "@/components/store/store-product-purchase-form";
 import { isPhysicalMediaWithNotes } from "@/lib/repositories/store";
+import {
+  resolveStoreProductImageFitClass,
+  resolveStoreProductImageUrl,
+} from "@/lib/store/product-image-overrides";
 import { resolveImageUrl } from "@/lib/services/imagekit";
 import type { StoreProductDetail } from "@/lib/store/types";
 import { formatCurrency } from "@/lib/utils";
@@ -39,9 +43,13 @@ export default function StoreProductDetailPanel({
 }: StoreProductDetailPanelProps) {
   const showMediaNotes = isPhysicalMediaWithNotes(product);
   const primaryImage = product.images[0];
-  const primaryImageUrl = primaryImage?.imageUrl
-    ? resolveImageUrl(primaryImage.imageUrl)
-    : null;
+  const resolvedPrimaryImage = resolveStoreProductImageUrl(
+    product.slug,
+    primaryImage?.imageUrl ?? null,
+    product.name,
+  );
+  const primaryImageUrl = resolvedPrimaryImage ? resolveImageUrl(resolvedPrimaryImage) : null;
+  const primaryImageFitClass = resolveStoreProductImageFitClass(product.slug, product.name);
   const primaryImageAlt = primaryImage?.altText ?? product.name;
   const imageFrameHeight = compact ? "clamp(320px, 48vh, 420px)" : "420px";
 
@@ -58,7 +66,7 @@ export default function StoreProductDetailPanel({
                   alt={primaryImageAlt}
                   fill
                   unoptimized
-                  className="pointer-events-none select-none object-cover"
+                  className={`pointer-events-none select-none ${primaryImageFitClass}`}
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               ) : (

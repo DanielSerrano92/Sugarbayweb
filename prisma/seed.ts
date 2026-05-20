@@ -202,7 +202,8 @@ async function main() {
       images: {
         create: [
           {
-            imageUrl: "https://ik.imagekit.io/sugarbay/products/tour-tee-black-main.jpg",
+            imageUrl:
+              "https://ik.imagekit.io/gq1enkszp/fotos/camiseta_black_neon?updatedAt=1777406425075",
             altText: "Sugarbay Tour Tee Black frontal",
             isPrimary: true,
             sortOrder: 1,
@@ -243,7 +244,7 @@ async function main() {
       images: {
         create: [
           {
-            imageUrl: "https://ik.imagekit.io/sugarbay/products/neon-pin-set-main.jpg",
+            imageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/pin-set.png",
             altText: "Sugarbay Neon Pin Set",
             isPrimary: true,
             sortOrder: 1,
@@ -292,7 +293,7 @@ async function main() {
       images: {
         create: [
           {
-            imageUrl: "https://ik.imagekit.io/sugarbay/products/neon-coastline-cd-deluxe-main.jpg",
+            imageUrl: "https://ik.imagekit.io/gq1enkszp/fotos/cd.png",
             altText: "Neon Coastline CD Deluxe",
             isPrimary: true,
             sortOrder: 1,

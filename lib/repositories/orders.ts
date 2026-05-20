@@ -4,6 +4,7 @@ import type { AddressType, Prisma } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { withDatabaseFallback } from "@/lib/repositories/safe-query";
 import { getStripeClient } from "@/lib/services/stripe";
+import { resolveStoreProductImageUrl } from "@/lib/store/product-image-overrides";
 
 const cartForOrderInclude = {
   items: {
@@ -64,6 +65,7 @@ type OrderMappedItem = {
   product: {
     id: string;
     name: string;
+    slug: string;
     currency: string;
     coverImage: string | null;
   };
@@ -124,8 +126,13 @@ function mapCartItems(cart: OrderCartRecord): OrderMappedItem[] {
       product: {
         id: item.product.id,
         name: item.product.name,
+        slug: item.product.slug,
         currency: item.product.currency,
-        coverImage: item.product.images[0]?.imageUrl ?? null,
+        coverImage: resolveStoreProductImageUrl(
+          item.product.slug,
+          item.product.images[0]?.imageUrl ?? null,
+          item.product.name,
+        ),
       },
       variant: {
         id: item.productVariant.id,

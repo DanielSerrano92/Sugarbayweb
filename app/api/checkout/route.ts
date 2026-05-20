@@ -7,6 +7,7 @@ import {
   markOrderAsFailedByOrderId,
 } from "@/lib/repositories/orders";
 import { resolveImageUrl } from "@/lib/services/imagekit";
+import { resolveStoreProductImageUrl } from "@/lib/store/product-image-overrides";
 import { getStripeClient } from "@/lib/services/stripe";
 import {
   checkoutPayloadSchema,
@@ -82,19 +83,25 @@ export async function POST(request: Request) {
       payment_method_types: ["card"],
       client_reference_id: pendingOrder.id,
       customer_email: sessionUser.email,
-      line_items: pendingOrder.items.map((item) => ({
-        quantity: item.quantity,
-        price_data: {
-          currency: pendingOrder.currency.toLowerCase(),
-          unit_amount: Math.round(item.unitPrice * 100),
-          product_data: {
-            name: item.productName,
-            images: item.imageUrl
-              ? [resolveImageUrl(item.imageUrl)]
-              : [],
+      line_items: pendingOrder.items.map((item) => {
+        const checkoutImageUrl = resolveStoreProductImageUrl(
+          null,
+          item.imageUrl,
+          item.productName,
+        );
+
+        return {
+          quantity: item.quantity,
+          price_data: {
+            currency: pendingOrder.currency.toLowerCase(),
+            unit_amount: Math.round(item.unitPrice * 100),
+            product_data: {
+              name: item.productName,
+              images: checkoutImageUrl ? [resolveImageUrl(checkoutImageUrl)] : [],
+            },
           },
-        },
-      })),
+        };
+      }),
       success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/checkout?payment=cancelled`,
       metadata: {

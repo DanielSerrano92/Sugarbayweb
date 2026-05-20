@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import {
+  resolveStoreProductImageFitClass,
+  resolveStoreProductImageUrl,
+} from "@/lib/store/product-image-overrides";
 import type { StoreProductCard } from "@/lib/store/types";
 import { resolveImageUrl } from "@/lib/services/imagekit";
 import { formatCurrency } from "@/lib/utils";
@@ -33,6 +37,12 @@ function RetroTagIcon() {
 
 export default function StoreProductCard({ product }: StoreProductCardProps) {
   const productHref = `/store/${product.slug}`;
+  const productImageUrl = resolveStoreProductImageUrl(
+    product.slug,
+    product.coverImageUrl,
+    product.name,
+  );
+  const productImageFitClass = resolveStoreProductImageFitClass(product.slug, product.name);
 
   return (
     <article className="retro-concert-card w-full overflow-hidden">
@@ -48,10 +58,10 @@ export default function StoreProductCard({ product }: StoreProductCardProps) {
         >
           <div className="relative h-60 bg-zinc-100">
             <Image
-              src={resolveImageUrl(product.coverImageUrl)}
+              src={resolveImageUrl(productImageUrl)}
               alt={product.name}
               fill
-              className="object-cover"
+              className={productImageFitClass}
               sizes="(max-width: 767px) 100vw, 50vw"
             />
           </div>

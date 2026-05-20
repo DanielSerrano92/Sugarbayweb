@@ -43,6 +43,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       title="Finalizar compra"
       description="Valida envio y facturacion antes de pasar al pago seguro con Stripe."
       headerImageSrc={CHECKOUT_PAGE_HEADER_IMAGE_SRC}
+      contentClassName="space-y-6 checkout-content"
     >
       {paymentErrorMessage ? (
         <p className="checkout-retro-alert checkout-retro-alert-warn text-sm">
